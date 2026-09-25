@@ -1,7 +1,7 @@
 import { StrictMode, useEffect, useRef, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import * as monaco from "monaco-editor";
-import "monaco-editor/esm/vs/language/css/monaco.contribution";
+import "monaco-editor/esm/vs/language/css/monaco.contribution.js";
 import CssWorker from "monaco-editor/language/css/css.worker?worker";
 import EditorWorker from "monaco-editor/editor/editor.worker?worker";
 import {
@@ -84,7 +84,7 @@ const sampleSource = `:root {
 }`;
 
 const monacoUsageExample = `import * as monaco from "monaco-editor";
-import "monaco-editor/esm/vs/language/css/monaco.contribution";
+import "monaco-editor/esm/vs/language/css/monaco.contribution.js";
 import { extractCssColors } from "@moyarich/css-color-parser";
 
 monaco.languages.css.cssDefaults.setModeConfiguration({
