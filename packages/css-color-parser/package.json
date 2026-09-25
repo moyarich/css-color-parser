@@ -28,7 +28,7 @@
     "test:watch": "vitest tests",
     "check": "npm run typecheck && npm test && npm run build",
     "prepare": "npm run build",
-    "prepack": "npm run build"
+    "prepack": "cp ../../README.md README.md && npm run build"
   },
   "devDependencies": {
     "tsup": "^8.5.0",
