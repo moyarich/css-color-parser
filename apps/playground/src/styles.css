@@ -61,9 +61,13 @@ input {
   border-radius: 4px;
 }
 
-.github-link svg {
+.github-icon {
+  display: block;
   width: 20px;
   height: 20px;
+  min-width: 20px;
+  max-width: 20px;
+  flex: 0 0 20px;
   fill: currentColor;
 }
 
