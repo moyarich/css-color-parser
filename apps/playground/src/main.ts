@@ -2,11 +2,18 @@ import * as monaco from "monaco-editor";
 import CssWorker from "monaco-editor/language/css/css.worker?worker";
 import EditorWorker from "monaco-editor/editor/editor.worker?worker";
 import {
+  CSS_NAMED_COLORS,
   extractCssColors,
+  hslToRgb,
+  parseAlpha,
   parseCssColor,
+  parseFunctionalComponents,
   parseHexColor,
   parseHslColor,
+  parseHue,
   parseNamedColor,
+  parsePercentage,
+  parseRgbChannel,
   parseRgbColor,
   type CssColorMatch,
   type RgbaColor,
@@ -59,6 +66,11 @@ const singleOutput = requiredElement<HTMLPreElement>("#single-output");
 const sourceEditorHost = requiredElement<HTMLDivElement>("#source-editor");
 const matchCount = requiredElement<HTMLSpanElement>("#match-count");
 const matchList = requiredElement<HTMLOListElement>("#match-list");
+const apiFunctions = requiredElement<HTMLElement>("#api-functions");
+const apiSignature = requiredElement<HTMLElement>("#api-signature");
+const apiDescription = requiredElement<HTMLParagraphElement>("#api-description");
+const apiArgs = requiredElement<HTMLInputElement>("#api-args");
+const apiOutput = requiredElement<HTMLPreElement>("#api-output");
 
 const sourceEditor = monaco.editor.create(sourceEditorHost, {
   value: sampleSource,
@@ -112,6 +124,65 @@ function updateSingleColor(): void {
     2,
   );
 }
+
+
+type ApiExample = {
+  name: string;
+  signature: string;
+  description: string;
+  args: unknown[];
+  run: (...args: any[]) => unknown;
+};
+
+const apiExamples: ApiExample[] = [
+  { name: "parseCssColor", signature: "parseCssColor(value)", description: "Parse any supported complete CSS color.", args: ["oklch(60% 0.15 250)"], run: parseCssColor },
+  { name: "extractCssColors", signature: "extractCssColors(source)", description: "Extract resolvable CSS colors and their UTF-16 offsets.", args: ["color: #06c; background: rebeccapurple;"], run: extractCssColors },
+  { name: "parseHexColor", signature: "parseHexColor(value)", description: "Parse a hexadecimal CSS color into RGBA channels.", args: ["#06c"], run: parseHexColor },
+  { name: "parseRgbColor", signature: "parseRgbColor(value)", description: "Parse an rgb() or rgba() color.", args: ["rgb(255 0 0 / 50%)"], run: parseRgbColor },
+  { name: "parseHslColor", signature: "parseHslColor(value)", description: "Parse an hsl() or hsla() color.", args: ["hsl(220 80% 50% / 0.8)"], run: parseHslColor },
+  { name: "parseNamedColor", signature: "parseNamedColor(value)", description: "Resolve a CSS named color.", args: ["rebeccapurple"], run: parseNamedColor },
+  { name: "parseHue", signature: "parseHue(value)", description: "Normalize a CSS hue to degrees.", args: ["0.5turn"], run: parseHue },
+  { name: "parseRgbChannel", signature: "parseRgbChannel(value)", description: "Parse one RGB numeric or percentage channel.", args: ["50%"], run: parseRgbChannel },
+  { name: "parsePercentage", signature: "parsePercentage(value)", description: "Parse a percentage token.", args: ["62.5%"], run: parsePercentage },
+  { name: "parseAlpha", signature: "parseAlpha(value)", description: "Parse and clamp an alpha value.", args: ["75%"], run: parseAlpha },
+  { name: "parseFunctionalComponents", signature: "parseFunctionalComponents(body)", description: "Split functional color channels and optional alpha.", args: ["255 0 0 / 50%"], run: parseFunctionalComponents },
+  { name: "hslToRgb", signature: "hslToRgb(hue, saturation, lightness)", description: "Convert HSL channel values to RGB.", args: [220, 80, 50], run: hslToRgb },
+];
+
+let activeApi = apiExamples[0]!;
+
+function runApiExample(): void {
+  try {
+    const args = JSON.parse(apiArgs.value);
+    if (!Array.isArray(args)) throw new Error("Arguments must be a JSON array.");
+    apiOutput.textContent = JSON.stringify(activeApi.run(...args), null, 2) ?? "undefined";
+  } catch (error) {
+    apiOutput.textContent = error instanceof Error ? error.message : String(error);
+  }
+}
+
+function selectApiExample(example: ApiExample): void {
+  activeApi = example;
+  apiSignature.textContent = example.signature;
+  apiDescription.textContent = example.description;
+  apiArgs.value = JSON.stringify(example.args);
+  for (const button of apiFunctions.querySelectorAll<HTMLButtonElement>("button")) {
+    button.setAttribute("aria-pressed", String(button.dataset.api === example.name));
+  }
+  runApiExample();
+}
+
+for (const example of apiExamples) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.dataset.api = example.name;
+  button.textContent = example.name;
+  button.addEventListener("click", () => selectApiExample(example));
+  apiFunctions.append(button);
+}
+
+apiArgs.addEventListener("input", runApiExample);
+selectApiExample(activeApi);
 
 function revealMatch(match: CssColorMatch): void {
   const model = sourceEditor.getModel();
