@@ -4,12 +4,12 @@ on:
   push:
     branches:
       - main
-      - fix/package-errors
   pull_request:
 
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -19,8 +19,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
+      - name: Install monorepo dependencies
         run: npm install
 
-      - name: Check package
+      - name: Check root package and workspaces
         run: npm run check
