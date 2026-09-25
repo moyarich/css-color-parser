@@ -1,74 +1,16 @@
 {
-  "name": "@moyarich/css-color-parser",
-  "version": "0.1.0",
-  "description": "Framework-agnostic CSS color parsing and extraction utilities.",
-  "license": "MIT",
+  "name": "css-color-parser-monorepo",
+  "private": true,
   "type": "module",
-  "workspaces": [
-    "apps/*"
-  ],
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
+  "workspaces": ["packages/*", "apps/*"],
   "scripts": {
     "dev": "npm run dev:playground",
     "dev:playground": "npm run dev --workspace @moyarich/css-color-parser-playground",
-    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "build": "npm run build --workspace @moyarich/css-color-parser",
     "build:playground": "npm run build --workspace @moyarich/css-color-parser-playground",
-    "typecheck": "tsc --noEmit",
-    "typecheck:playground": "npm run typecheck --workspace @moyarich/css-color-parser-playground",
-    "test": "vitest run tests",
-    "test:watch": "vitest tests",
-    "check:root": "npm run typecheck && npm test && npm run build",
-    "check:workspaces": "npm run check --workspaces --if-present",
-    "check": "npm run check:root && npm run check:workspaces",
-    "prepare": "npm run build"
-  },
-  "devDependencies": {
-    "tsup": "^8.5.0",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/moyarich/css-color-parser.git"
-  },
-  "bugs": {
-    "url": "https://github.com/moyarich/css-color-parser/issues"
-  },
-  "homepage": "https://moyarich.github.io/css-color-parser/",
-  "keywords": [
-    "css",
-    "css-color",
-    "css-color-parser",
-    "color",
-    "color-parser",
-    "css-color-4",
-    "color-mix",
-    "oklch",
-    "oklab",
-    "lab",
-    "lch",
-    "hwb",
-    "display-p3",
-    "typescript",
-    "developer-tools",
-    "editor-tools"
-  ],
-  "dependencies": {
-    "color-bits": "^1.2.0"
+    "typecheck": "npm run typecheck --workspace @moyarich/css-color-parser",
+    "test": "npm test --workspace @moyarich/css-color-parser",
+    "test:watch": "npm run test:watch --workspace @moyarich/css-color-parser",
+    "check": "npm run check --workspaces --if-present"
   }
 }
