@@ -1,10 +1,3 @@
-/**
- * Public runtime API for @moyarich/css-color-parser.
- *
- * Everything exported from this module is part of the package's supported
- * consumer-facing API and should be documented in the README and playground.
- */
-
 // Source extraction.
 export { extractCssColors } from "./extractCssColors";
 
