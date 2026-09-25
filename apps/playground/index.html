@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Interactive playground for @moyarich/css-color-parser"
+    />
+    <title>CSS Color Parser Playground</title>
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">@moyarich/css-color-parser</p>
+        <h1>CSS color parser playground</h1>
+        <p>
+          Exercise the package through its public API while developing the
+          parser.
+        </p>
+      </header>
+
+      <section class="card" aria-labelledby="parse-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">parseCssColor()</p>
+            <h2 id="parse-title">Parse one color</h2>
+          </div>
+          <span id="parse-status" class="status" aria-live="polite"></span>
+        </div>
+
+        <label for="color-input">CSS color value</label>
+        <input
+          id="color-input"
+          type="text"
+          value="color-mix(in oklch, rebeccapurple 60%, white)"
+          spellcheck="false"
+        />
+
+        <div class="single-result">
+          <span id="single-swatch" class="swatch" aria-hidden="true"></span>
+          <pre id="single-output"></pre>
+        </div>
+      </section>
+
+      <section class="workspace-grid">
+        <div class="card source-card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">extractCssColors()</p>
+              <h2>Source</h2>
+            </div>
+            <span id="match-count" class="status" aria-live="polite"></span>
+          </div>
+
+          <label class="sr-only" for="source-input">CSS source</label>
+          <textarea id="source-input" spellcheck="false"></textarea>
+        </div>
+
+        <div class="card">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Matches</p>
+              <h2>Extracted colors</h2>
+            </div>
+          </div>
+          <ol id="match-list" class="match-list"></ol>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

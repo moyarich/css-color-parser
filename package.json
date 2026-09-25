@@ -4,6 +4,9 @@
   "description": "Framework-agnostic CSS color parsing and extraction utilities.",
   "license": "MIT",
   "type": "module",
+  "workspaces": [
+    "apps/*"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -21,10 +24,17 @@
     "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
+    "dev": "npm run dev:playground",
+    "dev:playground": "npm run dev --workspace @moyarich/css-color-parser-playground",
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "build:playground": "npm run build --workspace @moyarich/css-color-parser-playground",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "check": "npm run typecheck && npm test && npm run build",
+    "typecheck:playground": "npm run typecheck --workspace @moyarich/css-color-parser-playground",
+    "test": "vitest run tests",
+    "test:watch": "vitest tests",
+    "check:root": "npm run typecheck && npm test && npm run build",
+    "check:workspaces": "npm run check --workspaces --if-present",
+    "check": "npm run check:root && npm run check:workspaces",
     "prepare": "npm run build"
   },
   "devDependencies": {

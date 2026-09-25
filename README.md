@@ -203,18 +203,40 @@ The package exports:
 
 ## Development
 
+This repository is an npm workspace. The publishable parser stays at the repository root, while browser-facing development tools live under `apps/*`.
+
+```text
+src/             package source
+tests/           root parser tests
+apps/playground/ Vite workspace for exercising the public package API
+```
+
+Install every workspace dependency and run the same checks used by CI:
+
 ```bash
 npm install
 npm run check
 ```
 
-Available scripts:
+Run the playground locally:
+
+```bash
+npm run dev:playground
+```
+
+Useful root scripts:
 
 ```bash
 npm run typecheck
 npm test
+npm run test:watch
 npm run build
+npm run check:root
+npm run check:workspaces
+npm run check
 ```
+
+`npm test` explicitly runs the root `tests/` suite. `npm run check` validates the root package first, then each workspace that provides a `check` script.
 
 ## License
 
