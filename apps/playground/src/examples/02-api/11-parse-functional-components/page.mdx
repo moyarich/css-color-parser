@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "parseFunctionalComponents",
+  label: "parseFunctionalComponents",
+  group: "API",
+}
+
+<ExamplePage
+  eyebrow="Public JavaScript API"
+  title="parseFunctionalComponents"
+  description="Split RGB/HSL-style functional color contents into three channels and optional alpha."
+  source={source}
+>
+  <Example />
+</ExamplePage>

@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "parsePercentage",
+  label: "parsePercentage",
+  group: "API",
+}
+
+<ExamplePage
+  eyebrow="Public JavaScript API"
+  title="parsePercentage"
+  description="Parse a percentage token and return its numeric percentage value."
+  source={source}
+>
+  <Example />
+</ExamplePage>

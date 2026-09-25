@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "parseAlpha",
+  label: "parseAlpha",
+  group: "API",
+}
+
+<ExamplePage
+  eyebrow="Public JavaScript API"
+  title="parseAlpha"
+  description="Parse and clamp an alpha number or percentage to the 0–1 range."
+  source={source}
+>
+  <Example />
+</ExamplePage>

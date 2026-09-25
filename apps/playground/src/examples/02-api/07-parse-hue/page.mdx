@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "parseHue",
+  label: "parseHue",
+  group: "API",
+}
+
+<ExamplePage
+  eyebrow="Public JavaScript API"
+  title="parseHue"
+  description="Parse a CSS hue and normalize degrees, turns, grads, or radians to 0–360 degrees."
+  source={source}
+>
+  <Example />
+</ExamplePage>

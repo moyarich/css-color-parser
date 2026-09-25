@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "monaco-extraction",
+  label: "Monaco extraction",
+  group: "Editor",
+}
+
+<ExamplePage
+  eyebrow="Editor integration"
+  title="Extract CSS colors with Monaco"
+  description="Edit the same Monaco model consumed by provideDocumentColors() and inspect the live extractCssColors() result."
+  source={source}
+>
+  <Example />
+</ExamplePage>

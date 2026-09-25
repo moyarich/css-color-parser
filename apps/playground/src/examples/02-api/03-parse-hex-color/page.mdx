@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "parseHexColor",
+  label: "parseHexColor",
+  group: "API",
+}
+
+<ExamplePage
+  eyebrow="Public JavaScript API"
+  title="parseHexColor"
+  description="Parse #rgb, #rgba, #rrggbb, or #rrggbbaa into RGBA channels."
+  source={source}
+>
+  <Example />
+</ExamplePage>

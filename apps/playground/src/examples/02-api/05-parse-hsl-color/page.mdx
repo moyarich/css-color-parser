@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "parseHslColor",
+  label: "parseHslColor",
+  group: "API",
+}
+
+<ExamplePage
+  eyebrow="Public JavaScript API"
+  title="parseHslColor"
+  description="Parse an hsl() or hsla() function and convert it to RGBA channels."
+  source={source}
+>
+  <Example />
+</ExamplePage>

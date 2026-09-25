@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "hslToRgb",
+  label: "hslToRgb",
+  group: "API",
+}
+
+<ExamplePage
+  eyebrow="Public JavaScript API"
+  title="hslToRgb"
+  description="Convert numeric HSL channels to an RGB tuple."
+  source={source}
+>
+  <Example />
+</ExamplePage>

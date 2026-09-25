@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "parseRgbChannel",
+  label: "parseRgbChannel",
+  group: "API",
+}
+
+<ExamplePage
+  eyebrow="Public JavaScript API"
+  title="parseRgbChannel"
+  description="Parse and clamp one RGB numeric or percentage channel to the 0–255 range."
+  source={source}
+>
+  <Example />
+</ExamplePage>

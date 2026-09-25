@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "parseNamedColor",
+  label: "parseNamedColor",
+  group: "API",
+}
+
+<ExamplePage
+  eyebrow="Public JavaScript API"
+  title="parseNamedColor"
+  description="Resolve a CSS named color from the built-in named-color table."
+  source={source}
+>
+  <Example />
+</ExamplePage>

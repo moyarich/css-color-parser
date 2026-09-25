@@ -1,0 +1,18 @@
+import Example from "./Example"
+import source from "./Example.tsx?raw"
+import { ExamplePage } from "../../../components/ExamplePage"
+
+export const meta = {
+  id: "extractCssColors",
+  label: "extractCssColors",
+  group: "API",
+}
+
+<ExamplePage
+  eyebrow="Public JavaScript API"
+  title="extractCssColors"
+  description="Find resolvable CSS colors in arbitrary source text and return exact UTF-16 ranges."
+  source={source}
+>
+  <Example />
+</ExamplePage>
