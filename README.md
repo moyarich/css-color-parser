@@ -1,5 +1,7 @@
 # @moyarich/css-color-parser
 
+**Playground:** https://moyarich.github.io/css-color-parser/
+
 Framework-agnostic CSS color parsing and source extraction utilities for JavaScript and TypeScript.
 
 `css` · `css-color-4` · `color-parser` · `color-mix` · `oklch` · `oklab` · `typescript`
