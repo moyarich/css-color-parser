@@ -1,5 +1,17 @@
+/**
+ * Public runtime API for @moyarich/css-color-parser.
+ *
+ * Everything exported from this module is part of the package's supported
+ * consumer-facing API and should be documented in the README and playground.
+ */
+
+// Source extraction.
 export { extractCssColors } from "./extractCssColors";
+
+// Named-color data.
 export { CSS_NAMED_COLORS } from "./namedColors";
+
+// Color parsing and conversion helpers.
 export {
   hslToRgb,
   parseAlpha,
@@ -13,5 +25,15 @@ export {
   parseRgbChannel,
   parseRgbColor,
 } from "./parseCssColor";
-export type { FunctionalComponents, ParsedCssColor } from "./parseCssColor";
-export type { CssColorFormat, CssColorMatch, RgbaColor } from "./types";
+
+// Public types.
+export type {
+  FunctionalComponents,
+  ParsedCssColor,
+} from "./parseCssColor";
+
+export type {
+  CssColorFormat,
+  CssColorMatch,
+  RgbaColor,
+} from "./types";
