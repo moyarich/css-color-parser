@@ -43,6 +43,11 @@ const sampleSource = `:root {
 const monacoUsageExample = `import * as monaco from "monaco-editor";
 import { extractCssColors } from "@moyarich/css-color-parser";
 
+monaco.languages.css.cssDefaults.setModeConfiguration({
+  ...monaco.languages.css.cssDefaults.modeConfiguration,
+  colors: false,
+});
+
 monaco.languages.registerColorProvider("css", {
   provideDocumentColors(model) {
     return extractCssColors(model.getValue()).map((match) => {
@@ -486,6 +491,14 @@ function MonacoPreview() {
   useEffect(() => {
     if (!host.current) return;
 
+    const cssModeConfiguration =
+      monaco.languages.css.cssDefaults.modeConfiguration;
+
+    monaco.languages.css.cssDefaults.setModeConfiguration({
+      ...cssModeConfiguration,
+      colors: false,
+    });
+
     const colorProvider = monaco.languages.registerColorProvider("css", {
       provideDocumentColors(model) {
         const nextMatches = extractCssColors(model.getValue());
@@ -551,6 +564,9 @@ function MonacoPreview() {
       subscription.dispose();
       instance.dispose();
       colorProvider.dispose();
+      monaco.languages.css.cssDefaults.setModeConfiguration(
+        cssModeConfiguration,
+      );
       editor.current = null;
     };
   }, []);
