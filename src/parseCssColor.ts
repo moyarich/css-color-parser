@@ -26,7 +26,7 @@ function expandHexDigit(value: string) {
   return value + value;
 }
 
-function parseHexColor(value: string): RgbaColor | null {
+export function parseHexColor(value: string): RgbaColor | null {
   const match = HEX_COLOR_PATTERN.exec(value);
   const digits = match?.[1];
 
@@ -54,7 +54,7 @@ function parseHexColor(value: string): RgbaColor | null {
   };
 }
 
-function parsePercentage(value: string): number | null {
+export function parsePercentage(value: string): number | null {
   const trimmed = value.trim();
 
   if (!trimmed.endsWith("%")) {
@@ -65,7 +65,7 @@ function parsePercentage(value: string): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function parseRgbChannel(value: string): number | null {
+export function parseRgbChannel(value: string): number | null {
   const percentage = parsePercentage(value);
 
   if (percentage !== null) {
@@ -76,7 +76,7 @@ function parseRgbChannel(value: string): number | null {
   return Number.isFinite(parsed) ? clamp(parsed, 0, 255) : null;
 }
 
-function parseAlpha(value: string | undefined): number | null {
+export function parseAlpha(value: string | undefined): number | null {
   if (value === undefined) {
     return 1;
   }
@@ -91,12 +91,12 @@ function parseAlpha(value: string | undefined): number | null {
   return Number.isFinite(parsed) ? clamp(parsed, 0, 1) : null;
 }
 
-interface FunctionalComponents {
+export interface FunctionalComponents {
   components: string[];
   alpha?: string;
 }
 
-function parseFunctionalComponents(body: string): FunctionalComponents | null {
+export function parseFunctionalComponents(body: string): FunctionalComponents | null {
   const slashParts = body.split("/");
 
   if (slashParts.length > 2) {
@@ -140,7 +140,7 @@ function parseFunctionalComponents(body: string): FunctionalComponents | null {
   return { components, alpha: slashAlpha };
 }
 
-function parseRgbColor(value: string): RgbaColor | null {
+export function parseRgbColor(value: string): RgbaColor | null {
   const body = RGB_COLOR_PATTERN.exec(value)?.[1];
 
   if (body === undefined) {
@@ -165,7 +165,7 @@ function parseRgbColor(value: string): RgbaColor | null {
   return { red, green, blue, alpha };
 }
 
-function parseHue(value: string): number | null {
+export function parseHue(value: string): number | null {
   const trimmed = value.trim().toLowerCase();
   const parsed = Number.parseFloat(trimmed);
 
@@ -216,7 +216,7 @@ function hueToRgb(p: number, q: number, hue: number) {
   return p;
 }
 
-function hslToRgb(hue: number, saturation: number, lightness: number) {
+export function hslToRgb(hue: number, saturation: number, lightness: number) {
   const h = hue / 360;
   const s = saturation / 100;
   const l = lightness / 100;
@@ -236,7 +236,7 @@ function hslToRgb(hue: number, saturation: number, lightness: number) {
   ] as const;
 }
 
-function parseHslColor(value: string): RgbaColor | null {
+export function parseHslColor(value: string): RgbaColor | null {
   const body = HSL_COLOR_PATTERN.exec(value)?.[1];
 
   if (body === undefined) {
@@ -272,7 +272,7 @@ function parseHslColor(value: string): RgbaColor | null {
   return { red, green, blue, alpha };
 }
 
-function parseNamedColor(value: string): RgbaColor | null {
+export function parseNamedColor(value: string): RgbaColor | null {
   const normalized = value.trim().toLowerCase();
   const hex = CSS_NAMED_COLORS[normalized as keyof typeof CSS_NAMED_COLORS];
 
