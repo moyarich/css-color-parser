@@ -115,7 +115,13 @@ function parseFunctionalComponents(body: string): FunctionalComponents | null {
     let alpha: string | undefined = slashAlpha;
 
     if (alpha === undefined && components.length === 4) {
-      alpha = components.pop();
+      const poppedAlpha = components.pop();
+
+      if (poppedAlpha === undefined) {
+        return null;
+      }
+
+      alpha = poppedAlpha;
     }
 
     if (components.length !== 3 || components.some((component) => !component)) {
