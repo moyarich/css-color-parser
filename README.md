@@ -2,6 +2,8 @@
 
 Framework-agnostic CSS color parsing and source extraction utilities for JavaScript and TypeScript.
 
+`css` · `css-color-4` · `color-parser` · `color-mix` · `oklch` · `oklab` · `typescript`
+
 The package parses CSS color values into RGBA data and can scan arbitrary source text for supported colors while preserving exact UTF-16 source offsets. It has no dependency on VS Code, Monaco, React, or browser DOM APIs.
 
 ## Features
