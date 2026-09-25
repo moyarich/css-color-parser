@@ -112,7 +112,7 @@ function parseFunctionalComponents(body: string): FunctionalComponents | null {
 
   if (channels.includes(",")) {
     const components = channels.split(",").map((component) => component.trim());
-    let alpha = slashAlpha;
+    let alpha: string | undefined = slashAlpha;
 
     if (alpha === undefined && components.length === 4) {
       alpha = components.pop();
