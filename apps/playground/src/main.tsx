@@ -192,84 +192,88 @@ const apiExamples = [
     name: "parseCssColor",
     signature: "parseCssColor(value)",
     description: "Parse one complete CSS color value and return its detected format and RGBA channels.",
-    defaultArgs: ["oklch(60% 0.15 250)"],
+    params: [{ name: "value", label: "CSS color value", type: "text", defaultValue: "oklch(60% 0.15 250)" }],
     run: parseCssColor,
   },
   {
     name: "extractCssColors",
     signature: "extractCssColors(source)",
     description: "Find resolvable CSS colors in arbitrary source text and return exact UTF-16 ranges.",
-    defaultArgs: ["color: #06c; background: rebeccapurple;"],
+    params: [{ name: "source", label: "Source text", type: "text", defaultValue: "color: #06c; background: rebeccapurple;" }],
     run: extractCssColors,
   },
   {
     name: "parseHexColor",
     signature: "parseHexColor(value)",
     description: "Parse #rgb, #rgba, #rrggbb, or #rrggbbaa into RGBA channels.",
-    defaultArgs: ["#06c"],
+    params: [{ name: "value", label: "Hex color", type: "text", defaultValue: "#06c" }],
     run: parseHexColor,
   },
   {
     name: "parseRgbColor",
     signature: "parseRgbColor(value)",
     description: "Parse an rgb() or rgba() function into RGBA channels.",
-    defaultArgs: ["rgb(255 0 0 / 50%)"],
+    params: [{ name: "value", label: "RGB color", type: "text", defaultValue: "rgb(255 0 0 / 50%)" }],
     run: parseRgbColor,
   },
   {
     name: "parseHslColor",
     signature: "parseHslColor(value)",
     description: "Parse an hsl() or hsla() function and convert it to RGBA channels.",
-    defaultArgs: ["hsl(220 80% 50% / 0.8)"],
+    params: [{ name: "value", label: "HSL color", type: "text", defaultValue: "hsl(220 80% 50% / 0.8)" }],
     run: parseHslColor,
   },
   {
     name: "parseNamedColor",
     signature: "parseNamedColor(value)",
     description: "Resolve a CSS named color from the package's built-in named-color table.",
-    defaultArgs: ["rebeccapurple"],
+    params: [{ name: "value", label: "Named color", type: "text", defaultValue: "rebeccapurple" }],
     run: parseNamedColor,
   },
   {
     name: "parseHue",
     signature: "parseHue(value)",
     description: "Parse a CSS hue and normalize degrees, turns, grads, or radians to 0–360 degrees.",
-    defaultArgs: ["0.5turn"],
+    params: [{ name: "value", label: "Hue", type: "text", defaultValue: "0.5turn" }],
     run: parseHue,
   },
   {
     name: "parseRgbChannel",
     signature: "parseRgbChannel(value)",
     description: "Parse and clamp one RGB numeric or percentage channel to the 0–255 range.",
-    defaultArgs: ["50%"],
+    params: [{ name: "value", label: "RGB channel", type: "text", defaultValue: "50%" }],
     run: parseRgbChannel,
   },
   {
     name: "parsePercentage",
     signature: "parsePercentage(value)",
     description: "Parse a percentage token and return its numeric percentage value.",
-    defaultArgs: ["62.5%"],
+    params: [{ name: "value", label: "Percentage", type: "text", defaultValue: "62.5%" }],
     run: parsePercentage,
   },
   {
     name: "parseAlpha",
     signature: "parseAlpha(value?)",
     description: "Parse and clamp an alpha number or percentage to the 0–1 range.",
-    defaultArgs: ["75%"],
+    params: [{ name: "value", label: "Alpha", type: "text", defaultValue: "75%", optional: true }],
     run: parseAlpha,
   },
   {
     name: "parseFunctionalComponents",
     signature: "parseFunctionalComponents(body)",
     description: "Split RGB/HSL-style functional color contents into three channels and optional alpha.",
-    defaultArgs: ["255 0 0 / 50%"],
+    params: [{ name: "body", label: "Function body", type: "text", defaultValue: "255 0 0 / 50%" }],
     run: parseFunctionalComponents,
   },
   {
     name: "hslToRgb",
     signature: "hslToRgb(hue, saturation, lightness)",
     description: "Convert numeric HSL channels to an RGB tuple.",
-    defaultArgs: [220, 80, 50],
+    params: [
+      { name: "hue", label: "Hue", type: "number", defaultValue: "220" },
+      { name: "saturation", label: "Saturation", type: "number", defaultValue: "80" },
+      { name: "lightness", label: "Lightness", type: "number", defaultValue: "50" },
+    ],
     run: hslToRgb,
   },
 ] as const;
@@ -277,34 +281,45 @@ const apiExamples = [
 function ApiPlayground() {
   const [index,setIndex]=useState(0);
   const example=apiExamples[index];
-  const [args,setArgs]=useState(JSON.stringify(example.defaultArgs));
+  const [values,setValues]=useState<string[]>(() =>
+    example.params.map((param) => param.defaultValue),
+  );
 
-  useEffect(()=>setArgs(JSON.stringify(example.defaultArgs)),[index]);
+  useEffect(() => {
+    setValues(example.params.map((param) => param.defaultValue));
+  }, [index]);
+
+  const runtimeArgs = example.params.map((param, paramIndex) => {
+    const value = values[paramIndex] ?? "";
+
+    if ("optional" in param && param.optional && value === "") {
+      return undefined;
+    }
+
+    return param.type === "number" ? Number(value) : value;
+  });
 
   let output: string;
   let exampleCode: string;
 
   try {
-    const values = JSON.parse(args);
-
-    if (!Array.isArray(values)) {
-      throw new Error("Arguments must be a JSON array.");
-    }
-
-    const result = (example.run as (...values: any[]) => unknown)(...values);
+    const result = (example.run as (...args: any[]) => unknown)(...runtimeArgs);
     output = JSON.stringify(result, null, 2) ?? "undefined";
 
-    const callArgs = values.map((value) => JSON.stringify(value)).join(", ");
+    const sourceArgs = runtimeArgs
+      .map((value) => value === undefined ? "undefined" : JSON.stringify(value))
+      .join(", ");
+
     exampleCode = `import { ${example.name} } from "@moyarich/css-color-parser";
 
-const result = ${example.name}(${callArgs});
+const result = ${example.name}(${sourceArgs});
 
 console.log(result);`;
   } catch (error) {
     output = error instanceof Error ? error.message : String(error);
     exampleCode = `import { ${example.name} } from "@moyarich/css-color-parser";
 
-// Enter valid JSON arguments in the live preview.`;
+// Adjust the parameter values in the live preview.`;
   }
 
   const preview = (
@@ -326,13 +341,31 @@ console.log(result);`;
         <code className="api-signature">{example.signature}</code>
         <p className="api-description">{example.description}</p>
 
-        <label htmlFor="api-args">Arguments (JSON array)</label>
-        <input
-          id="api-args"
-          value={args}
-          onChange={e=>setArgs(e.target.value)}
-          spellCheck={false}
-        />
+        <div className="api-parameters">
+          {example.params.map((param, paramIndex) => {
+            const id = `api-${example.name}-${param.name}`;
+
+            return (
+              <div className="api-parameter" key={param.name}>
+                <label htmlFor={id}>
+                  {param.label}
+                  {"optional" in param && param.optional ? " (optional)" : ""}
+                </label>
+                <input
+                  id={id}
+                  type={param.type}
+                  value={values[paramIndex] ?? ""}
+                  onChange={(event) => {
+                    const next = [...values];
+                    next[paramIndex] = event.target.value;
+                    setValues(next);
+                  }}
+                  spellCheck={false}
+                />
+              </div>
+            );
+          })}
+        </div>
 
         <div className="output-label">Live result</div>
         <pre>{output}</pre>
@@ -346,8 +379,8 @@ console.log(result);`;
         <p className="eyebrow">Public JavaScript API</p>
         <h2>Run the package API in the browser</h2>
         <p className="section-description">
-          Change the arguments and the selected package function runs immediately.
-          The result below is the function’s actual return value.
+          Edit the function parameters and the exported package function runs
+          immediately. The result below is its actual return value.
         </p>
       </div>
 
