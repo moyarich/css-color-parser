@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useMemo, useRef, useState } from "react";
+import { StrictMode, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import * as monaco from "monaco-editor";
 import CssWorker from "monaco-editor/language/css/css.worker?worker";
@@ -149,7 +149,7 @@ function ExampleDemo({
   source,
   sourceLabel,
 }: {
-  preview: React.ReactNode;
+  preview: ReactNode;
   source: string;
   sourceLabel: string;
 }) {
