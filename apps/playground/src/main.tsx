@@ -29,9 +29,96 @@ const sampleSource = `:root {
 
 const toCssColor = (c: RgbaColor) => `rgba(${Math.round(c.red)}, ${Math.round(c.green)}, ${Math.round(c.blue)}, ${c.alpha})`;
 
-const importExample = `import { extractCssColors } from "@moyarich/css-color-parser";`;
+const monacoUsageExample = `import * as monaco from "monaco-editor";
+import { extractCssColors } from "@moyarich/css-color-parser";
 
-const monacoUsageExample = `const editor = monaco.editor.create(element, {\n  value: source,\n  language: "css",\n});\n\nconst updateMatches = () => {\n  const matches = extractCssColors(editor.getValue());\n  // Render or decorate matches here.\n};\n\nupdateMatches();\neditor.onDidChangeModelContent(updateMatches);`;
+const element = document.querySelector("#editor");
+
+const editor = monaco.editor.create(element, {
+  value: ".button { color: rebeccapurple; }",
+  language: "css",
+});
+
+const updateMatches = () => {
+  const matches = extractCssColors(editor.getValue());
+  console.log(matches);
+};
+
+updateMatches();
+editor.onDidChangeModelContent(updateMatches);`;
+
+function CodeExample({
+  value,
+  ariaLabel,
+}: {
+  value: string;
+  ariaLabel: string;
+}) {
+  const host = useRef<HTMLDivElement>(null);
+  const editor = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!host.current) return;
+
+    const instance = monaco.editor.create(host.current, {
+      value,
+      language: "typescript",
+      theme: "vs",
+      readOnly: true,
+      domReadOnly: true,
+      automaticLayout: true,
+      minimap: { enabled: false },
+      lineNumbers: "off",
+      folding: false,
+      glyphMargin: false,
+      lineDecorationsWidth: 0,
+      lineNumbersMinChars: 0,
+      overviewRulerLanes: 0,
+      renderLineHighlight: "none",
+      scrollBeyondLastLine: false,
+      scrollbar: {
+        vertical: "hidden",
+        horizontal: "auto",
+        alwaysConsumeMouseWheel: false,
+      },
+      wordWrap: "on",
+      padding: { top: 14, bottom: 14 },
+      fontSize: 13,
+      lineHeight: 20,
+    });
+
+    editor.current = instance;
+    return () => instance.dispose();
+  }, []);
+
+  useEffect(() => {
+    const model = editor.current?.getModel();
+    if (model && model.getValue() !== value) model.setValue(value);
+  }, [value]);
+
+  const copy = async () => {
+    await navigator.clipboard.writeText(value);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1200);
+  };
+
+  const height = Math.max(72, value.split("\n").length * 20 + 28);
+
+  return (
+    <div className="code-example">
+      <button className="copy-button" type="button" onClick={copy}>
+        {copied ? "Copied" : "Copy"}
+      </button>
+      <div
+        ref={host}
+        className="code-editor"
+        style={{ height }}
+        aria-label={ariaLabel}
+      />
+    </div>
+  );
+}
 
 function GitHubIcon() {
   return (
@@ -67,10 +154,28 @@ function ApiPlayground() {
   const [index,setIndex]=useState(0), example=apiExamples[index];
   const [args,setArgs]=useState(JSON.stringify(example[3]));
   useEffect(()=>setArgs(JSON.stringify(example[3])),[index]);
+
   let output: string;
-  try { const values=JSON.parse(args); output=Array.isArray(values)?JSON.stringify((example[4] as (...a:any[])=>unknown)(...values),null,2)??"undefined":"Arguments must be a JSON array."; }
-  catch(e){ output=e instanceof Error?e.message:String(e); }
-  return <section className="card api-card"><div className="section-heading"><div><p className="eyebrow">Exported functions</p><h2>Explore the public JavaScript API</h2></div></div><div className="api-layout"><nav className="api-functions" aria-label="JavaScript API functions">{apiExamples.map((x,i)=><button key={x[0]} type="button" aria-pressed={i===index} onClick={()=>setIndex(i)}>{x[0]}</button>)}</nav><div className="api-runner"><code className="api-signature">{example[1]}</code><p className="api-description">{example[2]}</p><label htmlFor="api-args">Arguments (JSON array)</label><input id="api-args" value={args} onChange={e=>setArgs(e.target.value)} spellCheck={false}/><pre>{output}</pre></div></div></section>;
+  let exampleCode: string;
+  try {
+    const values=JSON.parse(args);
+    output=Array.isArray(values)
+      ? JSON.stringify((example[4] as (...a:any[])=>unknown)(...values),null,2)??"undefined"
+      : "Arguments must be a JSON array.";
+    const callArgs = Array.isArray(values) ? values.map((value) => JSON.stringify(value)).join(", ") : "";
+    exampleCode = `import { ${example[0]} } from "@moyarich/css-color-parser";
+
+const result = ${example[0]}(${callArgs});
+console.log(result);`;
+  }
+  catch(e){
+    output=e instanceof Error?e.message:String(e);
+    exampleCode = `import { ${example[0]} } from "@moyarich/css-color-parser";
+
+// Enter valid JSON arguments below to generate a runnable example.`;
+  }
+
+  return <section className="card api-card"><div className="section-heading"><div><p className="eyebrow">Public JavaScript API</p><h2>Copy, run, and inspect every exported function</h2><p className="section-description">Choose an export to generate a complete runnable example with the package import, function call, and live result.</p></div></div><div className="api-layout"><nav className="api-functions" aria-label="JavaScript API functions">{apiExamples.map((x,i)=><button key={x[0]} type="button" aria-pressed={i===index} onClick={()=>setIndex(i)}>{x[0]}</button>)}</nav><div className="api-runner"><code className="api-signature">{example[1]}</code><p className="api-description">{example[2]}</p><CodeExample value={exampleCode} ariaLabel={`${example[0]} runnable example`} /><label htmlFor="api-args">Arguments (JSON array)</label><input id="api-args" value={args} onChange={e=>setArgs(e.target.value)} spellCheck={false}/><div className="output-label">Result</div><pre>{output}</pre></div></div></section>;
 }
 
 function SourcePlayground() {
@@ -78,7 +183,7 @@ function SourcePlayground() {
   const [matches,setMatches]=useState<CssColorMatch[]>(extractCssColors(sampleSource));
   useEffect(()=>{ if(!host.current)return; const ed=monaco.editor.create(host.current,{value:sampleSource,language:"css",theme:"vs",automaticLayout:true,colorDecorators:false,fontSize:14,lineHeight:22,minimap:{enabled:false},padding:{top:14,bottom:14},scrollBeyondLastLine:false,tabSize:2,wordWrap:"on"}); editor.current=ed; const sub=ed.onDidChangeModelContent(()=>setMatches(extractCssColors(ed.getValue()))); return()=>{sub.dispose();ed.dispose();}; },[]);
   const reveal=(m:CssColorMatch)=>{const model=editor.current?.getModel();if(!model||!editor.current)return;const a=model.getPositionAt(m.start),b=model.getPositionAt(m.end);const r=new monaco.Range(a.lineNumber,a.column,b.lineNumber,b.column);editor.current.setSelection(r);editor.current.revealRangeInCenterIfOutsideViewport(r);editor.current.focus();};
-  return <><section className="workspace-grid"><div className="card source-card"><div className="section-heading"><div><p className="eyebrow">Color extraction</p><h2>Find CSS colors in source code</h2></div><span className="status">{matches.length} match{matches.length===1?"":"es"}</span></div><div ref={host} className="source-editor" aria-label="CSS source editor"/></div><div className="card"><div className="section-heading"><div><p className="eyebrow">Detected values</p><h2>Extracted color matches</h2></div></div><ol className="match-list">{matches.length?matches.map((m,i)=><li className="match-item" key={i}><button className="match-button" type="button" onClick={()=>reveal(m)}><span className="swatch" style={{background:toCssColor(m.color)}}/><span className="match-content"><code>{m.value}</code><span className="match-meta">{m.format} · [{m.start}, {m.end})</span></span></button></li>):<li className="empty-state">No resolvable CSS colors found.</li>}</ol></div></section><section className="card usage-card"><div className="section-heading"><div><p className="eyebrow">Usage</p><h2>Use extractCssColors with Monaco Editor</h2></div></div><p className="api-description">Import the extractor, read the current Monaco model value, and rerun extraction whenever the editor content changes.</p><label>Import</label><pre>{importExample}</pre><label>Monaco Editor example</label><pre>{monacoUsageExample}</pre></section></>;
+  return <><section className="workspace-grid"><div className="card source-card"><div className="section-heading"><div><p className="eyebrow">Color extraction</p><h2>Find CSS colors in source code</h2></div><span className="status">{matches.length} match{matches.length===1?"":"es"}</span></div><div ref={host} className="source-editor" aria-label="CSS source editor"/></div><div className="card"><div className="section-heading"><div><p className="eyebrow">Detected values</p><h2>Extracted color matches</h2></div></div><ol className="match-list">{matches.length?matches.map((m,i)=><li className="match-item" key={i}><button className="match-button" type="button" onClick={()=>reveal(m)}><span className="swatch" style={{background:toCssColor(m.color)}}/><span className="match-content"><code>{m.value}</code><span className="match-meta">{m.format} · [{m.start}, {m.end})</span></span></button></li>):<li className="empty-state">No resolvable CSS colors found.</li>}</ol></div></section><section className="card usage-card"><div className="section-heading"><div><p className="eyebrow">Monaco integration</p><h2>Use extractCssColors with Monaco Editor</h2><p className="section-description">This complete example uses the same Monaco editor surface as the playground: import both libraries, read the editor value, and rerun extraction when the document changes.</p></div></div><CodeExample value={monacoUsageExample} ariaLabel="Monaco Editor integration example" /></section></>;
 }
 
 function ParseColor() {
