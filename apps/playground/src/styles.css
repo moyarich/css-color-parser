@@ -19,8 +19,7 @@ body {
 }
 
 button,
-input,
-textarea {
+input {
   font: inherit;
 }
 
@@ -104,8 +103,7 @@ label {
   font-weight: 700;
 }
 
-input,
-textarea {
+input {
   width: 100%;
   border: 1px solid #cfd6e3;
   border-radius: 12px;
@@ -121,18 +119,8 @@ input {
   padding: 12px 14px;
 }
 
-textarea {
-  min-height: 400px;
-  padding: 16px;
-  resize: vertical;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 0.9rem;
-  line-height: 1.65;
-  tab-size: 2;
-}
 
-input:focus,
-textarea:focus {
+input:focus {
   border-color: #7367e8;
   box-shadow: 0 0 0 3px rgba(115, 103, 232, 0.14);
 }
@@ -185,8 +173,20 @@ pre {
   list-style: none;
 }
 
+.source-editor {
+  height: 400px;
+  overflow: hidden;
+  border: 1px solid #cfd6e3;
+  border-radius: 12px;
+}
+
 .match-item {
+  min-width: 0;
+}
+
+.match-button {
   display: flex;
+  width: 100%;
   align-items: center;
   gap: 12px;
   min-width: 0;
@@ -194,6 +194,19 @@ pre {
   border: 1px solid #e5e8f0;
   border-radius: 14px;
   background: #fbfcff;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.match-button:hover {
+  border-color: #cfd6e3;
+  background: #f6f8fc;
+}
+
+.match-button:focus-visible {
+  outline: 3px solid rgba(115, 103, 232, 0.2);
+  outline-offset: 2px;
 }
 
 .match-item .swatch {
@@ -254,7 +267,7 @@ pre {
     border-radius: 16px;
   }
 
-  textarea {
-    min-height: 320px;
+  .source-editor {
+    height: 320px;
   }
 }
