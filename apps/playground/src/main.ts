@@ -1,6 +1,6 @@
 import * as monaco from "monaco-editor";
-import CssWorker from "monaco-editor/esm/vs/language/css/css.worker.js?worker";
-import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker.js?worker";
+import CssWorker from "monaco-editor/language/css/css.worker?worker";
+import EditorWorker from "monaco-editor/editor/editor.worker?worker";
 import {
   extractCssColors,
   parseCssColor,
