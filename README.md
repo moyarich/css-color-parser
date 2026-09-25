@@ -22,7 +22,7 @@ The package parses CSS color values into RGBA data and can scan arbitrary source
 Until a package release is published, install directly from GitHub:
 
 ```bash
-npm install github:moyarich/css-color-parser#refactor/extract-css-color-parser
+npm install github:moyarich/css-color-parser
 ```
 
 Then import from the package normally:
