@@ -219,47 +219,7 @@ The package exports:
 
 ## Development
 
-This repository is an npm monorepo. The root coordinates the workspaces, the publishable parser lives under `packages/*`, and browser-facing development tools live under `apps/*`.
-
-```text
-packages/css-color-parser/      publishable parser package
-├── src/                        package source
-├── tests/                      parser tests
-├── package.json                package metadata and public entry point
-└── tsconfig.json               package TypeScript configuration
-
-apps/playground/                Vite playground for the public package API
-package.json                    monorepo workspace scripts
-README.md                       canonical package README
-```
-
-The root `README.md` is the source of truth for package documentation. The package `prepack` step copies it into `packages/css-color-parser/README.md` immediately before packing or publishing; the generated package copy is not maintained separately.
-
-Install every workspace dependency and run the same checks used by CI:
-
-```bash
-npm install
-npm run check
-```
-
-Run the playground locally:
-
-```bash
-npm run dev:playground
-```
-
-Useful root scripts:
-
-```bash
-npm run typecheck
-npm test
-npm run test:watch
-npm run build
-npm run build:playground
-npm run check
-```
-
-`npm test`, `npm run typecheck`, and `npm run build` delegate to the `@moyarich/css-color-parser` workspace. `npm run check` runs each workspace that provides a `check` script, including the parser package and playground.
+For repository structure, local development, testing, playground, and packaging details, see [docs/readme-dev.md](docs/readme-dev.md).
 
 ## License
 
