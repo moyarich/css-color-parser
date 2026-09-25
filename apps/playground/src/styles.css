@@ -30,7 +30,6 @@ input {
 }
 
 .hero {
-  max-width: 760px;
   margin-bottom: 28px;
 }
 
@@ -62,17 +61,9 @@ input {
 }
 
 .github-icon {
-  display: inline-grid;
   width: 20px;
   height: 20px;
   flex: 0 0 20px;
-  place-items: center;
-  border: 1.5px solid currentColor;
-  border-radius: 50%;
-  font-size: 8px;
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: -0.06em;
 }
 
 .hero h1,
