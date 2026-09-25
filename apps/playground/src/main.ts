@@ -4,6 +4,10 @@ import EditorWorker from "monaco-editor/editor/editor.worker?worker";
 import {
   extractCssColors,
   parseCssColor,
+  parseHexColor,
+  parseHslColor,
+  parseNamedColor,
+  parseRgbColor,
   type CssColorMatch,
   type RgbaColor,
 } from "@moyarich/css-color-parser";
@@ -77,8 +81,18 @@ function toCssColor(color: RgbaColor): string {
   )}, ${color.alpha})`;
 }
 
+function parseWithSpecificParser(value: string) {
+  if (value.startsWith("#")) return parseHexColor(value);
+  if (/^rgba?\(/i.test(value)) return parseRgbColor(value);
+  if (/^hsla?\(/i.test(value)) return parseHslColor(value);
+  if (/^[a-z]+$/i.test(value)) return parseNamedColor(value);
+  return null;
+}
+
 function updateSingleColor(): void {
-  const parsed = parseCssColor(colorInput.value.trim());
+  const input = colorInput.value.trim();
+  const parsed = parseCssColor(input);
+  const specific = parseWithSpecificParser(input);
 
   if (!parsed) {
     parseStatus.textContent = "Unresolved";
@@ -89,7 +103,14 @@ function updateSingleColor(): void {
 
   parseStatus.textContent = parsed.format;
   singleSwatch.style.background = toCssColor(parsed.color);
-  singleOutput.textContent = JSON.stringify(parsed, null, 2);
+  singleOutput.textContent = JSON.stringify(
+    {
+      parseCssColor: parsed,
+      specificParser: specific,
+    },
+    null,
+    2,
+  );
 }
 
 function revealMatch(match: CssColorMatch): void {
