@@ -9,6 +9,7 @@
       "DOM.Iterable"
     ],
     "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true
