@@ -29,6 +29,48 @@ import "./styles.css";
   },
 };
 
+
+const cssModeConfiguration = monaco.languages.css.cssDefaults.modeConfiguration;
+
+monaco.languages.css.cssDefaults.setModeConfiguration({
+  ...cssModeConfiguration,
+  colors: false,
+});
+
+monaco.languages.registerColorProvider("css", {
+  provideDocumentColors(model) {
+    return extractCssColors(model.getValue()).map((match) => {
+      const start = model.getPositionAt(match.start);
+      const end = model.getPositionAt(match.end);
+
+      return {
+        range: new monaco.Range(
+          start.lineNumber,
+          start.column,
+          end.lineNumber,
+          end.column,
+        ),
+        color: {
+          red: match.color.red / 255,
+          green: match.color.green / 255,
+          blue: match.color.blue / 255,
+          alpha: match.color.alpha,
+        },
+      };
+    });
+  },
+
+  provideColorPresentations(_model, colorInfo) {
+    const { red, green, blue, alpha } = colorInfo.color;
+
+    return [
+      {
+        label: `rgba(${Math.round(red * 255)}, ${Math.round(green * 255)}, ${Math.round(blue * 255)}, ${alpha})`,
+      },
+    ];
+  },
+});
+
 const sampleSource = `:root {
   --brand: #06c;
   --accent: color-mix(in oklch, rebeccapurple 60%, white);
@@ -491,50 +533,6 @@ function MonacoPreview() {
   useEffect(() => {
     if (!host.current) return;
 
-    const cssModeConfiguration =
-      monaco.languages.css.cssDefaults.modeConfiguration;
-
-    monaco.languages.css.cssDefaults.setModeConfiguration({
-      ...cssModeConfiguration,
-      colors: false,
-    });
-
-    const colorProvider = monaco.languages.registerColorProvider("css", {
-      provideDocumentColors(model) {
-        const nextMatches = extractCssColors(model.getValue());
-
-        return nextMatches.map((match) => {
-          const start = model.getPositionAt(match.start);
-          const end = model.getPositionAt(match.end);
-
-          return {
-            range: new monaco.Range(
-              start.lineNumber,
-              start.column,
-              end.lineNumber,
-              end.column,
-            ),
-            color: {
-              red: match.color.red / 255,
-              green: match.color.green / 255,
-              blue: match.color.blue / 255,
-              alpha: match.color.alpha,
-            },
-          };
-        });
-      },
-
-      provideColorPresentations(_model, colorInfo) {
-        const { red, green, blue, alpha } = colorInfo.color;
-
-        return [
-          {
-            label: `rgba(${Math.round(red * 255)}, ${Math.round(green * 255)}, ${Math.round(blue * 255)}, ${alpha})`,
-          },
-        ];
-      },
-    });
-
     const instance = monaco.editor.create(host.current, {
       value: sampleSource,
       language: "css",
@@ -563,10 +561,6 @@ function MonacoPreview() {
     return () => {
       subscription.dispose();
       instance.dispose();
-      colorProvider.dispose();
-      monaco.languages.css.cssDefaults.setModeConfiguration(
-        cssModeConfiguration,
-      );
       editor.current = null;
     };
   }, []);
