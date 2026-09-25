@@ -520,3 +520,21 @@ pre {
     border-radius: 16px;
   }
 }
+
+
+.api-parameters {
+  display: grid;
+  gap: 12px;
+}
+
+.api-parameters:has(.api-parameter:nth-child(2)) {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.api-parameter {
+  min-width: 0;
+}
+
+.api-parameter label {
+  margin-bottom: 6px;
+}
