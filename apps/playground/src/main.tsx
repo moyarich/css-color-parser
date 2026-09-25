@@ -143,6 +143,36 @@ function CodeExample({
   );
 }
 
+
+function ExampleTabs({
+  value,
+  onChange,
+}: {
+  value: "preview" | "source";
+  onChange: (value: "preview" | "source") => void;
+}) {
+  return (
+    <div className="example-tabs" role="tablist" aria-label="Example view">
+      <button
+        type="button"
+        role="tab"
+        aria-selected={value === "preview"}
+        onClick={() => onChange("preview")}
+      >
+        Preview
+      </button>
+      <button
+        type="button"
+        role="tab"
+        aria-selected={value === "source"}
+        onClick={() => onChange("source")}
+      >
+        Source
+      </button>
+    </div>
+  );
+}
+
 function GitHubIcon() {
   return (
     <svg
@@ -176,16 +206,23 @@ const apiExamples = [
 function ApiPlayground() {
   const [index,setIndex]=useState(0), example=apiExamples[index];
   const [args,setArgs]=useState(JSON.stringify(example[3]));
+  const [view, setView] = useState<"preview" | "source">("preview");
+
   useEffect(()=>setArgs(JSON.stringify(example[3])),[index]);
 
   let output: string;
   let exampleCode: string;
+
   try {
     const values=JSON.parse(args);
     output=Array.isArray(values)
       ? JSON.stringify((example[4] as (...a:any[])=>unknown)(...values),null,2)??"undefined"
       : "Arguments must be a JSON array.";
-    const callArgs = Array.isArray(values) ? values.map((value) => JSON.stringify(value)).join(", ") : "";
+
+    const callArgs = Array.isArray(values)
+      ? values.map((value) => JSON.stringify(value)).join(", ")
+      : "";
+
     exampleCode = `import { ${example[0]} } from "@moyarich/css-color-parser";
 
 const result = ${example[0]}(${callArgs});
@@ -195,20 +232,185 @@ console.log(result);`;
     output=e instanceof Error?e.message:String(e);
     exampleCode = `import { ${example[0]} } from "@moyarich/css-color-parser";
 
-// Enter valid JSON arguments below to generate a runnable example.`;
+// Enter valid JSON arguments in Preview to generate a runnable example.`;
   }
 
-  return <section className="card api-card"><div className="section-heading"><div><p className="eyebrow">Public JavaScript API</p><h2>Copy, run, and inspect every exported function</h2><p className="section-description">Choose an export to generate a complete runnable example with the package import, function call, and live result.</p></div></div><div className="api-layout"><nav className="api-functions" aria-label="JavaScript API functions">{apiExamples.map((x,i)=><button key={x[0]} type="button" aria-pressed={i===index} onClick={()=>setIndex(i)}>{x[0]}</button>)}</nav><div className="api-runner"><code className="api-signature">{example[1]}</code><p className="api-description">{example[2]}</p><CodeExample value={exampleCode} ariaLabel={`${example[0]} runnable example`} /><label htmlFor="api-args">Arguments (JSON array)</label><input id="api-args" value={args} onChange={e=>setArgs(e.target.value)} spellCheck={false}/><div className="output-label">Result</div><pre>{output}</pre></div></div></section>;
-}
+  return (
+    <section className="card api-card">
+      <div className="example-header">
+        <div>
+          <p className="eyebrow">Public JavaScript API</p>
+          <h2>Try every exported function</h2>
+          <p className="section-description">
+            Choose an export, test it with live arguments, or switch to Source
+            for a complete copyable example.
+          </p>
+        </div>
+        <ExampleTabs value={view} onChange={setView} />
+      </div>
 
+      <div className="api-layout">
+        <nav className="api-functions" aria-label="JavaScript API functions">
+          {apiExamples.map((x,i)=>
+            <button
+              key={x[0]}
+              type="button"
+              aria-pressed={i===index}
+              onClick={()=>setIndex(i)}
+            >
+              {x[0]}
+            </button>
+          )}
+        </nav>
+
+        <div className="api-runner">
+          <code className="api-signature">{example[1]}</code>
+          <p className="api-description">{example[2]}</p>
+
+          {view === "preview" ? (
+            <>
+              <label htmlFor="api-args">Arguments (JSON array)</label>
+              <input
+                id="api-args"
+                value={args}
+                onChange={e=>setArgs(e.target.value)}
+                spellCheck={false}
+              />
+              <div className="output-label">Result</div>
+              <pre>{output}</pre>
+            </>
+          ) : (
+            <CodeExample
+              value={exampleCode}
+              ariaLabel={`${example[0]} source example`}
+            />
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
 function SourcePlayground() {
   const host=useRef<HTMLDivElement>(null), editor=useRef<monaco.editor.IStandaloneCodeEditor|null>(null);
   const [matches,setMatches]=useState<CssColorMatch[]>(extractCssColors(sampleSource));
-  useEffect(()=>{ if(!host.current)return; const ed=monaco.editor.create(host.current,{value:sampleSource,language:"css",theme:"vs",automaticLayout:true,colorDecorators:false,fontSize:14,lineHeight:22,minimap:{enabled:false},padding:{top:14,bottom:14},scrollBeyondLastLine:false,tabSize:2,wordWrap:"on"}); editor.current=ed; const sub=ed.onDidChangeModelContent(()=>setMatches(extractCssColors(ed.getValue()))); return()=>{sub.dispose();ed.dispose();}; },[]);
-  const reveal=(m:CssColorMatch)=>{const model=editor.current?.getModel();if(!model||!editor.current)return;const a=model.getPositionAt(m.start),b=model.getPositionAt(m.end);const r=new monaco.Range(a.lineNumber,a.column,b.lineNumber,b.column);editor.current.setSelection(r);editor.current.revealRangeInCenterIfOutsideViewport(r);editor.current.focus();};
-  return <><section className="workspace-grid"><div className="card source-card"><div className="section-heading"><div><p className="eyebrow">Color extraction</p><h2>Find CSS colors in source code</h2></div><span className="status">{matches.length} match{matches.length===1?"":"es"}</span></div><div ref={host} className="source-editor" aria-label="CSS source editor"/></div><div className="card"><div className="section-heading"><div><p className="eyebrow">Detected values</p><h2>Extracted color matches</h2></div></div><ol className="match-list">{matches.length?matches.map((m,i)=><li className="match-item" key={i}><button className="match-button" type="button" onClick={()=>reveal(m)}><span className="swatch" style={{background:toCssColor(m.color)}}/><span className="match-content"><code>{m.value}</code><span className="match-meta">{m.format} · [{m.start}, {m.end})</span></span></button></li>):<li className="empty-state">No resolvable CSS colors found.</li>}</ol></div></section><section className="card usage-card"><div className="section-heading"><div><p className="eyebrow">Monaco integration</p><h2>Use extractCssColors with Monaco Editor</h2><p className="section-description">Use the parser as a Monaco document color provider. The extracted UTF-16 offsets become Monaco ranges, while parsed RGBA values power Monaco’s native color decorators and color picker.</p></div></div><CodeExample value={monacoUsageExample} ariaLabel="Monaco Editor integration example" /></section></>;
-}
+  const [view, setView] = useState<"preview" | "source">("preview");
 
+  useEffect(()=>{
+    if(!host.current || view !== "preview") return;
+
+    const ed=monaco.editor.create(host.current,{
+      value:sampleSource,
+      language:"css",
+      theme:"vs",
+      automaticLayout:true,
+      colorDecorators:false,
+      fontSize:14,
+      lineHeight:22,
+      minimap:{enabled:false},
+      padding:{top:14,bottom:14},
+      scrollBeyondLastLine:false,
+      tabSize:2,
+      wordWrap:"on"
+    });
+
+    editor.current=ed;
+    const sub=ed.onDidChangeModelContent(()=>setMatches(extractCssColors(ed.getValue())));
+
+    return()=>{
+      sub.dispose();
+      ed.dispose();
+      editor.current=null;
+    };
+  },[view]);
+
+  const reveal=(m:CssColorMatch)=>{
+    const model=editor.current?.getModel();
+    if(!model||!editor.current)return;
+    const a=model.getPositionAt(m.start),b=model.getPositionAt(m.end);
+    const r=new monaco.Range(a.lineNumber,a.column,b.lineNumber,b.column);
+    editor.current.setSelection(r);
+    editor.current.revealRangeInCenterIfOutsideViewport(r);
+    editor.current.focus();
+  };
+
+  return (
+    <section className="example-block">
+      <div className="example-header">
+        <div>
+          <p className="eyebrow">Color extraction</p>
+          <h2>Find CSS colors in source code</h2>
+          <p className="section-description">
+            Edit CSS in Monaco and inspect every color resolved by
+            extractCssColors(), or switch to Source to see the Monaco
+            integration.
+          </p>
+        </div>
+        <ExampleTabs value={view} onChange={setView} />
+      </div>
+
+      {view === "preview" ? (
+        <div className="workspace-grid">
+          <div className="card source-card">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">CSS source</p>
+                <h2>Editable Monaco editor</h2>
+              </div>
+              <span className="status">
+                {matches.length} match{matches.length===1?"":"es"}
+              </span>
+            </div>
+            <div
+              ref={host}
+              className="source-editor"
+              aria-label="CSS source editor"
+            />
+          </div>
+
+          <div className="card">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Detected values</p>
+                <h2>Extracted color matches</h2>
+              </div>
+            </div>
+            <ol className="match-list">
+              {matches.length
+                ? matches.map((m,i)=>
+                    <li className="match-item" key={i}>
+                      <button
+                        className="match-button"
+                        type="button"
+                        onClick={()=>reveal(m)}
+                      >
+                        <span
+                          className="swatch"
+                          style={{background:toCssColor(m.color)}}
+                        />
+                        <span className="match-content">
+                          <code>{m.value}</code>
+                          <span className="match-meta">
+                            {m.format} · [{m.start}, {m.end})
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  )
+                : <li className="empty-state">No resolvable CSS colors found.</li>}
+            </ol>
+          </div>
+        </div>
+      ) : (
+        <div className="card source-view">
+          <CodeExample
+            value={monacoUsageExample}
+            ariaLabel="Monaco Editor integration source"
+          />
+        </div>
+      )}
+    </section>
+  );
+}
 function ParseColor() {
   const [value,setValue]=useState("color-mix(in oklch, rebeccapurple 60%, white)");
   const parsed=useMemo(()=>parseCssColor(value.trim()),[value]);
