@@ -32,20 +32,43 @@ const toCssColor = (c: RgbaColor) => `rgba(${Math.round(c.red)}, ${Math.round(c.
 const monacoUsageExample = `import * as monaco from "monaco-editor";
 import { extractCssColors } from "@moyarich/css-color-parser";
 
-const element = document.querySelector("#editor");
+monaco.languages.registerColorProvider("css", {
+  provideDocumentColors(model) {
+    return extractCssColors(model.getValue()).map((match) => {
+      const start = model.getPositionAt(match.start);
+      const end = model.getPositionAt(match.end);
 
-const editor = monaco.editor.create(element, {
-  value: ".button { color: rebeccapurple; }",
-  language: "css",
+      return {
+        range: new monaco.Range(
+          start.lineNumber,
+          start.column,
+          end.lineNumber,
+          end.column,
+        ),
+        color: {
+          red: match.color.red / 255,
+          green: match.color.green / 255,
+          blue: match.color.blue / 255,
+          alpha: match.color.alpha,
+        },
+      };
+    });
+  },
+
+  provideColorPresentations(_model, colorInfo) {
+    const { red, green, blue, alpha } = colorInfo.color;
+
+    return [{
+      label: \`rgba(\${Math.round(red * 255)}, \${Math.round(green * 255)}, \${Math.round(blue * 255)}, \${alpha})\`,
+    }];
+  },
 });
 
-const updateMatches = () => {
-  const matches = extractCssColors(editor.getValue());
-  console.log(matches);
-};
-
-updateMatches();
-editor.onDidChangeModelContent(updateMatches);`;
+monaco.editor.create(document.querySelector("#editor")!, {
+  value: ".button { color: rebeccapurple; }",
+  language: "css",
+  colorDecorators: true,
+});`;
 
 function CodeExample({
   value,
@@ -183,7 +206,7 @@ function SourcePlayground() {
   const [matches,setMatches]=useState<CssColorMatch[]>(extractCssColors(sampleSource));
   useEffect(()=>{ if(!host.current)return; const ed=monaco.editor.create(host.current,{value:sampleSource,language:"css",theme:"vs",automaticLayout:true,colorDecorators:false,fontSize:14,lineHeight:22,minimap:{enabled:false},padding:{top:14,bottom:14},scrollBeyondLastLine:false,tabSize:2,wordWrap:"on"}); editor.current=ed; const sub=ed.onDidChangeModelContent(()=>setMatches(extractCssColors(ed.getValue()))); return()=>{sub.dispose();ed.dispose();}; },[]);
   const reveal=(m:CssColorMatch)=>{const model=editor.current?.getModel();if(!model||!editor.current)return;const a=model.getPositionAt(m.start),b=model.getPositionAt(m.end);const r=new monaco.Range(a.lineNumber,a.column,b.lineNumber,b.column);editor.current.setSelection(r);editor.current.revealRangeInCenterIfOutsideViewport(r);editor.current.focus();};
-  return <><section className="workspace-grid"><div className="card source-card"><div className="section-heading"><div><p className="eyebrow">Color extraction</p><h2>Find CSS colors in source code</h2></div><span className="status">{matches.length} match{matches.length===1?"":"es"}</span></div><div ref={host} className="source-editor" aria-label="CSS source editor"/></div><div className="card"><div className="section-heading"><div><p className="eyebrow">Detected values</p><h2>Extracted color matches</h2></div></div><ol className="match-list">{matches.length?matches.map((m,i)=><li className="match-item" key={i}><button className="match-button" type="button" onClick={()=>reveal(m)}><span className="swatch" style={{background:toCssColor(m.color)}}/><span className="match-content"><code>{m.value}</code><span className="match-meta">{m.format} · [{m.start}, {m.end})</span></span></button></li>):<li className="empty-state">No resolvable CSS colors found.</li>}</ol></div></section><section className="card usage-card"><div className="section-heading"><div><p className="eyebrow">Monaco integration</p><h2>Use extractCssColors with Monaco Editor</h2><p className="section-description">This complete example uses the same Monaco editor surface as the playground: import both libraries, read the editor value, and rerun extraction when the document changes.</p></div></div><CodeExample value={monacoUsageExample} ariaLabel="Monaco Editor integration example" /></section></>;
+  return <><section className="workspace-grid"><div className="card source-card"><div className="section-heading"><div><p className="eyebrow">Color extraction</p><h2>Find CSS colors in source code</h2></div><span className="status">{matches.length} match{matches.length===1?"":"es"}</span></div><div ref={host} className="source-editor" aria-label="CSS source editor"/></div><div className="card"><div className="section-heading"><div><p className="eyebrow">Detected values</p><h2>Extracted color matches</h2></div></div><ol className="match-list">{matches.length?matches.map((m,i)=><li className="match-item" key={i}><button className="match-button" type="button" onClick={()=>reveal(m)}><span className="swatch" style={{background:toCssColor(m.color)}}/><span className="match-content"><code>{m.value}</code><span className="match-meta">{m.format} · [{m.start}, {m.end})</span></span></button></li>):<li className="empty-state">No resolvable CSS colors found.</li>}</ol></div></section><section className="card usage-card"><div className="section-heading"><div><p className="eyebrow">Monaco integration</p><h2>Use extractCssColors with Monaco Editor</h2><p className="section-description">Use the parser as a Monaco document color provider. The extracted UTF-16 offsets become Monaco ranges, while parsed RGBA values power Monaco’s native color decorators and color picker.</p></div></div><CodeExample value={monacoUsageExample} ariaLabel="Monaco Editor integration example" /></section></>;
 }
 
 function ParseColor() {
