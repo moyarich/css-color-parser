@@ -319,3 +319,63 @@ pre {
 .api-description { margin: 0 0 18px; color: #6a7489; line-height: 1.5; }
 .api-runner pre { margin-top: 14px; min-height: 84px; }
 @media (max-width: 680px) { .api-layout { grid-template-columns: 1fr; } .api-functions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+
+.section-description {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: #6a7489;
+  line-height: 1.55;
+}
+
+.usage-card {
+  margin-top: 20px;
+}
+
+.code-example {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #cfd6e3;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.code-editor {
+  width: 100%;
+}
+
+.copy-button {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  right: 8px;
+  padding: 5px 9px;
+  border: 1px solid #d8deea;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #4b5568;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.copy-button:hover {
+  background: #f6f8fc;
+  color: #182033;
+}
+
+.copy-button:focus-visible {
+  outline: 3px solid rgba(115, 103, 232, 0.2);
+  outline-offset: 2px;
+}
+
+.api-runner .code-example {
+  margin-bottom: 16px;
+}
+
+.output-label {
+  margin: 14px 0 8px;
+  color: #404b62;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
