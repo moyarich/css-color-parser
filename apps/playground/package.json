@@ -11,7 +11,7 @@
     "check": "npm run typecheck && npm run build"
   },
   "dependencies": {
-    "@moyarich/css-color-parser": "file:../..",
+    "@moyarich/css-color-parser": "file:../../packages/css-color-parser",
     "monaco-editor": "^0.56.0"
   },
   "devDependencies": {
