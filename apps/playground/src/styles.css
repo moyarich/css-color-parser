@@ -34,6 +34,39 @@ input {
   margin-bottom: 28px;
 }
 
+.hero-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #404b62;
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.github-link:hover {
+  color: #182033;
+}
+
+.github-link:focus-visible {
+  outline: 3px solid rgba(115, 103, 232, 0.2);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.github-link svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
 .hero h1,
 .section-heading h2 {
   margin: 0;
@@ -270,4 +303,8 @@ pre {
   .source-editor {
     height: 320px;
   }
+}
+
+.hero-bar .eyebrow {
+  margin-bottom: 8px;
 }
