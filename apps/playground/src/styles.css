@@ -308,3 +308,15 @@ pre {
 .hero-bar .eyebrow {
   margin-bottom: 8px;
 }
+
+.api-card { margin-top: 20px; }
+.api-layout { display: grid; grid-template-columns: minmax(180px, .35fr) minmax(0, 1fr); gap: 20px; }
+.api-functions { display: grid; align-content: start; gap: 6px; }
+.api-functions button { padding: 9px 11px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: #59647a; cursor: pointer; text-align: left; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .78rem; }
+.api-functions button:hover { background: #f6f8fc; color: #182033; }
+.api-functions button[aria-pressed="true"] { border-color: #dfe4ee; background: #f2f1ff; color: #4f46c8; font-weight: 700; }
+.api-runner { min-width: 0; }
+.api-signature { display: block; margin-bottom: 8px; color: #4f46c8; font-size: .9rem; font-weight: 700; }
+.api-description { margin: 0 0 18px; color: #6a7489; line-height: 1.5; }
+.api-runner pre { margin-top: 14px; min-height: 84px; }
+@media (max-width: 680px) { .api-layout { grid-template-columns: 1fr; } .api-functions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
