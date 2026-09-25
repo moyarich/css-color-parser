@@ -21,13 +21,9 @@ The package parses CSS color values into RGBA data and can scan arbitrary source
 
 ## Install
 
-Until a package release is published, install directly from GitHub:
+The publishable package lives at `packages/css-color-parser/` in this monorepo. Install the published package from its configured registry, or use the repository workspace during development.
 
-```bash
-npm install github:moyarich/css-color-parser
-```
-
-Then import from the package normally:
+Then import from the package root:
 
 ```ts
 import {
@@ -190,6 +186,23 @@ Finds supported colors inside arbitrary source text.
 
 Returns `CssColorMatch[]` with UTF-16 `start` and `end` offsets.
 
+### Specialized parsing utilities
+
+The package root also exports lower-level utilities for consumers that need a specific parser or parsing step:
+
+- `parseHexColor(value)`
+- `parseRgbColor(value)`
+- `parseHslColor(value)`
+- `parseNamedColor(value)`
+- `parseHue(value)`
+- `parseRgbChannel(value)`
+- `parsePercentage(value)`
+- `parseAlpha(value)`
+- `parseFunctionalComponents(body)`
+- `hslToRgb(hue, saturation, lightness)`
+
+These utilities return the parsed component/color value or `null` when the supplied value cannot be parsed by that specialized parser.
+
 ### `CSS_NAMED_COLORS`
 
 Exports the built-in named-color lookup table.
@@ -199,19 +212,28 @@ Exports the built-in named-color lookup table.
 The package exports:
 
 - `ParsedCssColor`
+- `FunctionalComponents`
 - `CssColorFormat`
 - `CssColorMatch`
 - `RgbaColor`
 
 ## Development
 
-This repository is an npm workspace. The publishable parser stays at the repository root, while browser-facing development tools live under `apps/*`.
+This repository is an npm monorepo. The root coordinates the workspaces, the publishable parser lives under `packages/*`, and browser-facing development tools live under `apps/*`.
 
 ```text
-src/             package source
-tests/           root parser tests
-apps/playground/ Vite workspace for exercising the public package API
+packages/css-color-parser/      publishable parser package
+├── src/                        package source
+├── tests/                      parser tests
+├── package.json                package metadata and public entry point
+└── tsconfig.json               package TypeScript configuration
+
+apps/playground/                Vite playground for the public package API
+package.json                    monorepo workspace scripts
+README.md                       canonical package README
 ```
+
+The root `README.md` is the source of truth for package documentation. The package `prepack` step copies it into `packages/css-color-parser/README.md` immediately before packing or publishing; the generated package copy is not maintained separately.
 
 Install every workspace dependency and run the same checks used by CI:
 
@@ -233,12 +255,11 @@ npm run typecheck
 npm test
 npm run test:watch
 npm run build
-npm run check:root
-npm run check:workspaces
+npm run build:playground
 npm run check
 ```
 
-`npm test` explicitly runs the root `tests/` suite. `npm run check` validates the root package first, then each workspace that provides a `check` script.
+`npm test`, `npm run typecheck`, and `npm run build` delegate to the `@moyarich/css-color-parser` workspace. `npm run check` runs each workspace that provides a `check` script, including the parser package and playground.
 
 ## License
 
