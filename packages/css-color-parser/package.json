@@ -61,6 +61,6 @@
   ],
   "dependencies": {
     "color-bits": "^1.2.0",
-    "@moyarich/css-expand-collapse": "^0.1.0"
+    "@moyarich/css-expand-collapse": "0.1.0"
   }
 }
