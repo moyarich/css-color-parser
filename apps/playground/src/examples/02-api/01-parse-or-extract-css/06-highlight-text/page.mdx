@@ -1,0 +1,20 @@
+---
+id: "highlight-color-occurrences"
+label: "Highlight text"
+group: "API"
+parent: "Parse or extract CSS"
+eyebrow: "extractCssColors usage"
+title: "Highlight occurrences in arbitrary text"
+description: "Use exact UTF-16 source ranges to annotate every resolvable color without changing the original text."
+---
+
+import Example from "./HighlightColors"
+import source from "./HighlightColors.tsx?raw"
+
+## Why this is useful
+
+Because each match includes `start` and `end` offsets, callers can map colors back to the original source. That is useful for search results, documentation, source viewers, codemods, diagnostics, and syntax-aware highlighting outside an editor.
+
+<ExamplePage {...frontmatter} source={source}>
+  <Example />
+</ExamplePage>
