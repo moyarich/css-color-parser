@@ -1,5 +1,8 @@
 import { useState, type ReactNode } from "react";
-import { CodeExample } from "./CodeExample";
+import {
+  CodeExample,
+  type CodeExampleFile,
+} from "./CodeExample";
 import { TableOfContents } from "./TableOfContents";
 
 export function ExamplePage({
@@ -7,6 +10,7 @@ export function ExamplePage({
   title,
   description,
   source,
+  files,
   toc = false,
   preview,
   children,
@@ -14,7 +18,8 @@ export function ExamplePage({
   eyebrow: string;
   title: string;
   description: string;
-  source: string;
+  source?: string;
+  files?: readonly CodeExampleFile[];
   toc?: boolean;
   preview?: ReactNode;
   children: ReactNode;
@@ -45,7 +50,11 @@ export function ExamplePage({
         </div>
         <div className="example-preview">{previewContent}</div>
         <div className={`example-source${showCode ? " is-expanded" : ""}`}>
-          <CodeExample value={source} ariaLabel={`${title} source`} />
+          <CodeExample
+            value={source}
+            files={files}
+            ariaLabel={`${title} source`}
+          />
           {!showCode && <div className="source-fade" aria-hidden="true" />}
           <button
             className="view-code-button"

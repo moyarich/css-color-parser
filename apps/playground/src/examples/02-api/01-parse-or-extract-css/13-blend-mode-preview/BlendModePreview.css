@@ -1,0 +1,165 @@
+.blend-mode-example {
+  max-width: 980px;
+}
+
+.blend-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.blend-control {
+  min-width: 0;
+}
+
+.blend-control-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #51596d;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.blend-color-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 48px;
+  gap: 8px;
+}
+
+.blend-color-input input[type="color"] {
+  width: 48px;
+  height: 44px;
+  padding: 4px;
+  border: 1px solid #d9deea;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.blend-control select {
+  width: 100%;
+  min-width: 0;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #d9deea;
+  border-radius: 8px;
+  background: #fff;
+  color: #292e40;
+  font: inherit;
+}
+
+.blend-layer-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 3px;
+  border: 1px solid #d9deea;
+  border-radius: 8px;
+  background: #f6f7fa;
+}
+
+.blend-layer-switch button {
+  min-height: 36px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #626a7d;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.blend-layer-switch button[aria-pressed="true"] {
+  background: #fff;
+  color: #4f3fb4;
+  box-shadow: 0 1px 4px rgb(36 31 62 / 10%);
+}
+
+.blend-venn-preview {
+  position: relative;
+  min-height: 360px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle, rgb(105 78 124 / 5%) 1px, transparent 1.5px) 0 0 /
+      8px 8px,
+    linear-gradient(180deg, #f8edf7, #f7eef8);
+}
+
+.blend-circle {
+  position: absolute;
+  top: 50%;
+  width: min(38vw, 300px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.blend-circle--foreground {
+  left: calc(50% - min(31vw, 245px));
+}
+
+.blend-circle--background {
+  right: calc(50% - min(31vw, 245px));
+}
+
+.blend-values {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.blend-values > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.blend-values span,
+.blend-values small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.blend-values code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.blend-generated-css {
+  display: grid;
+  gap: 8px;
+}
+
+.blend-generated-css .output-label {
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .blend-controls,
+  .blend-values {
+    grid-template-columns: 1fr;
+  }
+
+  .blend-venn-preview {
+    min-height: 280px;
+  }
+
+  .blend-circle {
+    width: 190px;
+  }
+
+  .blend-circle--foreground {
+    left: calc(50% - 155px);
+  }
+
+  .blend-circle--background {
+    right: calc(50% - 155px);
+  }
+}
