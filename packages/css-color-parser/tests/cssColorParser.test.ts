@@ -3,6 +3,7 @@ import {
   extractCssColors,
   formatCssColor,
   parseCssColor,
+  resolveCssVariables,
 } from "../src/index";
 
 describe("parseCssColor", () => {
@@ -243,5 +244,89 @@ describe("formatCssColor", () => {
     const parsed = parseCssColor("oklch(60% 0.15 250)");
 
     expect(parsed && formatCssColor(parsed.color)).toBe("rgb(39 132 213)");
+  });
+});
+
+
+describe("CSS custom properties", () => {
+  const customProperties = {
+    "--brand": "oklch(60% 0.15 250)",
+    "--brand-alias": "var(--brand)",
+    "--accent": "rgb(220 38 38)",
+  };
+
+  it("resolves var() before parsing a color", () => {
+    expect(
+      parseCssColor("var(--brand)", { customProperties }),
+    ).toEqual({
+      value: "var(--brand)",
+      format: "oklch",
+      color: { red: 39, green: 132, blue: 213, alpha: 1 },
+    });
+  });
+
+  it("resolves chained custom properties", () => {
+    expect(
+      parseCssColor("var(--brand-alias)", { customProperties })?.color,
+    ).toEqual({ red: 39, green: 132, blue: 213, alpha: 1 });
+  });
+
+  it("supports var() fallbacks", () => {
+    expect(
+      parseCssColor("var(--missing, rebeccapurple)", { customProperties }),
+    ).toMatchObject({
+      format: "named",
+      color: { red: 102, green: 51, blue: 153, alpha: 1 },
+    });
+  });
+
+  it("resolves variables inside color functions", () => {
+    expect(
+      parseCssColor(
+        "color-mix(in srgb, var(--accent), white)",
+        { customProperties },
+      )?.format,
+    ).toBe("color-mix");
+  });
+
+  it("detects cycles and uses a fallback when present", () => {
+    const cyclic = {
+      "--a": "var(--b)",
+      "--b": "var(--a)",
+    };
+
+    expect(
+      parseCssColor("var(--a)", { customProperties: cyclic }),
+    ).toBeNull();
+
+    expect(
+      parseCssColor("var(--a, blue)", { customProperties: cyclic }),
+    ).toMatchObject({
+      format: "named",
+      color: { red: 0, green: 0, blue: 255, alpha: 1 },
+    });
+  });
+
+  it("exposes standalone variable resolution", () => {
+    expect(
+      resolveCssVariables(
+        "linear-gradient(var(--brand), var(--accent))",
+        customProperties,
+      ),
+    ).toBe(
+      "linear-gradient(oklch(60% 0.15 250), rgb(220 38 38))",
+    );
+  });
+
+  it("extracts resolvable var() expressions with source offsets", () => {
+    const source = ".toy { color: var(--brand); }";
+    const matches = extractCssColors(source, { customProperties });
+
+    expect(matches).toHaveLength(1);
+    expect(matches[0]?.value).toBe("var(--brand)");
+    expect(matches[0]?.format).toBe("oklch");
+    expect(source.slice(matches[0]?.start, matches[0]?.end)).toBe(
+      "var(--brand)",
+    );
   });
 });

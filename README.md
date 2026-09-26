@@ -12,6 +12,7 @@ The package parses CSS color values into RGBA data and can scan arbitrary source
 
 - Parse classic and modern CSS color syntax.
 - Serialize resolved RGBA values back to normalized CSS (`rgb()` or hex).
+- Resolve CSS `var()` references from an explicit custom-property context.
 - Resolve CSS Color 4 formats such as OKLCH, OKLab, Lab, LCH, HWB, and `color()`.
 - Resolve `color-mix()`, including nested mixes, weights, alpha, and hue interpolation.
 - Parse relative colors and `calc()` channels when they can be resolved without CSS cascade context.
@@ -191,14 +192,67 @@ rgb(from #123456 r g b / 50%)
 
 Advanced color functions are evaluated with [color-bits](https://github.com/romgrk/color-bits) and converted to 8-bit sRGB values. Wide-gamut values may therefore be clipped to sRGB.
 
+## CSS custom properties
+
+Pass a custom-property context to resolve `var()` values:
+
+```ts
+const customProperties = {
+  "--brand": "oklch(60% 0.15 250)",
+  "--accent": "var(--brand)",
+};
+
+parseCssColor("var(--brand)", { customProperties });
+// {
+//   value: "var(--brand)",
+//   format: "oklch",
+//   color: { red: 39, green: 132, blue: 213, alpha: 1 },
+// }
+
+parseCssColor(
+  "color-mix(in srgb, var(--brand), white)",
+  { customProperties },
+);
+```
+
+Aliases and fallbacks are supported:
+
+```ts
+parseCssColor("var(--accent)", { customProperties });
+parseCssColor("var(--missing, rebeccapurple)", { customProperties });
+```
+
+You can also resolve variables without parsing the result as a color:
+
+```ts
+resolveCssVariables(
+  "linear-gradient(var(--brand), white)",
+  customProperties,
+);
+// "linear-gradient(oklch(60% 0.15 250), white)"
+```
+
+`extractCssColors()` accepts the same context:
+
+```ts
+extractCssColors(
+  ".button { color: var(--brand); }",
+  { customProperties },
+);
+```
+
+Cycles and missing variables without a fallback remain unresolved.
+
 ## Context-dependent colors
 
 The parser intentionally does not evaluate CSS cascade or DOM-dependent values.
 
-These return `null` when a single color cannot be resolved without external context:
+These return `null` when a single color cannot be resolved without the
+required external context. `var()` becomes resolvable when
+`customProperties` are supplied:
 
 ```css
-var(--brand)
+var(--brand) /* without customProperties */
 currentColor
 Canvas
 light-dark(red, blue)
@@ -220,7 +274,12 @@ Returns a `ParsedCssColor` or `null`.
 Serializes an `RgbaColor` to normalized CSS. The default output is modern
 `rgb()` syntax. Pass `{ format: "hex" }` for hex output.
 
-### `extractCssColors(source)`
+### `resolveCssVariables(value, customProperties)`
+
+Resolves CSS `var()` references, including aliases and fallbacks, using an
+explicit custom-property map. Returns `null` for unresolved or cyclic values.
+
+### `extractCssColors(source, options?)`
 
 Finds supported colors inside arbitrary source text.
 
@@ -235,6 +294,8 @@ Exports the built-in named-color lookup table.
 The package exports:
 
 - `ParsedCssColor`
+- `ParseCssColorOptions`
+- `CssCustomProperties`
 - `FormatCssColorOptions`
 - `CssColorOutputFormat`
 - `CssColorFormat`

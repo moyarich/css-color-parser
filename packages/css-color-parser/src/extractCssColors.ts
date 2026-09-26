@@ -1,5 +1,8 @@
 import { CSS_COLOR_FUNCTION_FORMATS } from "./colorFunctions";
-import { parseCssColor } from "./parseCssColor";
+import {
+  parseCssColor,
+  type ParseCssColorOptions,
+} from "./parseCssColor";
 import type { CssColorMatch } from "./types";
 
 function isIdentifierCharacter(value: string | undefined) {
@@ -33,7 +36,10 @@ function functionEnd(source: string, open: number) {
  * Matches include absolute UTF-16 offsets. A resolved color function is one
  * match covering the complete expression, without overlapping argument colors.
  */
-export function extractCssColors(source: string): CssColorMatch[] {
+export function extractCssColors(
+  source: string,
+  options: ParseCssColorOptions = {},
+): CssColorMatch[] {
   const matches: CssColorMatch[] = [];
   const candidates = /#[\w-]+|[a-zA-Z_][\w-]*/g;
 
@@ -49,7 +55,11 @@ export function extractCssColors(source: string): CssColorMatch[] {
     }
 
     if (source[candidates.lastIndex] === "(") {
-      if (!CSS_COLOR_FUNCTION_FORMATS.has(value.toLowerCase())) {
+      const functionName = value.toLowerCase();
+      const isVariable =
+        functionName === "var" && options.customProperties !== undefined;
+
+      if (!CSS_COLOR_FUNCTION_FORMATS.has(functionName) && !isVariable) {
         // A function name such as tan() is not the named color "tan".
         continue;
       }
@@ -60,7 +70,7 @@ export function extractCssColors(source: string): CssColorMatch[] {
       candidates.lastIndex = end;
     }
 
-    const parsed = parseCssColor(value);
+    const parsed = parseCssColor(value, options);
     if (!parsed) {
       continue;
     }

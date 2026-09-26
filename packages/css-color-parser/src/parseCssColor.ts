@@ -10,6 +10,144 @@ export interface ParsedCssColor {
   color: RgbaColor;
 }
 
+export type CssCustomProperties =
+  | Readonly<Record<string, string>>
+  | ReadonlyMap<string, string>;
+
+export interface ParseCssColorOptions {
+  customProperties?: CssCustomProperties;
+}
+
+function getCustomProperty(
+  customProperties: CssCustomProperties,
+  name: string,
+) {
+  return customProperties instanceof Map
+    ? customProperties.get(name)
+    : customProperties[name];
+}
+
+function findClosingParenthesis(value: string, openIndex: number) {
+  let depth = 0;
+
+  for (let index = openIndex; index < value.length; index += 1) {
+    const character = value[index];
+
+    if (character === "(") {
+      depth += 1;
+    } else if (character === ")") {
+      depth -= 1;
+
+      if (depth === 0) {
+        return index;
+      }
+    }
+  }
+
+  return -1;
+}
+
+function splitVarArguments(body: string) {
+  let depth = 0;
+
+  for (let index = 0; index < body.length; index += 1) {
+    const character = body[index];
+
+    if (character === "(") {
+      depth += 1;
+    } else if (character === ")") {
+      depth -= 1;
+    } else if (character === "," && depth === 0) {
+      return [body.slice(0, index), body.slice(index + 1)] as const;
+    }
+  }
+
+  return [body, undefined] as const;
+}
+
+function resolveCssVariablesInternal(
+  value: string,
+  customProperties: CssCustomProperties,
+  resolving: ReadonlySet<string>,
+): string | null {
+  let output = "";
+  let cursor = 0;
+
+  while (cursor < value.length) {
+    const match = /\bvar\s*\(/gi.exec(value.slice(cursor));
+
+    if (!match) {
+      output += value.slice(cursor);
+      break;
+    }
+
+    const start = cursor + match.index;
+    const open = start + match[0].lastIndexOf("(");
+    const close = findClosingParenthesis(value, open);
+
+    if (close < 0) {
+      return null;
+    }
+
+    output += value.slice(cursor, start);
+
+    const body = value.slice(open + 1, close);
+    const [rawName, rawFallback] = splitVarArguments(body);
+    const name = rawName.trim();
+
+    if (!/^--[\w-]+$/.test(name)) {
+      return null;
+    }
+
+    let replacement: string | null = null;
+
+    if (!resolving.has(name)) {
+      const customValue = getCustomProperty(customProperties, name);
+
+      if (customValue !== undefined) {
+        const nextResolving = new Set(resolving);
+        nextResolving.add(name);
+        replacement = resolveCssVariablesInternal(
+          customValue,
+          customProperties,
+          nextResolving,
+        );
+      }
+    }
+
+    if (replacement === null && rawFallback !== undefined) {
+      replacement = resolveCssVariablesInternal(
+        rawFallback.trim(),
+        customProperties,
+        resolving,
+      );
+    }
+
+    if (replacement === null) {
+      return null;
+    }
+
+    output += replacement;
+    cursor = close + 1;
+  }
+
+  return output;
+}
+
+/**
+ * Resolves CSS var() references from an explicit custom-property context.
+ *
+ * Supports nested aliases, fallback values, and cycle detection. Returns null
+ * when a referenced property cannot be resolved.
+ */
+export function resolveCssVariables(
+  value: string,
+  customProperties: CssCustomProperties,
+) {
+  return resolveCssVariablesInternal(value, customProperties, new Set());
+}
+
+
 const HEX_COLOR_PATTERN = /^#([\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i;
 const RGB_COLOR_PATTERN = /^rgba?\(([\s\S]*)\)$/i;
 const HSL_COLOR_PATTERN = /^hsla?\(([\s\S]*)\)$/i;
@@ -283,10 +421,22 @@ export function parseNamedColor(value: string): RgbaColor | null {
  * Parses one complete CSS color literal.
  *
  * Supports absolute and relative CSS color functions, color-mix(), hex,
- * transparent, and named colors. Context-dependent expressions return null.
+ * transparent, named colors, and var() when customProperties are provided.
+ * Other context-dependent expressions return null.
  */
-export function parseCssColor(value: string): ParsedCssColor | null {
-  const trimmed = value.trim();
+export function parseCssColor(
+  value: string,
+  options: ParseCssColorOptions = {},
+): ParsedCssColor | null {
+  const original = value.trim();
+
+  if (!original) {
+    return null;
+  }
+
+  const trimmed = options.customProperties
+    ? resolveCssVariables(original, options.customProperties)
+    : original;
 
   if (!trimmed) {
     return null;
@@ -295,25 +445,25 @@ export function parseCssColor(value: string): ParsedCssColor | null {
   const hex = parseHexColor(trimmed);
 
   if (hex) {
-    return { value: trimmed, format: "hex", color: hex };
+    return { value: original, format: "hex", color: hex };
   }
 
   const rgb = parseRgbColor(trimmed);
 
   if (rgb) {
-    return { value: trimmed, format: "rgb", color: rgb };
+    return { value: original, format: "rgb", color: rgb };
   }
 
   const hsl = parseHslColor(trimmed);
 
   if (hsl) {
-    return { value: trimmed, format: "hsl", color: hsl };
+    return { value: original, format: "hsl", color: hsl };
   }
 
   const named = parseNamedColor(trimmed);
 
   if (named) {
-    return { value: trimmed, format: "named", color: named };
+    return { value: original, format: "named", color: named };
   }
 
   const functionName = /^([a-z-]+)\(/i.exec(trimmed)?.[1]?.toLowerCase();
@@ -326,7 +476,7 @@ export function parseCssColor(value: string): ParsedCssColor | null {
       // Advanced colors use color-bits' 8-bit sRGB representation.
       const color = parseCSS(trimmed);
       return {
-        value: trimmed,
+        value: original,
         format,
         color: {
           red: getRed(color),

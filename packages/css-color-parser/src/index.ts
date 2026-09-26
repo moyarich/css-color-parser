@@ -27,8 +27,13 @@ export {
 } from "./parseCssColor";
 
 // Public types.
+export {
+  resolveCssVariables,
+} from "./parseCssColor";
 export type {
+  CssCustomProperties,
   FunctionalComponents,
+  ParseCssColorOptions,
   ParsedCssColor,
 } from "./parseCssColor";
 
