@@ -3,6 +3,7 @@ import {
   formatCssColor,
 } from "@moyarich/css-color-parser";
 import type { Monaco } from "@monaco-editor/react";
+import type { editor, languages } from "monaco-editor";
 
 const providers = new WeakMap<object, { dispose(): void }>();
 
@@ -20,7 +21,7 @@ export function ensureCssColorProvider(monaco: Monaco) {
   }
 
   const provider = monaco.languages.registerColorProvider("css", {
-    provideDocumentColors(model) {
+    provideDocumentColors(model: editor.ITextModel) {
       return extractCssColors(model.getValue()).map((match) => {
         const start = model.getPositionAt(match.start);
         const end = model.getPositionAt(match.end);
@@ -42,7 +43,10 @@ export function ensureCssColorProvider(monaco: Monaco) {
       });
     },
 
-    provideColorPresentations(_model, colorInfo) {
+    provideColorPresentations(
+      _model: editor.ITextModel,
+      colorInfo: languages.IColorInformation,
+    ) {
       const { red, green, blue, alpha } = colorInfo.color;
 
       return [
