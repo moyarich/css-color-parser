@@ -10,143 +10,22 @@ export interface ParsedCssColor {
   color: RgbaColor;
 }
 
-export type CssCustomProperties =
-  | Readonly<Record<string, string>>
-  | ReadonlyMap<string, string>;
+export type { CustomPropertyMap as CssCustomProperties } from "@moyarich/css-expand-collapse";
+
+import {
+  resolveCustomProperties,
+  type CustomPropertyMap,
+} from "@moyarich/css-expand-collapse";
 
 export interface ParseCssColorOptions {
-  customProperties?: CssCustomProperties;
-}
-
-function getCustomProperty(
-  customProperties: CssCustomProperties,
-  name: string,
-) {
-  return customProperties instanceof Map
-    ? customProperties.get(name)
-    : customProperties[name];
-}
-
-function findClosingParenthesis(value: string, openIndex: number) {
-  let depth = 0;
-
-  for (let index = openIndex; index < value.length; index += 1) {
-    const character = value[index];
-
-    if (character === "(") {
-      depth += 1;
-    } else if (character === ")") {
-      depth -= 1;
-
-      if (depth === 0) {
-        return index;
-      }
-    }
-  }
-
-  return -1;
-}
-
-function splitVarArguments(body: string) {
-  let depth = 0;
-
-  for (let index = 0; index < body.length; index += 1) {
-    const character = body[index];
-
-    if (character === "(") {
-      depth += 1;
-    } else if (character === ")") {
-      depth -= 1;
-    } else if (character === "," && depth === 0) {
-      return [body.slice(0, index), body.slice(index + 1)] as const;
-    }
-  }
-
-  return [body, undefined] as const;
-}
-
-function resolveCssVariablesInternal(
-  value: string,
-  customProperties: CssCustomProperties,
-  resolving: ReadonlySet<string>,
-): string | null {
-  let output = "";
-  let cursor = 0;
-
-  while (cursor < value.length) {
-    const match = /\bvar\s*\(/gi.exec(value.slice(cursor));
-
-    if (!match) {
-      output += value.slice(cursor);
-      break;
-    }
-
-    const start = cursor + match.index;
-    const open = start + match[0].lastIndexOf("(");
-    const close = findClosingParenthesis(value, open);
-
-    if (close < 0) {
-      return null;
-    }
-
-    output += value.slice(cursor, start);
-
-    const body = value.slice(open + 1, close);
-    const [rawName, rawFallback] = splitVarArguments(body);
-    const name = rawName.trim();
-
-    if (!/^--[\w-]+$/.test(name)) {
-      return null;
-    }
-
-    let replacement: string | null = null;
-
-    if (!resolving.has(name)) {
-      const customValue = getCustomProperty(customProperties, name);
-
-      if (customValue !== undefined) {
-        const nextResolving = new Set(resolving);
-        nextResolving.add(name);
-        replacement = resolveCssVariablesInternal(
-          customValue,
-          customProperties,
-          nextResolving,
-        );
-      }
-    }
-
-    if (replacement === null && rawFallback !== undefined) {
-      replacement = resolveCssVariablesInternal(
-        rawFallback.trim(),
-        customProperties,
-        resolving,
-      );
-    }
-
-    if (replacement === null) {
-      return null;
-    }
-
-    output += replacement;
-    cursor = close + 1;
-  }
-
-  return output;
+  customProperties?: CustomPropertyMap;
 }
 
 /**
- * Resolves CSS var() references from an explicit custom-property context.
- *
- * Supports nested aliases, fallback values, and cycle detection. Returns null
- * when a referenced property cannot be resolved.
+ * Resolves CSS var() references using the shared resolver from
+ * @moyarich/css-expand-collapse.
  */
-export function resolveCssVariables(
-  value: string,
-  customProperties: CssCustomProperties,
-) {
-  return resolveCssVariablesInternal(value, customProperties, new Set());
-}
-
+export const resolveCssVariables = resolveCustomProperties;
 
 const HEX_COLOR_PATTERN = /^#([\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i;
 const RGB_COLOR_PATTERN = /^rgba?\(([\s\S]*)\)$/i;

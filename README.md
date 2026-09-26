@@ -194,6 +194,12 @@ Advanced color functions are evaluated with [color-bits](https://github.com/romg
 
 ## CSS custom properties
 
+Custom-property resolution is delegated to
+`@moyarich/css-expand-collapse`, so both packages use the same implementation
+for nested `var()` references, fallbacks, cycle handling, and case-sensitive
+custom-property names. `css-color-parser` remains responsible only for turning
+the resolved value into color data.
+
 Pass a custom-property context to resolve `var()` values:
 
 ```ts
