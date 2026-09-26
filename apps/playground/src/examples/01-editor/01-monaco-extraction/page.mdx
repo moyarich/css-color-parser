@@ -20,6 +20,18 @@ This example connects `extractCssColors()` directly to Monaco's `provideDocument
 
 Use the nested menu items under **Monaco extraction** for basic colors, CSS Color 4, color mixing, relative colors, nested expressions, source offsets, editor edge cases, and unresolved values.
 
-<ExamplePage {...frontmatter} source={sourceCode}>
-  <MonacoExtraction source={source} title="Monaco extraction" />
+<ExamplePage
+  {...frontmatter}
+  source={sourceCode}
+  preview={<MonacoExtraction source={source} title="Monaco extraction" />}
+>
+
+## Overview
+
+This example connects `extractCssColors()` directly to Monaco's `provideDocumentColors()` API. Edit the CSS and the extracted matches update from the same editor model.
+
+## Focused examples
+
+Use the nested menu items under **Monaco extraction** for basic colors, CSS Color 4, color mixing, relative colors, nested expressions, source offsets, editor edge cases, and unresolved values.
+
 </ExamplePage>

@@ -936,3 +936,131 @@ pre {
     grid-column: 2;
   }
 }
+
+
+/* Typography + recursive documentation navigation */
+body {
+  font-weight: 400;
+}
+
+.hero-intro p:last-child,
+.section-description,
+#selected-example-page p,
+.example-details p {
+  font-weight: 400;
+}
+
+.example-heading {
+  margin-bottom: 18px;
+}
+
+.example-heading h1 {
+  font-size: clamp(25px, 2.1vw, 30px);
+  line-height: 1.2;
+  font-weight: 620;
+  letter-spacing: -0.75px;
+}
+
+.section-description {
+  max-width: 760px;
+  margin-top: 8px;
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+.example-details {
+  max-width: 780px;
+  margin: 0 0 24px;
+}
+
+.example-details h2 {
+  margin: 22px 0 7px;
+  color: #34394a;
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.25px;
+}
+
+.example-details h3 {
+  margin: 18px 0 6px;
+  color: #3d4353;
+  font-size: 14.5px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.example-details p {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.page-toc {
+  margin: 0 0 20px;
+}
+
+.page-toc summary {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.page-toc a {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.example-list {
+  display: grid;
+  gap: 2px;
+}
+
+.nav-node {
+  min-width: 0;
+}
+
+.nav-node-label {
+  padding: 8px 10px 5px;
+  color: #50586a;
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.example-list .nav-node-parent {
+  color: #454d60;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.nav-children {
+  display: grid;
+  gap: 2px;
+  margin: 1px 0 6px 8px;
+  padding-left: 10px;
+  border-left: 1px solid #e1e5ee;
+}
+
+.nav-children .nav-node-label {
+  padding-top: 6px;
+  font-size: 10.5px;
+}
+
+.nav-children button {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: 10.5px;
+}
+
+@media (max-width: 760px) {
+  .example-list {
+    display: grid;
+    overflow: visible;
+  }
+
+  .example-list button {
+    width: 100%;
+    white-space: normal;
+  }
+}

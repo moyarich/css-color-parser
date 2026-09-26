@@ -1,13 +1,87 @@
 import { useState, type ComponentType } from "react";
-import { TableOfContents } from "./TableOfContents";
 
 export interface PlaygroundEntry {
   id: string;
   label: string;
   group: string;
-  parent?: string;
   toc?: boolean;
+  navPath: readonly string[];
   Component: ComponentType;
+}
+
+interface NavNode {
+  label: string;
+  entry?: PlaygroundEntry;
+  children: NavNode[];
+}
+
+function buildNavTree(entries: readonly PlaygroundEntry[]) {
+  const roots: NavNode[] = [];
+
+  for (const entry of entries) {
+    let level = roots;
+
+    entry.navPath.forEach((label, index) => {
+      let node = level.find((candidate) => candidate.label === label);
+
+      if (!node) {
+        node = { label, children: [] };
+        level.push(node);
+      }
+
+      if (index === entry.navPath.length - 1) {
+        node.entry = entry;
+      }
+
+      level = node.children;
+    });
+  }
+
+  return roots;
+}
+
+function NavItems({
+  nodes,
+  selectedId,
+  onSelect,
+}: {
+  nodes: readonly NavNode[];
+  selectedId: string;
+  onSelect: (id: string) => void;
+}) {
+  return (
+    <>
+      {nodes.map((node) => (
+        <div className="nav-node" key={node.label}>
+          {node.entry ? (
+            <button
+              className={node.children.length ? "nav-node-parent" : undefined}
+              type="button"
+              aria-pressed={node.entry.id === selectedId}
+              onClick={() => onSelect(node.entry!.id)}
+            >
+              <span>{node.label}</span>
+              <span className="nav-arrow" aria-hidden="true">
+                ↗
+              </span>
+            </button>
+          ) : (
+            <div className="nav-node-label">{node.label}</div>
+          )}
+
+          {node.children.length > 0 && (
+            <div className="nav-children">
+              <NavItems
+                nodes={node.children}
+                selectedId={selectedId}
+                onSelect={onSelect}
+              />
+            </div>
+          )}
+        </div>
+      ))}
+    </>
+  );
 }
 
 function GitHubIcon() {
@@ -33,13 +107,15 @@ export function PlaygroundPage({
 
   if (!selected) return null;
 
-  const SelectedPage = selected.Component;
+  const normalizedQuery = query.trim().toLowerCase();
   const filtered = examples.filter((example) =>
-    `${example.label} ${example.group}`
+    [example.label, example.group, ...example.navPath]
+      .join(" ")
       .toLowerCase()
-      .includes(query.toLowerCase()),
+      .includes(normalizedQuery),
   );
   const groups = [...new Set(filtered.map((example) => example.group))];
+  const SelectedPage = selected.Component;
 
   return (
     <main className="page-shell">
@@ -100,80 +176,40 @@ export function PlaygroundPage({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
+
           {groups.map((group) => {
             const groupExamples = filtered.filter(
               (example) => example.group === group,
             );
-            const topLevel = groupExamples.filter((example) => !example.parent);
-            const parents = [
-              ...new Set(
-                groupExamples
-                  .map((example) => example.parent)
-                  .filter((parent): parent is string => Boolean(parent)),
-              ),
-            ];
 
             return (
               <div className="example-group" key={group}>
                 <div className="sidebar-heading">{group}</div>
                 <nav className="example-list">
-                  {parents.map((parent) => (
-                    <div className="nested-example-group" key={parent}>
-                      <div className="nested-example-label">{parent}</div>
-                      <div className="nested-example-list">
-                        {groupExamples
-                          .filter((example) => example.parent === parent)
-                          .map((example) => (
-                            <button
-                              key={example.id}
-                              type="button"
-                              aria-pressed={example.id === selected.id}
-                              onClick={() => setSelectedId(example.id)}
-                            >
-                              <span>{example.label}</span>
-                              <span className="nav-arrow" aria-hidden="true">
-                                ↗
-                              </span>
-                            </button>
-                          ))}
-                      </div>
-                    </div>
-                  ))}
-
-                  {topLevel.map((example) => (
-                    <button
-                      key={example.id}
-                      type="button"
-                      aria-pressed={example.id === selected.id}
-                      onClick={() => setSelectedId(example.id)}
-                    >
-                      <span>{example.label}</span>
-                      <span className="nav-arrow" aria-hidden="true">
-                        ↗
-                      </span>
-                    </button>
-                  ))}
+                  <NavItems
+                    nodes={buildNavTree(groupExamples)}
+                    selectedId={selected.id}
+                    onSelect={setSelectedId}
+                  />
                 </nav>
               </div>
             );
           })}
+
           {filtered.length === 0 && (
             <p className="nav-empty" role="status">
               No examples found. Try another search.
             </p>
           )}
-          <div className="sidebar-note"></div>
         </aside>
 
         <div className="playground-main" id="main-content" tabIndex={-1}>
-          {selected.toc && (
-            <TableOfContents rootId="selected-example-page" pageKey={selected.id} />
-          )}
           <div id="selected-example-page">
             <SelectedPage key={selected.id} />
           </div>
         </div>
       </section>
+
       <footer className="page-footer">
         <span>@Moyarich</span>
       </footer>
