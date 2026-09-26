@@ -1,6 +1,13 @@
 // Source extraction.
 export { extractCssColors } from "./extractCssColors";
 
+// CSS serialization.
+export { formatCssColor } from "./formatCssColor";
+export type {
+  CssColorOutputFormat,
+  FormatCssColorOptions,
+} from "./formatCssColor";
+
 // Named-color data.
 export { CSS_NAMED_COLORS } from "./namedColors";
 

@@ -1,76 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import {
   extractCssColors,
+  formatCssColor,
   type CssColorMatch,
-  type RgbaColor,
 } from "@moyarich/css-color-parser";
+import { ensureCssColorProvider } from "../../../lib/cssColorProvider";
 import { monaco } from "../../../lib/monaco";
-
-const toCssColor = (color: RgbaColor) =>
-  `rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${color.alpha})`;
-
-type ProviderGlobal = typeof globalThis & {
-  __cssColorParserProvider?: { dispose(): void };
-};
-
-function ensureColorProvider() {
-  const globalState = globalThis as ProviderGlobal;
-  const cssDefaults = monaco.css.cssDefaults;
-
-  if (cssDefaults.modeConfiguration.colors !== false) {
-    cssDefaults.setModeConfiguration({
-      ...cssDefaults.modeConfiguration,
-      colors: false,
-    });
-  }
-
-  if (globalState.__cssColorParserProvider) return;
-
-  globalState.__cssColorParserProvider = monaco.languages.registerColorProvider(
-    "css",
-    {
-      provideDocumentColors(model) {
-        return extractCssColors(model.getValue()).map((match) => {
-          const start = model.getPositionAt(match.start);
-          const end = model.getPositionAt(match.end);
-
-          return {
-            range: new monaco.Range(
-              start.lineNumber,
-              start.column,
-              end.lineNumber,
-              end.column,
-            ),
-            color: {
-              red: match.color.red / 255,
-              green: match.color.green / 255,
-              blue: match.color.blue / 255,
-              alpha: match.color.alpha,
-            },
-          };
-        });
-      },
-
-      provideColorPresentations(_model, colorInfo) {
-        const { red, green, blue, alpha } = colorInfo.color;
-
-        return [
-          {
-            label: `rgba(${Math.round(red * 255)}, ${Math.round(green * 255)}, ${Math.round(blue * 255)}, ${alpha})`,
-          },
-        ];
-      },
-    },
-  );
-}
-
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    const globalState = globalThis as ProviderGlobal;
-    globalState.__cssColorParserProvider?.dispose();
-    delete globalState.__cssColorParserProvider;
-  });
-}
 
 export default function MonacoExtraction({
   source,
@@ -88,7 +23,7 @@ export default function MonacoExtraction({
   useEffect(() => {
     if (!host.current) return;
 
-    ensureColorProvider();
+    ensureCssColorProvider();
 
     const instance = monaco.editor.create(host.current, {
       value: source,
@@ -182,7 +117,7 @@ export default function MonacoExtraction({
                 >
                   <span
                     className="swatch"
-                    style={{ background: toCssColor(match.color) }}
+                    style={{ background: formatCssColor(match.color) }}
                   />
                   <span className="match-content">
                     <code>{match.value}</code>

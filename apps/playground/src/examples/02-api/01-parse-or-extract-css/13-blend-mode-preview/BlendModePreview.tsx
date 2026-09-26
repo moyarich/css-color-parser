@@ -1,5 +1,8 @@
-import { useMemo, useState } from "react";
-import { parseCssColor } from "@moyarich/css-color-parser";
+import { useMemo, useState, type CSSProperties } from "react";
+import {
+  formatCssColor,
+  parseCssColor,
+} from "@moyarich/css-color-parser";
 import "./BlendModePreview.css";
 
 const blendModes = [
@@ -23,26 +26,6 @@ const blendModes = [
 
 type Layer = "foreground" | "background";
 
-type Rgba = {
-  red: number;
-  green: number;
-  blue: number;
-  alpha: number;
-};
-
-function toCssColor(color: Rgba) {
-  return `rgb(${Math.round(color.red)} ${Math.round(color.green)} ${Math.round(
-    color.blue,
-  )}${color.alpha < 1 ? ` / ${Number(color.alpha.toFixed(3))}` : ""})`;
-}
-
-function toHex(color: Rgba) {
-  const channel = (value: number) =>
-    Math.round(value).toString(16).padStart(2, "0");
-
-  return `#${channel(color.red)}${channel(color.green)}${channel(color.blue)}`;
-}
-
 export default function BlendModePreview() {
   const [foreground, setForeground] = useState("#dc7182");
   const [background, setBackground] = useState("#42bfd0");
@@ -57,10 +40,14 @@ export default function BlendModePreview() {
     if (!foregroundResult || !backgroundResult) return null;
 
     return {
-      foreground: toCssColor(foregroundResult.color),
-      background: toCssColor(backgroundResult.color),
-      foregroundPicker: toHex(foregroundResult.color),
-      backgroundPicker: toHex(backgroundResult.color),
+      foreground: formatCssColor(foregroundResult.color),
+      background: formatCssColor(backgroundResult.color),
+      foregroundPicker: formatCssColor(foregroundResult.color, {
+        format: "hex",
+      }).slice(0, 7),
+      backgroundPicker: formatCssColor(backgroundResult.color, {
+        format: "hex",
+      }).slice(0, 7),
       foregroundFormat: foregroundResult.format,
       backgroundFormat: backgroundResult.format,
     };
@@ -68,117 +55,140 @@ export default function BlendModePreview() {
 
   const generatedCss = parsed
     ? `.blend-demo {
+  --blend-foreground: ${parsed.foreground};
+  --blend-background: ${parsed.background};
+  --blend-mode: ${mode};
+  --foreground-z: ${topLayer === "foreground" ? 2 : 1};
+  --background-z: ${topLayer === "background" ? 2 : 1};
+
   position: relative;
   isolation: isolate;
 }
 
+.blend-demo__foreground,
+.blend-demo__background {
+  position: absolute;
+  border-radius: 50%;
+}
+
 .blend-demo__foreground {
-  background: ${parsed.foreground};
-  ${topLayer === "foreground" ? `mix-blend-mode: ${mode};` : ""}
-  z-index: ${topLayer === "foreground" ? 2 : 1};
+  z-index: var(--foreground-z);
+  background: var(--blend-foreground);
+  ${topLayer === "foreground" ? "mix-blend-mode: var(--blend-mode);" : ""}
 }
 
 .blend-demo__background {
-  background: ${parsed.background};
-  ${topLayer === "background" ? `mix-blend-mode: ${mode};` : ""}
-  z-index: ${topLayer === "background" ? 2 : 1};
+  z-index: var(--background-z);
+  background: var(--blend-background);
+  ${topLayer === "background" ? "mix-blend-mode: var(--blend-mode);" : ""}
 }`
     : "";
 
+  const previewStyle = parsed
+    ? ({
+        "--blend-foreground": parsed.foreground,
+        "--blend-background": parsed.background,
+        "--blend-mode": mode,
+      } as CSSProperties)
+    : undefined;
+
   return (
     <div className="usage-example blend-mode-example">
-      <div className="blend-controls">
-        <div className="blend-control">
-          <label htmlFor="blend-foreground">Foreground</label>
-          <div className="blend-color-input">
-            <input
-              id="blend-foreground"
-              value={foreground}
-              onChange={(event) => setForeground(event.target.value)}
-              spellCheck={false}
-            />
-            <input
-              type="color"
-              aria-label="Pick foreground color"
-              value={parsed?.foregroundPicker ?? "#000000"}
-              onChange={(event) => setForeground(event.target.value)}
-            />
-          </div>
-        </div>
+      <div className="blend-workbench">
+        <aside className="blend-sidebar">
+          <div className="blend-sidebar__section">
+            <span className="blend-sidebar__title">Colors</span>
 
-        <div className="blend-control">
-          <label htmlFor="blend-background">Background</label>
-          <div className="blend-color-input">
-            <input
-              id="blend-background"
-              value={background}
-              onChange={(event) => setBackground(event.target.value)}
-              spellCheck={false}
-            />
-            <input
-              type="color"
-              aria-label="Pick background color"
-              value={parsed?.backgroundPicker ?? "#ffffff"}
-              onChange={(event) => setBackground(event.target.value)}
-            />
-          </div>
-        </div>
+            <div className="blend-control">
+              <label htmlFor="blend-foreground">Foreground</label>
+              <div className="blend-color-input">
+                <input
+                  id="blend-foreground"
+                  value={foreground}
+                  onChange={(event) => setForeground(event.target.value)}
+                  spellCheck={false}
+                />
+                <input
+                  type="color"
+                  aria-label="Pick foreground color"
+                  value={parsed?.foregroundPicker ?? "#000000"}
+                  onChange={(event) => setForeground(event.target.value)}
+                />
+              </div>
+            </div>
 
-        <div className="blend-control">
-          <label htmlFor="blend-mode">mix-blend-mode</label>
-          <select
-            id="blend-mode"
-            value={mode}
-            onChange={(event) =>
-              setMode(event.target.value as (typeof blendModes)[number])
-            }
-          >
-            {blendModes.map((blendMode) => (
-              <option key={blendMode} value={blendMode}>
-                {blendMode}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="blend-control">
-          <span className="blend-control-label">Top layer</span>
-          <div className="blend-layer-switch" role="group" aria-label="Top layer">
-            {(["foreground", "background"] as const).map((layer) => (
-              <button
-                key={layer}
-                type="button"
-                aria-pressed={topLayer === layer}
-                onClick={() => setTopLayer(layer)}
-              >
-                {layer === "foreground" ? "Foreground" : "Background"}
-              </button>
-            ))}
+            <div className="blend-control">
+              <label htmlFor="blend-background">Background</label>
+              <div className="blend-color-input">
+                <input
+                  id="blend-background"
+                  value={background}
+                  onChange={(event) => setBackground(event.target.value)}
+                  spellCheck={false}
+                />
+                <input
+                  type="color"
+                  aria-label="Pick background color"
+                  value={parsed?.backgroundPicker ?? "#ffffff"}
+                  onChange={(event) => setBackground(event.target.value)}
+                />
+              </div>
+            </div>
           </div>
+
+          <div className="blend-sidebar__section">
+            <span className="blend-sidebar__title">Blend mode</span>
+            <div className="blend-mode-grid" role="group" aria-label="Blend mode">
+              {blendModes.map((blendMode) => (
+                <button
+                  key={blendMode}
+                  type="button"
+                  aria-pressed={mode === blendMode}
+                  onClick={() => setMode(blendMode)}
+                >
+                  {blendMode}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="blend-sidebar__section">
+            <span className="blend-sidebar__title">Top layer</span>
+            <div className="blend-layer-switch" role="group" aria-label="Top layer">
+              {(["foreground", "background"] as const).map((layer) => (
+                <button
+                  key={layer}
+                  type="button"
+                  aria-pressed={topLayer === layer}
+                  onClick={() => setTopLayer(layer)}
+                >
+                  {layer === "foreground" ? "Foreground" : "Background"}
+                </button>
+              ))}
+            </div>
+          </div>
+        </aside>
+
+        <div className="blend-main">
+          {parsed ? (
+            <div
+              className="blend-venn-preview"
+              data-top-layer={topLayer}
+              style={previewStyle}
+            >
+              <div className="blend-circle blend-circle--foreground" />
+              <div className="blend-circle blend-circle--background" />
+            </div>
+          ) : (
+            <div className="blend-invalid">
+              Both colors must resolve to supported CSS colors.
+            </div>
+          )}
         </div>
       </div>
 
-      {parsed ? (
+      {parsed && (
         <>
-          <div className="blend-venn-preview">
-            <div
-              className="blend-circle blend-circle--foreground"
-              style={{
-                background: parsed.foreground,
-                mixBlendMode: topLayer === "foreground" ? mode : "normal",
-                zIndex: topLayer === "foreground" ? 2 : 1,
-              }}
-            />
-            <div
-              className="blend-circle blend-circle--background"
-              style={{
-                background: parsed.background,
-                mixBlendMode: topLayer === "background" ? mode : "normal",
-                zIndex: topLayer === "background" ? 2 : 1,
-              }}
-            />
-          </div>
-
           <div className="blend-values">
             <div>
               <span>Foreground</span>
@@ -193,12 +203,12 @@ export default function BlendModePreview() {
             <div>
               <span>Blend mode</span>
               <code>{mode}</code>
-              <small>Rendered by CSS</small>
+              <small>CSS variable</small>
             </div>
             <div>
               <span>Top layer</span>
               <code>{topLayer}</code>
-              <small>Switch to compare stacking</small>
+              <small>Controls stacking</small>
             </div>
           </div>
 
@@ -207,10 +217,6 @@ export default function BlendModePreview() {
             <pre>{generatedCss}</pre>
           </div>
         </>
-      ) : (
-        <p className="usage-message">
-          Both foreground and background must resolve to supported CSS colors.
-        </p>
       )}
     </div>
   );

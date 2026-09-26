@@ -11,6 +11,7 @@ The package parses CSS color values into RGBA data and can scan arbitrary source
 ## Features
 
 - Parse classic and modern CSS color syntax.
+- Serialize resolved RGBA values back to normalized CSS (`rgb()` or hex).
 - Resolve CSS Color 4 formats such as OKLCH, OKLab, Lab, LCH, HWB, and `color()`.
 - Resolve `color-mix()`, including nested mixes, weights, alpha, and hue interpolation.
 - Parse relative colors and `calc()` channels when they can be resolved without CSS cascade context.
@@ -72,6 +73,36 @@ parseCssColor("color-mix(in srgb, red, blue)");
 parseCssColor("oklch(60% 0.15 250)");
 parseCssColor("oklab(from green l a b / 0.5)");
 parseCssColor("hsl(from red calc(h + 120) s l)");
+```
+
+## Generate CSS from a parsed color
+
+`formatCssColor()` turns resolved RGBA channels back into valid, normalized
+CSS. It does not try to reconstruct the original syntax because formats such as
+OKLCH and Display-P3 are resolved to sRGB channels during parsing.
+
+```ts
+import {
+  formatCssColor,
+  parseCssColor,
+} from "@moyarich/css-color-parser";
+
+const parsed = parseCssColor("oklch(60% 0.15 250)");
+
+if (parsed) {
+  formatCssColor(parsed.color);
+  // "rgb(39 132 213)"
+
+  formatCssColor(parsed.color, { format: "hex" });
+  // "#2784d5"
+}
+```
+
+Alpha is emitted only when needed:
+
+```ts
+formatCssColor({ red: 39, green: 132, blue: 213, alpha: 0.5 });
+// "rgb(39 132 213 / 0.5)"
 ```
 
 ## Extract colors from source
@@ -184,6 +215,11 @@ Parses one complete CSS color value.
 
 Returns a `ParsedCssColor` or `null`.
 
+### `formatCssColor(color, options?)`
+
+Serializes an `RgbaColor` to normalized CSS. The default output is modern
+`rgb()` syntax. Pass `{ format: "hex" }` for hex output.
+
 ### `extractCssColors(source)`
 
 Finds supported colors inside arbitrary source text.
@@ -199,6 +235,8 @@ Exports the built-in named-color lookup table.
 The package exports:
 
 - `ParsedCssColor`
+- `FormatCssColorOptions`
+- `CssColorOutputFormat`
 - `CssColorFormat`
 - `CssColorMatch`
 - `RgbaColor`

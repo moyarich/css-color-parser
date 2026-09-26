@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ensureCssColorProvider } from "../lib/cssColorProvider";
 import { monaco } from "../lib/monaco";
 
 export interface CodeExampleFile {
@@ -48,13 +49,18 @@ export function CodeExample({
   useEffect(() => {
     if (!host.current || !activeFile) return;
 
+    const language = activeFile.language ?? languageFromName(activeFile.name);
+    if (language === "css") ensureCssColorProvider();
+
     const instance = monaco.editor.create(host.current, {
       value: activeFile.value,
-      language: activeFile.language ?? languageFromName(activeFile.name),
+      language,
       theme: "vs",
       readOnly: true,
       domReadOnly: true,
       automaticLayout: true,
+      colorDecorators: language === "css",
+      fixedOverflowWidgets: true,
       minimap: { enabled: false },
       lineNumbers: "on",
       folding: false,
@@ -84,7 +90,10 @@ export function CodeExample({
     if (!model) return;
 
     const language = activeFile.language ?? languageFromName(activeFile.name);
+    if (language === "css") ensureCssColorProvider();
+
     monaco.editor.setModelLanguage(model, language);
+    editor.current?.updateOptions({ colorDecorators: language === "css" });
 
     if (model.getValue() !== activeFile.value) {
       model.setValue(activeFile.value);

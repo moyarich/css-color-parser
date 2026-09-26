@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   extractCssColors,
+  formatCssColor,
   parseCssColor,
 } from "../src/index";
 
@@ -201,5 +202,46 @@ describe("nested color extraction", () => {
     expect(
       extractCssColors("my-oklch(60% 0.15 250) #ffffffoops --red red-button"),
     ).toEqual([]);
+  });
+});
+
+
+describe("formatCssColor", () => {
+  it("serializes resolved colors to modern rgb syntax", () => {
+    expect(
+      formatCssColor({ red: 39, green: 132, blue: 213, alpha: 1 }),
+    ).toBe("rgb(39 132 213)");
+
+    expect(
+      formatCssColor({ red: 39.4, green: 132.4, blue: 212.6, alpha: 0.45678 }),
+    ).toBe("rgb(39 132 213 / 0.457)");
+  });
+
+  it("serializes resolved colors to hex syntax", () => {
+    expect(
+      formatCssColor(
+        { red: 39, green: 132, blue: 213, alpha: 1 },
+        { format: "hex" },
+      ),
+    ).toBe("#2784d5");
+
+    expect(
+      formatCssColor(
+        { red: 255, green: 0, blue: 0, alpha: 0.5 },
+        { format: "hex" },
+      ),
+    ).toBe("#ff000080");
+  });
+
+  it("clamps channels and alpha to valid CSS ranges", () => {
+    expect(
+      formatCssColor({ red: -20, green: 300, blue: 127.5, alpha: 2 }),
+    ).toBe("rgb(0 255 128)");
+  });
+
+  it("round-trips a parsed color into normalized CSS", () => {
+    const parsed = parseCssColor("oklch(60% 0.15 250)");
+
+    expect(parsed && formatCssColor(parsed.color)).toBe("rgb(39 132 213)");
   });
 });
