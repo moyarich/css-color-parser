@@ -28,9 +28,9 @@ jobs:
       - name: Install monorepo dependencies
         run: npm install
         env:
-          NODE_AUTH_TOKEN: ${{ secrets._TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets._GIT_TOKEN }}
 
       - name: Check root package and workspaces
         run: npm run check
         env:
-          NODE_AUTH_TOKEN: ${{ secrets._TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets._GIT_TOKEN }}
