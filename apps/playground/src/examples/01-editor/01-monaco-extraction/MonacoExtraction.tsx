@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   extractCssColors,
   formatCssColor,
   type CssColorMatch,
 } from "@moyarich/css-color-parser";
-import { ensureCssColorProvider } from "../../../lib/cssColorProvider";
-import { monaco } from "../../../lib/monaco";
+import { CssColorEditor } from "@moyarich/css-color-parser-monaco";
+import type { editor } from "monaco-editor";
 
 export default function MonacoExtraction({
   source,
@@ -14,66 +14,28 @@ export default function MonacoExtraction({
   source: string;
   title: string;
 }) {
-  const host = useRef<HTMLDivElement>(null);
-  const editor = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const [matches, setMatches] = useState<CssColorMatch[]>(() =>
     extractCssColors(source),
   );
 
-  useEffect(() => {
-    if (!host.current) return;
-
-    ensureCssColorProvider();
-
-    const instance = monaco.editor.create(host.current, {
-      value: source,
-      language: "css",
-      theme: "vs",
-      automaticLayout: true,
-      colorDecorators: true,
-      fixedOverflowWidgets: true,
-      fontSize: 14,
-      lineHeight: 22,
-      minimap: { enabled: false },
-      padding: { top: 14, bottom: 14 },
-      scrollBeyondLastLine: false,
-      tabSize: 2,
-      wordWrap: "on",
-    });
-
-    editor.current = instance;
-
-    const updateMatches = () => {
-      const model = instance.getModel();
-      setMatches(model ? extractCssColors(model.getValue()) : []);
-    };
-
-    updateMatches();
-    const subscription = instance.onDidChangeModelContent(updateMatches);
-
-    return () => {
-      subscription.dispose();
-      instance.dispose();
-      editor.current = null;
-    };
-  }, [source]);
-
   const reveal = (match: CssColorMatch) => {
-    const model = editor.current?.getModel();
-    if (!model || !editor.current) return;
+    const model = editorRef.current?.getModel();
+    if (!model || !editorRef.current) return;
 
     const start = model.getPositionAt(match.start);
     const end = model.getPositionAt(match.end);
-    const range = new monaco.Range(
-      start.lineNumber,
-      start.column,
-      end.lineNumber,
-      end.column,
-    );
 
-    editor.current.setSelection(range);
-    editor.current.revealRangeInCenterIfOutsideViewport(range);
-    editor.current.focus();
+    const range = {
+      startLineNumber: start.lineNumber,
+      startColumn: start.column,
+      endLineNumber: end.lineNumber,
+      endColumn: end.column,
+    };
+
+    editorRef.current.setSelection(range);
+    editorRef.current.revealRangeInCenterIfOutsideViewport(range);
+    editorRef.current.focus();
   };
 
   return (
@@ -88,10 +50,29 @@ export default function MonacoExtraction({
             {matches.length} match{matches.length === 1 ? "" : "es"}
           </span>
         </div>
-        <div
-          ref={host}
-          className="source-editor"
-          aria-label={`${title} CSS source editor`}
+
+        <CssColorEditor
+          files={[{ name: "example.css", value: source, language: "css" }]}
+          height={400}
+          theme="vs"
+          onMount={(instance) => {
+            editorRef.current = instance;
+          }}
+          onChange={(value) => {
+            setMatches(extractCssColors(value ?? ""));
+          }}
+          options={{
+            automaticLayout: true,
+            colorDecorators: true,
+            fixedOverflowWidgets: true,
+            fontSize: 14,
+            lineHeight: 22,
+            minimap: { enabled: false },
+            padding: { top: 14, bottom: 14 },
+            scrollBeyondLastLine: false,
+            tabSize: 2,
+            wordWrap: "on",
+          }}
         />
       </div>
 

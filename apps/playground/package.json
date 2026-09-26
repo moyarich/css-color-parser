@@ -15,7 +15,9 @@
     "@moyarich/css-color-parser": "file:../../packages/css-color-parser",
     "monaco-editor": "^0.56.0",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "@monaco-editor/react": "^4.7.0",
+    "@moyarich/css-color-parser-monaco": "file:../../packages/css-color-parser-monaco"
   },
   "devDependencies": {
     "@mdx-js/rollup": "^3.1.1",

@@ -1,3 +1,4 @@
+import { loader } from "@monaco-editor/react";
 import * as monaco from "monaco-editor";
 import CssWorker from "monaco-editor/language/css/css.worker?worker";
 import EditorWorker from "monaco-editor/editor/editor.worker?worker";
@@ -9,5 +10,7 @@ import EditorWorker from "monaco-editor/editor/editor.worker?worker";
       : new EditorWorker();
   },
 };
+
+loader.config({ monaco });
 
 export { monaco };

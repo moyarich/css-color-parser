@@ -1,0 +1,42 @@
+{
+  "name": "@moyarich/css-color-parser-monaco",
+  "version": "0.1.0",
+  "description": "Monaco React integration for @moyarich/css-color-parser.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean --external react --external @monaco-editor/react --external monaco-editor --external @moyarich/css-color-parser",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run build"
+  },
+  "peerDependencies": {
+    "@monaco-editor/react": ">=4.7.0",
+    "@moyarich/css-color-parser": ">=0.1.0",
+    "monaco-editor": ">=0.56.0",
+    "react": ">=19.0.0"
+  },
+  "devDependencies": {
+    "@monaco-editor/react": "^4.7.0",
+    "@moyarich/css-color-parser": "file:../css-color-parser",
+    "@types/react": "^19.1.16",
+    "monaco-editor": "^0.56.0",
+    "react": "^19.1.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moyarich/css-color-parser.git"
+  }
+}

@@ -1255,7 +1255,7 @@ body {
 
 
 
-.code-file-tabs {
+.css-color-editor__tabs {
   display: flex;
   gap: 2px;
   overflow-x: auto;
@@ -1264,7 +1264,7 @@ body {
   background: #f7f8fb;
 }
 
-.code-file-tab {
+.css-color-editor__tab {
   flex: 0 0 auto;
   padding: 7px 10px;
   border: 0;
@@ -1274,12 +1274,42 @@ body {
   font: 11px ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
-.code-file-tab[aria-selected="true"] {
+.css-color-editor__tab[aria-selected="true"] {
   border-bottom-color: var(--accent);
   color: #41378c;
   background: #fff;
 }
 
-.code-example:has(.code-file-tabs) .copy-button {
+.code-example:has(.css-color-editor__tabs) .copy-button {
   top: 7px;
+}
+
+
+.css-color-editor {
+  min-width: 0;
+}
+
+.css-color-editor__tabs {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  padding: 7px 54px 0 8px;
+  border-bottom: 1px solid var(--line);
+  background: #f7f8fb;
+}
+
+.css-color-editor__tab {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #687082;
+  font: 11px ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.css-color-editor__tab[aria-selected="true"] {
+  border-bottom-color: var(--accent);
+  color: #41378c;
+  background: #fff;
 }
