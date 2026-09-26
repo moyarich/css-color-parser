@@ -173,6 +173,12 @@ pre {
 .example-sidebar {
   position: sticky;
   top: 24px;
+  max-height: calc(100vh - 48px);
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 8px;
+  scrollbar-gutter: stable;
 }
 .search-label {
   position: absolute;
@@ -590,6 +596,10 @@ pre {
   }
   .example-sidebar {
     position: static;
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+    scrollbar-gutter: auto;
   }
   .example-search {
     margin-bottom: 16px;
