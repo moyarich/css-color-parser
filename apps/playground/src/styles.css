@@ -1222,3 +1222,32 @@ body {
 .generated-css .output-label {
   margin: 0;
 }
+
+
+.resolved-properties {
+  display: grid;
+  gap: 7px;
+}
+
+.resolved-property-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 9px 11px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.resolved-property-row code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.resolved-property-row span {
+  color: var(--muted);
+  font-size: 11px;
+}
