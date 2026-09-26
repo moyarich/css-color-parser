@@ -2,15 +2,20 @@
   "name": "css-color-parser-monorepo",
   "private": true,
   "type": "module",
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "dev": "npm run dev:playground",
-    "dev:playground": "npm run dev --workspace @moyarich/css-color-parser-playground",
+    "dev:playground": "npm run build:packages && npm run dev --workspace @moyarich/css-color-parser-playground",
     "build": "npm run build --workspace @moyarich/css-color-parser",
-    "build:playground": "npm run build --workspace @moyarich/css-color-parser-playground",
+    "build:playground": "npm run build:packages && npm run build --workspace @moyarich/css-color-parser-playground",
     "typecheck": "npm run typecheck --workspace @moyarich/css-color-parser",
     "test": "npm test --workspace @moyarich/css-color-parser",
     "test:watch": "npm run test:watch --workspace @moyarich/css-color-parser",
-    "check": "npm run check --workspaces --if-present"
+    "check": "npm run check --workspaces --if-present",
+    "build:packages": "npm run build --workspace @moyarich/css-color-parser && npm run build --workspace @moyarich/css-color-parser-monaco",
+    "typecheck:playground": "npm run build:packages && npm run typecheck --workspace @moyarich/css-color-parser-playground"
   }
 }

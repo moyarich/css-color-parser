@@ -4,9 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "prepare:workspace-deps": "npm --prefix ../.. run build:packages",
+    "predev": "npm run prepare:workspace-deps",
     "dev": "vite",
+    "prebuild": "npm run prepare:workspace-deps",
     "build": "vite build",
     "preview": "vite preview",
+    "pretypecheck": "npm run prepare:workspace-deps",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run build"
   },

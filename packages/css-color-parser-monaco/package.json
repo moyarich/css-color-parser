@@ -14,11 +14,14 @@
       "require": "./dist/index.cjs"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean --external react --external @monaco-editor/react --external monaco-editor --external @moyarich/css-color-parser",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm run build"
+    "check": "npm run typecheck && npm run build",
+    "prepare": "npm run build"
   },
   "peerDependencies": {
     "@monaco-editor/react": ">=4.7.0",
