@@ -659,43 +659,62 @@ pre {
 }
 
 
-.monaco-example {
+
+
+.nested-example-group {
   display: grid;
-  gap: 14px;
+  gap: 4px;
 }
 
-.example-group-picker {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.example-group-picker button {
-  padding: 8px 11px;
-  border: 1px solid #d9dee8;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #59647a;
-  cursor: pointer;
+.nested-example-label {
+  padding: 8px 11px 4px;
+  color: #404b62;
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 800;
 }
 
-.example-group-picker button:hover {
-  border-color: #c8cfdd;
-  background: #f7f8fc;
-  color: #182033;
+.nested-example-list {
+  display: grid;
+  gap: 3px;
+  padding-left: 10px;
+  border-left: 1px solid #e2e6ef;
 }
 
-.example-group-picker button[aria-pressed="true"] {
-  border-color: #c9c3ff;
-  background: #f2f1ff;
+.nested-example-list button {
+  font-size: 0.75rem;
+}
+
+.page-toc {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border: 1px solid #dfe4ee;
+  border-radius: 12px;
+  background: #fbfcff;
+}
+
+.page-toc summary {
+  cursor: pointer;
+  color: #404b62;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.page-toc nav {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.page-toc a {
+  color: #59647a;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.page-toc a:hover {
   color: #4f46c8;
 }
 
-.example-group-description {
-  margin: 0;
-  color: #6a7489;
-  font-size: 0.88rem;
-  line-height: 1.5;
+.page-toc a[data-level="3"] {
+  padding-left: 14px;
 }

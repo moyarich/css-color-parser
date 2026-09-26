@@ -5,6 +5,8 @@ declare module "*.mdx" {
     id: string;
     label: string;
     group: string;
+    parent?: string;
+    toc?: boolean;
     eyebrow: string;
     title: string;
     description: string;

@@ -1,0 +1,26 @@
+---
+id: "monaco-nested-expressions"
+label: "Nested Expressions"
+group: "Editor"
+parent: "Monaco extraction"
+eyebrow: "Editor integration"
+title: "Nested Expressions"
+description: "Nested mixes and multiline color expressions."
+toc: true
+---
+
+import MonacoExtraction from "../MonacoExtraction"
+import source from "./source"
+import sourceCode from "./source.ts?raw"
+
+<ExamplePage {...frontmatter} source={sourceCode}>
+  <MonacoExtraction source={source} title={frontmatter.title} />
+</ExamplePage>
+
+## What this example covers
+
+Nested mixes and multiline color expressions.
+
+## Extraction behavior
+
+The live result is produced from the same editable Monaco model used by `provideDocumentColors()`.

@@ -1,9 +1,12 @@
 import { useState, type ComponentType } from "react";
+import { TableOfContents } from "./TableOfContents";
 
 export interface PlaygroundEntry {
   id: string;
   label: string;
   group: string;
+  parent?: string;
+  toc?: boolean;
   Component: ComponentType;
 }
 
@@ -97,13 +100,47 @@ export function PlaygroundPage({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
-          {groups.map((group) => (
-            <div className="example-group" key={group}>
-              <div className="sidebar-heading">{group}</div>
-              <nav className="example-list">
-                {filtered
-                  .filter((example) => example.group === group)
-                  .map((example) => (
+          {groups.map((group) => {
+            const groupExamples = filtered.filter(
+              (example) => example.group === group,
+            );
+            const topLevel = groupExamples.filter((example) => !example.parent);
+            const parents = [
+              ...new Set(
+                groupExamples
+                  .map((example) => example.parent)
+                  .filter((parent): parent is string => Boolean(parent)),
+              ),
+            ];
+
+            return (
+              <div className="example-group" key={group}>
+                <div className="sidebar-heading">{group}</div>
+                <nav className="example-list">
+                  {parents.map((parent) => (
+                    <div className="nested-example-group" key={parent}>
+                      <div className="nested-example-label">{parent}</div>
+                      <div className="nested-example-list">
+                        {groupExamples
+                          .filter((example) => example.parent === parent)
+                          .map((example) => (
+                            <button
+                              key={example.id}
+                              type="button"
+                              aria-pressed={example.id === selected.id}
+                              onClick={() => setSelectedId(example.id)}
+                            >
+                              <span>{example.label}</span>
+                              <span className="nav-arrow" aria-hidden="true">
+                                ↗
+                              </span>
+                            </button>
+                          ))}
+                      </div>
+                    </div>
+                  ))}
+
+                  {topLevel.map((example) => (
                     <button
                       key={example.id}
                       type="button"
@@ -116,9 +153,10 @@ export function PlaygroundPage({
                       </span>
                     </button>
                   ))}
-              </nav>
-            </div>
-          ))}
+                </nav>
+              </div>
+            );
+          })}
           {filtered.length === 0 && (
             <p className="nav-empty" role="status">
               No examples found. Try another search.
@@ -128,7 +166,12 @@ export function PlaygroundPage({
         </aside>
 
         <div className="playground-main" id="main-content" tabIndex={-1}>
-          <SelectedPage key={selected.id} />
+          {selected.toc && (
+            <TableOfContents rootId="selected-example-page" pageKey={selected.id} />
+          )}
+          <div id="selected-example-page">
+            <SelectedPage key={selected.id} />
+          </div>
         </div>
       </section>
       <footer className="page-footer">

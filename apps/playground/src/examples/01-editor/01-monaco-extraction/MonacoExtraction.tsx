@@ -5,9 +5,6 @@ import {
   type RgbaColor,
 } from "@moyarich/css-color-parser";
 import { monaco } from "../../../lib/monaco";
-import { monacoExampleGroups } from "./exampleGroups";
-
-const initialGroup = monacoExampleGroups[0];
 
 const toCssColor = (color: RgbaColor) =>
   `rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${color.alpha})`;
@@ -75,16 +72,18 @@ if (import.meta.hot) {
   });
 }
 
-export default function MonacoExtraction() {
+export default function MonacoExtraction({
+  source,
+  title,
+}: {
+  source: string;
+  title: string;
+}) {
   const host = useRef<HTMLDivElement>(null);
   const editor = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-  const [groupId, setGroupId] = useState(initialGroup.id);
-  const [matches, setMatches] = useState<CssColorMatch[]>(
-    extractCssColors(initialGroup.source),
+  const [matches, setMatches] = useState<CssColorMatch[]>(() =>
+    extractCssColors(source),
   );
-
-  const selectedGroup =
-    monacoExampleGroups.find((group) => group.id === groupId) ?? initialGroup;
 
   useEffect(() => {
     if (!host.current) return;
@@ -92,7 +91,7 @@ export default function MonacoExtraction() {
     ensureColorProvider();
 
     const instance = monaco.editor.create(host.current, {
-      value: initialGroup.source,
+      value: source,
       language: "css",
       theme: "vs",
       automaticLayout: true,
@@ -122,27 +121,7 @@ export default function MonacoExtraction() {
       instance.dispose();
       editor.current = null;
     };
-  }, []);
-
-  const selectGroup = (nextGroupId: string) => {
-    const nextGroup = monacoExampleGroups.find(
-      (group) => group.id === nextGroupId,
-    );
-
-    if (!nextGroup) return;
-
-    setGroupId(nextGroup.id);
-
-    const model = editor.current?.getModel();
-    if (model) {
-      model.setValue(nextGroup.source);
-      editor.current?.setPosition({ lineNumber: 1, column: 1 });
-      editor.current?.revealLine(1);
-      editor.current?.focus();
-    } else {
-      setMatches(extractCssColors(nextGroup.source));
-    }
-  };
+  }, [source]);
 
   const reveal = (match: CssColorMatch) => {
     const model = editor.current?.getModel();
@@ -163,75 +142,61 @@ export default function MonacoExtraction() {
   };
 
   return (
-    <div className="monaco-example">
-      <div className="example-group-picker" aria-label="Runnable example groups">
-        {monacoExampleGroups.map((group) => (
-          <button
-            key={group.id}
-            type="button"
-            aria-pressed={group.id === selectedGroup.id}
-            onClick={() => selectGroup(group.id)}
-          >
-            {group.label}
-          </button>
-        ))}
+    <div className="workspace-grid">
+      <div className="source-card">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">CSS source</p>
+            <h2>{title}</h2>
+          </div>
+          <span className="status">
+            {matches.length} match{matches.length === 1 ? "" : "es"}
+          </span>
+        </div>
+        <div
+          ref={host}
+          className="source-editor"
+          aria-label={`${title} CSS source editor`}
+        />
       </div>
 
-      <p className="example-group-description">{selectedGroup.description}</p>
-
-      <div className="workspace-grid">
-        <div className="source-card">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">CSS source</p>
-              <h2>{selectedGroup.label}</h2>
-            </div>
-            <span className="status">
-              {matches.length} match{matches.length === 1 ? "" : "es"}
-            </span>
+      <div className="matches-panel">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Live output</p>
+            <h2>Extracted color matches</h2>
           </div>
-          <div
-            ref={host}
-            className="source-editor"
-            aria-label={`${selectedGroup.label} CSS source editor`}
-          />
         </div>
 
-        <div className="matches-panel">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Live output</p>
-              <h2>Extracted color matches</h2>
-            </div>
-          </div>
-
-          <ol className="match-list">
-            {matches.length ? (
-              matches.map((match, index) => (
-                <li className="match-item" key={`${match.start}-${match.end}-${index}`}>
-                  <button
-                    className="match-button"
-                    type="button"
-                    onClick={() => reveal(match)}
-                  >
-                    <span
-                      className="swatch"
-                      style={{ background: toCssColor(match.color) }}
-                    />
-                    <span className="match-content">
-                      <code>{match.value}</code>
-                      <span className="match-meta">
-                        {match.format} · [{match.start}, {match.end})
-                      </span>
+        <ol className="match-list">
+          {matches.length ? (
+            matches.map((match, index) => (
+              <li
+                className="match-item"
+                key={`${match.start}-${match.end}-${index}`}
+              >
+                <button
+                  className="match-button"
+                  type="button"
+                  onClick={() => reveal(match)}
+                >
+                  <span
+                    className="swatch"
+                    style={{ background: toCssColor(match.color) }}
+                  />
+                  <span className="match-content">
+                    <code>{match.value}</code>
+                    <span className="match-meta">
+                      {match.format} · [{match.start}, {match.end})
                     </span>
-                  </button>
-                </li>
-              ))
-            ) : (
-              <li className="empty-state">No resolvable CSS colors found.</li>
-            )}
-          </ol>
-        </div>
+                  </span>
+                </button>
+              </li>
+            ))
+          ) : (
+            <li className="empty-state">No resolvable CSS colors found.</li>
+          )}
+        </ol>
       </div>
     </div>
   );
