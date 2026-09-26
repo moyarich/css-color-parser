@@ -1195,3 +1195,30 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+
+.palette-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: baseline;
+}
+
+.palette-summary strong {
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.palette-summary span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.generated-css {
+  display: grid;
+  gap: 8px;
+}
+
+.generated-css .output-label {
+  margin: 0;
+}

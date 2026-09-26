@@ -1,19 +1,14 @@
 ---
 id: "design-token-extraction"
-label: "Design tokens"
+label: "CSS / Theme palette"
 group: "API"
-parent: "Parse or extract CSS"
 eyebrow: "extractCssColors usage"
-title: "Extract design tokens from CSS"
-description: "Find colors in CSS custom properties and turn the matches into a usable token inventory."
+title: "Extract a CSS theme palette"
+description: "Extract unique colors, associate them with CSS custom properties, normalize resolved channels, and regenerate a usable :root theme."
 ---
 
 import Example from "./DesignTokenExtraction"
 import source from "./DesignTokenExtraction.tsx?raw"
-
-## Why this is useful
-
-`extractCssColors()` gives exact values and source ranges. Those matches can be combined with surrounding CSS syntax to build token inventories, migration tools, documentation, or design-system audits.
 
 <ExamplePage {...frontmatter} source={source}>
   <Example />
