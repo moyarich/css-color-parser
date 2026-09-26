@@ -1,0 +1,25 @@
+---
+id: "monaco-source-extraction"
+label: "Source Extraction"
+group: "Editor"
+eyebrow: "Editor integration"
+title: "Source Extraction"
+description: "Multiple colors, gradients, offsets, and UTF-16 source positions."
+toc: true
+---
+
+import MonacoExtraction from "../MonacoExtraction"
+import source from "./source"
+import sourceCode from "./source.ts?raw"
+
+<ExamplePage
+  {...frontmatter}
+  source={sourceCode}
+  preview={<MonacoExtraction source={source} title={frontmatter.title} />}
+>
+
+## Extraction behavior
+
+The live result is produced from the same editable Monaco model used by `provideDocumentColors()`.
+
+</ExamplePage>

@@ -1,0 +1,271 @@
+.blend-mode-example {
+  --blend-foreground: rgb(220 113 130);
+  --blend-background: rgb(66 191 208);
+  --blend-canvas: rgb(247 238 248);
+  --blend-mode: multiply;
+
+  --blend-ui-surface: #fff;
+  --blend-ui-subtle: #fafbfe;
+  --blend-ui-border: var(--line);
+  --blend-ui-text: #60697a;
+  --blend-ui-muted: #767d8e;
+  --blend-ui-accent: #5140ad;
+  --blend-ui-accent-soft: #ede9fb;
+  --blend-ui-accent-border: #cfc5ef;
+
+  max-width: 1080px;
+}
+
+.blend-workbench {
+  display: grid;
+  grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
+  min-height: 430px;
+  overflow: hidden;
+  border: 1px solid var(--blend-ui-border);
+  border-radius: 14px;
+  background: var(--blend-ui-surface);
+}
+
+.blend-sidebar {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: 16px;
+  border-right: 1px solid var(--line);
+  background: var(--blend-ui-subtle);
+}
+
+.blend-sidebar__section {
+  display: grid;
+  gap: 10px;
+}
+
+.blend-sidebar__title {
+  color: var(--blend-ui-muted);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+}
+
+.blend-control {
+  min-width: 0;
+}
+
+.blend-control label {
+  margin-bottom: 6px;
+  font-size: 10px;
+}
+
+.blend-color-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 38px;
+  gap: 7px;
+}
+
+.blend-color-input input {
+  height: 38px;
+  padding: 8px 10px;
+  font: 11px ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.blend-color-input input[type="color"] {
+  width: 38px;
+  padding: 3px;
+  border: 1px solid #d9deea;
+  border-radius: 7px;
+  background: var(--blend-ui-surface);
+  cursor: pointer;
+}
+
+.blend-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.blend-mode-grid button,
+.blend-layer-switch button {
+  min-width: 0;
+  min-height: 31px;
+  padding: 6px 7px;
+  border: 1px solid #e1e4ec;
+  border-radius: 6px;
+  background: var(--blend-ui-surface);
+  color: var(--blend-ui-text);
+  font-size: 9.5px;
+  font-weight: 550;
+}
+
+.blend-mode-grid button:hover,
+.blend-layer-switch button:hover {
+  border-color: #c7c0e5;
+  color: #5142a4;
+}
+
+.blend-mode-grid button[aria-pressed="true"],
+.blend-layer-switch button[aria-pressed="true"] {
+  border-color: var(--blend-ui-accent-border);
+  background: var(--blend-ui-accent-soft);
+  color: var(--blend-ui-accent);
+  font-weight: 650;
+}
+
+.blend-layer-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.blend-main {
+  display: grid;
+  min-width: 0;
+  min-height: 430px;
+}
+
+.blend-venn-preview {
+  position: relative;
+  min-height: 430px;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle, rgb(105 78 124 / 5%) 1px, transparent 1.5px) 0 0 /
+      8px 8px,
+    var(--blend-canvas);
+}
+
+.blend-circle {
+  position: absolute;
+  top: 50%;
+  width: min(31vw, 290px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.blend-circle--foreground {
+  left: calc(50% - min(25vw, 220px));
+  background: var(--blend-foreground);
+}
+
+.blend-circle--background {
+  right: calc(50% - min(25vw, 220px));
+  background: var(--blend-background);
+}
+
+.blend-venn-preview[data-top-layer="foreground"] .blend-circle--foreground {
+  z-index: 2;
+  mix-blend-mode: var(--blend-mode);
+}
+
+.blend-venn-preview[data-top-layer="foreground"] .blend-circle--background {
+  z-index: 1;
+}
+
+.blend-venn-preview[data-top-layer="background"] .blend-circle--background {
+  z-index: 2;
+  mix-blend-mode: var(--blend-mode);
+}
+
+.blend-venn-preview[data-top-layer="background"] .blend-circle--foreground {
+  z-index: 1;
+}
+
+.blend-invalid {
+  display: grid;
+  place-items: center;
+  min-height: 430px;
+  padding: 30px;
+  color: var(--muted);
+  text-align: center;
+  background: var(--blend-ui-subtle);
+}
+
+.blend-values {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.blend-values > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 11px 12px;
+  border: 1px solid var(--blend-ui-border);
+  border-radius: 8px;
+  background: var(--blend-ui-surface);
+}
+
+.blend-values span,
+.blend-values small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.blend-values code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.blend-generated-css {
+  display: grid;
+  gap: 8px;
+}
+
+.blend-generated-css .output-label {
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .blend-workbench {
+    grid-template-columns: 1fr;
+  }
+
+  .blend-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .blend-main,
+  .blend-venn-preview,
+  .blend-invalid {
+    min-height: 330px;
+  }
+
+  .blend-values {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .blend-circle {
+    width: 220px;
+  }
+
+  .blend-circle--foreground {
+    left: calc(50% - 175px);
+  }
+
+  .blend-circle--background {
+    right: calc(50% - 175px);
+  }
+}
+
+@media (max-width: 520px) {
+  .blend-values {
+    grid-template-columns: 1fr;
+  }
+
+  .blend-circle {
+    width: 165px;
+  }
+
+  .blend-circle--foreground {
+    left: calc(50% - 130px);
+  }
+
+  .blend-circle--background {
+    right: calc(50% - 130px);
+  }
+}

@@ -10,6 +10,23 @@ export interface ParsedCssColor {
   color: RgbaColor;
 }
 
+export type { CustomPropertyMap as CssCustomProperties } from "@moyarich/css-expand-collapse";
+
+import {
+  resolveCustomProperties,
+  type CustomPropertyMap,
+} from "@moyarich/css-expand-collapse";
+
+export interface ParseCssColorOptions {
+  customProperties?: CustomPropertyMap;
+}
+
+/**
+ * Resolves CSS var() references using the shared resolver from
+ * @moyarich/css-expand-collapse.
+ */
+export const resolveCssVariables = resolveCustomProperties;
+
 const HEX_COLOR_PATTERN = /^#([\da-f]{3}|[\da-f]{4}|[\da-f]{6}|[\da-f]{8})$/i;
 const RGB_COLOR_PATTERN = /^rgba?\(([\s\S]*)\)$/i;
 const HSL_COLOR_PATTERN = /^hsla?\(([\s\S]*)\)$/i;
@@ -283,10 +300,22 @@ export function parseNamedColor(value: string): RgbaColor | null {
  * Parses one complete CSS color literal.
  *
  * Supports absolute and relative CSS color functions, color-mix(), hex,
- * transparent, and named colors. Context-dependent expressions return null.
+ * transparent, named colors, and var() when customProperties are provided.
+ * Other context-dependent expressions return null.
  */
-export function parseCssColor(value: string): ParsedCssColor | null {
-  const trimmed = value.trim();
+export function parseCssColor(
+  value: string,
+  options: ParseCssColorOptions = {},
+): ParsedCssColor | null {
+  const original = value.trim();
+
+  if (!original) {
+    return null;
+  }
+
+  const trimmed = options.customProperties
+    ? resolveCssVariables(original, options.customProperties)
+    : original;
 
   if (!trimmed) {
     return null;
@@ -295,25 +324,25 @@ export function parseCssColor(value: string): ParsedCssColor | null {
   const hex = parseHexColor(trimmed);
 
   if (hex) {
-    return { value: trimmed, format: "hex", color: hex };
+    return { value: original, format: "hex", color: hex };
   }
 
   const rgb = parseRgbColor(trimmed);
 
   if (rgb) {
-    return { value: trimmed, format: "rgb", color: rgb };
+    return { value: original, format: "rgb", color: rgb };
   }
 
   const hsl = parseHslColor(trimmed);
 
   if (hsl) {
-    return { value: trimmed, format: "hsl", color: hsl };
+    return { value: original, format: "hsl", color: hsl };
   }
 
   const named = parseNamedColor(trimmed);
 
   if (named) {
-    return { value: trimmed, format: "named", color: named };
+    return { value: original, format: "named", color: named };
   }
 
   const functionName = /^([a-z-]+)\(/i.exec(trimmed)?.[1]?.toLowerCase();
@@ -326,7 +355,7 @@ export function parseCssColor(value: string): ParsedCssColor | null {
       // Advanced colors use color-bits' 8-bit sRGB representation.
       const color = parseCSS(trimmed);
       return {
-        value: trimmed,
+        value: original,
         format,
         color: {
           red: getRed(color),

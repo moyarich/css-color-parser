@@ -1,0 +1,20 @@
+---
+id: "gradient-color-extraction"
+label: "Gradient colors"
+group: "API"
+parent: "Parse or extract CSS"
+eyebrow: "extractCssColors usage"
+title: "Extract colors from gradients"
+description: "Extract every resolvable color from a gradient and reuse the results as a visual palette."
+---
+
+import Example from "./GradientColors"
+import source from "./GradientColors.tsx?raw"
+
+## Why this is useful
+
+Gradients contain several independent colors inside a larger expression. Extracting them lets tooling inspect stops, build palettes, generate documentation, or let users edit individual colors without parsing the entire declaration manually.
+
+<ExamplePage {...frontmatter} source={source}>
+  <Example />
+</ExamplePage>

@@ -1,0 +1,25 @@
+---
+id: "monaco-relative-colors"
+label: "Relative Colors"
+group: "Editor"
+eyebrow: "Editor integration"
+title: "Relative Colors"
+description: "Relative RGB, HSL, and OKLab colors including calc()."
+toc: true
+---
+
+import MonacoExtraction from "../MonacoExtraction"
+import source from "./source"
+import sourceCode from "./source.ts?raw"
+
+<ExamplePage
+  {...frontmatter}
+  source={sourceCode}
+  preview={<MonacoExtraction source={source} title={frontmatter.title} />}
+>
+
+## Extraction behavior
+
+The live result is produced from the same editable Monaco model used by `provideDocumentColors()`.
+
+</ExamplePage>

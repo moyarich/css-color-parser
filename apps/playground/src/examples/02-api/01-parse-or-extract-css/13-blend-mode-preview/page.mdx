@@ -1,0 +1,22 @@
+---
+id: "blend-mode-preview"
+label: "Blend mode preview"
+group: "API"
+eyebrow: "parseCssColor + formatCssColor usage"
+title: "Preview CSS mix-blend-mode with parsed colors"
+description: "Parse arbitrary CSS colors, serialize them back to normalized CSS, compare layer order, and generate a CSS-variable-driven blend."
+---
+
+import Example from "./BlendModePreview"
+import componentSource from "./BlendModePreview.tsx?raw"
+import cssSource from "./BlendModePreview.css?raw"
+
+<ExamplePage
+  {...frontmatter}
+  files={[
+    { name: "BlendModePreview.tsx", value: componentSource, language: "typescript" },
+    { name: "BlendModePreview.css", value: cssSource, language: "css" },
+  ]}
+>
+  <Example />
+</ExamplePage>

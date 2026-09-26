@@ -1,0 +1,20 @@
+---
+id: "normalized-swatch"
+label: "Normalized swatch"
+group: "API"
+parent: "Parse or extract CSS"
+eyebrow: "parseCssColor usage"
+title: "Render a normalized swatch"
+description: "Parse one CSS color value, normalize its channels, and use the result to render a reliable preview."
+---
+
+import Example from "./NormalizedSwatch"
+import source from "./NormalizedSwatch.tsx?raw"
+
+## Why this is useful
+
+A color input often needs more than validation. Once `parseCssColor()` resolves a value, its normalized RGBA channels can drive previews, form state, design-token tools, or downstream rendering.
+
+<ExamplePage {...frontmatter} source={source}>
+  <Example />
+</ExamplePage>

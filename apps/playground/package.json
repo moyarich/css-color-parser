@@ -4,17 +4,32 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "prepare:workspace-deps": "npm --prefix ../.. run build:packages",
+    "predev": "npm run prepare:workspace-deps",
     "dev": "vite",
+    "prebuild": "npm run prepare:workspace-deps",
     "build": "vite build",
     "preview": "vite preview",
+    "pretypecheck": "npm run prepare:workspace-deps",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run build"
   },
   "dependencies": {
+    "@mdx-js/react": "^3.1.1",
     "@moyarich/css-color-parser": "file:../../packages/css-color-parser",
-    "monaco-editor": "^0.56.0"
+    "monaco-editor": "^0.56.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "@monaco-editor/react": "^4.7.0",
+    "@moyarich/css-color-parser-monaco": "file:../../packages/css-color-parser-monaco"
   },
   "devDependencies": {
+    "@mdx-js/rollup": "^3.1.1",
+    "@types/react": "^19.1.16",
+    "@types/react-dom": "^19.1.9",
+    "rehype-slug": "^6.0.0",
+    "remark-frontmatter": "^5.0.0",
+    "remark-mdx-frontmatter": "^5.2.0",
     "typescript": "^5.9.2",
     "vite": "^7.1.7"
   }

@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   extractCssColors,
+  formatCssColor,
   parseCssColor,
+  resolveCssVariables,
 } from "../src/index";
 
 describe("parseCssColor", () => {
@@ -201,5 +203,130 @@ describe("nested color extraction", () => {
     expect(
       extractCssColors("my-oklch(60% 0.15 250) #ffffffoops --red red-button"),
     ).toEqual([]);
+  });
+});
+
+
+describe("formatCssColor", () => {
+  it("serializes resolved colors to modern rgb syntax", () => {
+    expect(
+      formatCssColor({ red: 39, green: 132, blue: 213, alpha: 1 }),
+    ).toBe("rgb(39 132 213)");
+
+    expect(
+      formatCssColor({ red: 39.4, green: 132.4, blue: 212.6, alpha: 0.45678 }),
+    ).toBe("rgb(39 132 213 / 0.457)");
+  });
+
+  it("serializes resolved colors to hex syntax", () => {
+    expect(
+      formatCssColor(
+        { red: 39, green: 132, blue: 213, alpha: 1 },
+        { format: "hex" },
+      ),
+    ).toBe("#2784d5");
+
+    expect(
+      formatCssColor(
+        { red: 255, green: 0, blue: 0, alpha: 0.5 },
+        { format: "hex" },
+      ),
+    ).toBe("#ff000080");
+  });
+
+  it("clamps channels and alpha to valid CSS ranges", () => {
+    expect(
+      formatCssColor({ red: -20, green: 300, blue: 127.5, alpha: 2 }),
+    ).toBe("rgb(0 255 128)");
+  });
+
+  it("round-trips a parsed color into normalized CSS", () => {
+    const parsed = parseCssColor("oklch(60% 0.15 250)");
+
+    expect(parsed && formatCssColor(parsed.color)).toBe("rgb(39 132 213)");
+  });
+});
+
+
+describe("CSS custom properties", () => {
+  const customProperties = {
+    "--brand": "oklch(60% 0.15 250)",
+    "--brand-alias": "var(--brand)",
+    "--accent": "rgb(220 38 38)",
+  };
+
+  it("resolves var() before parsing a color", () => {
+    expect(
+      parseCssColor("var(--brand)", { customProperties }),
+    ).toEqual({
+      value: "var(--brand)",
+      format: "oklch",
+      color: { red: 39, green: 132, blue: 213, alpha: 1 },
+    });
+  });
+
+  it("resolves chained custom properties", () => {
+    expect(
+      parseCssColor("var(--brand-alias)", { customProperties })?.color,
+    ).toEqual({ red: 39, green: 132, blue: 213, alpha: 1 });
+  });
+
+  it("supports var() fallbacks", () => {
+    expect(
+      parseCssColor("var(--missing, rebeccapurple)", { customProperties }),
+    ).toMatchObject({
+      format: "named",
+      color: { red: 102, green: 51, blue: 153, alpha: 1 },
+    });
+  });
+
+  it("resolves variables inside color functions", () => {
+    expect(
+      parseCssColor(
+        "color-mix(in srgb, var(--accent), white)",
+        { customProperties },
+      )?.format,
+    ).toBe("color-mix");
+  });
+
+  it("detects cycles and uses a fallback when present", () => {
+    const cyclic = {
+      "--a": "var(--b)",
+      "--b": "var(--a)",
+    };
+
+    expect(
+      parseCssColor("var(--a)", { customProperties: cyclic }),
+    ).toBeNull();
+
+    expect(
+      parseCssColor("var(--a, blue)", { customProperties: cyclic }),
+    ).toMatchObject({
+      format: "named",
+      color: { red: 0, green: 0, blue: 255, alpha: 1 },
+    });
+  });
+
+  it("exposes standalone variable resolution", () => {
+    expect(
+      resolveCssVariables(
+        "linear-gradient(var(--brand), var(--accent))",
+        customProperties,
+      ),
+    ).toBe(
+      "linear-gradient(oklch(60% 0.15 250), rgb(220 38 38))",
+    );
+  });
+
+  it("extracts resolvable var() expressions with source offsets", () => {
+    const source = ".toy { color: var(--brand); }";
+    const matches = extractCssColors(source, { customProperties });
+
+    expect(matches).toHaveLength(1);
+    expect(matches[0]?.value).toBe("var(--brand)");
+    expect(matches[0]?.format).toBe("oklch");
+    expect(source.slice(matches[0]?.start, matches[0]?.end)).toBe(
+      "var(--brand)",
+    );
   });
 });

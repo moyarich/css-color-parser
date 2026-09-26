@@ -1,0 +1,18 @@
+declare module "*.mdx" {
+  import type { ComponentType } from "react";
+
+  export const frontmatter: {
+    id: string;
+    label: string;
+    group: string;
+    parent?: string;
+    toc?: boolean;
+    eyebrow: string;
+    title: string;
+    description: string;
+    hidden?: boolean;
+  };
+
+  const MDXComponent: ComponentType;
+  export default MDXComponent;
+}

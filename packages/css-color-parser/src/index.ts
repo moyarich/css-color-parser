@@ -1,5 +1,17 @@
+// Source extraction.
 export { extractCssColors } from "./extractCssColors";
+
+// CSS serialization.
+export { formatCssColor } from "./formatCssColor";
+export type {
+  CssColorOutputFormat,
+  FormatCssColorOptions,
+} from "./formatCssColor";
+
+// Named-color data.
 export { CSS_NAMED_COLORS } from "./namedColors";
+
+// Color parsing and conversion helpers.
 export {
   hslToRgb,
   parseAlpha,
@@ -13,5 +25,20 @@ export {
   parseRgbChannel,
   parseRgbColor,
 } from "./parseCssColor";
-export type { FunctionalComponents, ParsedCssColor } from "./parseCssColor";
-export type { CssColorFormat, CssColorMatch, RgbaColor } from "./types";
+
+// Public types.
+export {
+  resolveCssVariables,
+} from "./parseCssColor";
+export type {
+  CssCustomProperties,
+  FunctionalComponents,
+  ParseCssColorOptions,
+  ParsedCssColor,
+} from "./parseCssColor";
+
+export type {
+  CssColorFormat,
+  CssColorMatch,
+  RgbaColor,
+} from "./types";

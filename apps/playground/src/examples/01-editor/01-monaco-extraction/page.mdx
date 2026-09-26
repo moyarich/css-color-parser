@@ -1,0 +1,29 @@
+---
+id: "monaco-extraction"
+label: "Monaco extraction"
+group: "Editor"
+eyebrow: "Editor integration"
+title: "Extract CSS colors with Monaco"
+description: "Use extractCssColors() as Monaco's live document color provider, then explore focused scenarios below."
+toc: true
+---
+
+import MonacoExtraction from "./MonacoExtraction"
+import source from "./overviewSource"
+import sourceCode from "./overviewSource.ts?raw"
+
+<ExamplePage
+  {...frontmatter}
+  source={sourceCode}
+  preview={<MonacoExtraction source={source} title="Monaco extraction" />}
+>
+
+## Overview
+
+This example connects `extractCssColors()` directly to Monaco's `provideDocumentColors()` API. Edit the CSS and the extracted matches update from the same editor model.
+
+## Focused examples
+
+Use the nested menu items under **Monaco extraction** for basic colors, CSS Color 4, color mixing, relative colors, nested expressions, source offsets, editor edge cases, and unresolved values.
+
+</ExamplePage>

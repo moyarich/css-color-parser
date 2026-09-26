@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -18,9 +22,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          registry-url: https://npm.pkg.github.com
+          scope: "@moyarich"
 
       - name: Install monorepo dependencies
         run: npm install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets._GIT_TOKEN }}
 
       - name: Check root package and workspaces
         run: npm run check
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets._GIT_TOKEN }}
