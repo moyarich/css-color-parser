@@ -18,20 +18,36 @@ function GitHubIcon() {
   );
 }
 
-export function PlaygroundPage({ examples }: { examples: readonly PlaygroundEntry[] }) {
+export function PlaygroundPage({
+  examples,
+}: {
+  examples: readonly PlaygroundEntry[];
+}) {
+  const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(examples[0]?.id ?? "");
-  const selected = examples.find((example) => example.id === selectedId) ?? examples[0];
+  const selected =
+    examples.find((example) => example.id === selectedId) ?? examples[0];
 
   if (!selected) return null;
 
   const SelectedPage = selected.Component;
-  const groups = [...new Set(examples.map((example) => example.group))];
+  const filtered = examples.filter((example) =>
+    `${example.label} ${example.group}`
+      .toLowerCase()
+      .includes(query.toLowerCase()),
+  );
+  const groups = [...new Set(filtered.map((example) => example.group))];
 
   return (
     <main className="page-shell">
       <header className="hero">
         <div className="hero-bar">
-          <p className="eyebrow">@moyarich/css-color-parser</p>
+          <a className="brand" href="#main-content">
+            <span className="brand-mark" aria-hidden="true" />
+            <span>
+              css-color-parser<span className="brand-tag">PLAYGROUND</span>
+            </span>
+          </a>
           <a
             className="github-link"
             href="https://github.com/moyarich/css-color-parser"
@@ -43,17 +59,49 @@ export function PlaygroundPage({ examples }: { examples: readonly PlaygroundEntr
             <span>GitHub</span>
           </a>
         </div>
-        <h1>CSS color parser playground</h1>
-        <p>Explore the live editor integration and every exported package function from one playground.</p>
+        <div className="hero-intro">
+          <div>
+            <p className="eyebrow">A little clarity for every color</p>
+            <h1>Explore the color spectrum.</h1>
+            <p>
+              Turn CSS colors into something you can work with. Edit, parse, and
+              inspect in real time.
+            </p>
+          </div>
+          <div className="spectrum" aria-hidden="true">
+            {[
+              "#c9b9ff",
+              "#a498ed",
+              "#818bdc",
+              "#78b9c4",
+              "#bddab7",
+              "#efcf88",
+              "#eaa48a",
+            ].map((color) => (
+              <span key={color} style={{ background: color }} />
+            ))}
+          </div>
+        </div>
       </header>
 
       <section className="playground-shell">
         <aside className="example-sidebar" aria-label="Playground examples">
+          <label className="search-label" htmlFor="example-search">
+            Find an example
+          </label>
+          <input
+            id="example-search"
+            className="example-search"
+            type="search"
+            placeholder="Search examples…"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
           {groups.map((group) => (
             <div className="example-group" key={group}>
               <div className="sidebar-heading">{group}</div>
               <nav className="example-list">
-                {examples
+                {filtered
                   .filter((example) => example.group === group)
                   .map((example) => (
                     <button
@@ -62,18 +110,30 @@ export function PlaygroundPage({ examples }: { examples: readonly PlaygroundEntr
                       aria-pressed={example.id === selected.id}
                       onClick={() => setSelectedId(example.id)}
                     >
-                      {example.label}
+                      <span>{example.label}</span>
+                      <span className="nav-arrow" aria-hidden="true">
+                        ↗
+                      </span>
                     </button>
                   ))}
               </nav>
             </div>
           ))}
+          {filtered.length === 0 && (
+            <p className="nav-empty" role="status">
+              No examples found. Try another search.
+            </p>
+          )}
+          <div className="sidebar-note"></div>
         </aside>
 
-        <div className="playground-main">
+        <div className="playground-main" id="main-content" tabIndex={-1}>
           <SelectedPage key={selected.id} />
         </div>
       </section>
+      <footer className="page-footer">
+        <span>@Moyarich</span>
+      </footer>
     </main>
   );
 }

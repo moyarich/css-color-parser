@@ -25,6 +25,11 @@ export function ExamplePage({
       </div>
 
       <div className="example-demo">
+        <div className="preview-toolbar">
+          <span>
+            <span className="live-dot" /> Interactive preview
+          </span>
+        </div>
         <div className="example-preview">{children}</div>
         <div className={`example-source${showCode ? " is-expanded" : ""}`}>
           <CodeExample value={source} ariaLabel={`${title} source`} />
@@ -32,6 +37,7 @@ export function ExamplePage({
           <button
             className="view-code-button"
             type="button"
+            aria-expanded={showCode}
             onClick={() => setShowCode((value) => !value)}
           >
             {showCode ? "Hide Code" : "View Code"}

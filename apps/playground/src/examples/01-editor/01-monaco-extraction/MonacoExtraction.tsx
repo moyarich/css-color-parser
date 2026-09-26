@@ -26,19 +26,21 @@ type ProviderGlobal = typeof globalThis & {
 
 function ensureColorProvider() {
   const globalState = globalThis as ProviderGlobal;
-  if (globalState.__cssColorParserProvider) return;
-
-  const cssDefaults = monaco.languages.css?.cssDefaults;
-
-  if (cssDefaults) {
+  // Monaco 0.56 exposes language defaults directly on the module.
+  // Disable its CSS colors before registering our parser-backed provider.
+  const cssDefaults = monaco.css.cssDefaults;
+  if (cssDefaults.modeConfiguration.colors !== false) {
     cssDefaults.setModeConfiguration({
       ...cssDefaults.modeConfiguration,
       colors: false,
     });
   }
 
-  globalState.__cssColorParserProvider =
-    monaco.languages.registerColorProvider("css", {
+  if (globalState.__cssColorParserProvider) return;
+
+  globalState.__cssColorParserProvider = monaco.languages.registerColorProvider(
+    "css",
+    {
       provideDocumentColors(model) {
         return extractCssColors(model.getValue()).map((match) => {
           const start = model.getPositionAt(match.start);
@@ -64,11 +66,22 @@ function ensureColorProvider() {
       provideColorPresentations(_model, colorInfo) {
         const { red, green, blue, alpha } = colorInfo.color;
 
-        return [{
-          label: `rgba(${Math.round(red * 255)}, ${Math.round(green * 255)}, ${Math.round(blue * 255)}, ${alpha})`,
-        }];
+        return [
+          {
+            label: `rgba(${Math.round(red * 255)}, ${Math.round(green * 255)}, ${Math.round(blue * 255)}, ${alpha})`,
+          },
+        ];
       },
-    });
+    },
+  );
+}
+
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    const globalState = globalThis as ProviderGlobal;
+    globalState.__cssColorParserProvider?.dispose();
+    delete globalState.__cssColorParserProvider;
+  });
 }
 
 export default function MonacoExtraction() {
@@ -89,6 +102,8 @@ export default function MonacoExtraction() {
       theme: "vs",
       automaticLayout: true,
       colorDecorators: true,
+      // Keep color pickers and suggestions outside the rounded containers' clipping.
+      fixedOverflowWidgets: true,
       fontSize: 14,
       lineHeight: 22,
       minimap: { enabled: false },
@@ -145,7 +160,11 @@ export default function MonacoExtraction() {
             {matches.length} match{matches.length === 1 ? "" : "es"}
           </span>
         </div>
-        <div ref={host} className="source-editor" aria-label="CSS source editor" />
+        <div
+          ref={host}
+          className="source-editor"
+          aria-label="CSS source editor"
+        />
       </div>
 
       <div className="matches-panel">
