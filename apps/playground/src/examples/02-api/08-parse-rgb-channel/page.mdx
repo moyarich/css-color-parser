@@ -1,16 +1,15 @@
+---
+id: "parseRgbChannel"
+label: "parseRgbChannel"
+group: "API"
+eyebrow: "Public JavaScript API"
+title: "parseRgbChannel"
+description: "Parse and clamp one RGB numeric or percentage channel to the 0–255 range."
+---
+
 import Example from "./ParseRgbChannel"
 import source from "./ParseRgbChannel.tsx?raw"
-export const meta = {
-  id: "parseRgbChannel",
-  label: "parseRgbChannel",
-  group: "API",
-}
 
-<ExamplePage
-  eyebrow="Public JavaScript API"
-  title="parseRgbChannel"
-  description="Parse and clamp one RGB numeric or percentage channel to the 0–255 range."
-  source={source}
->
+<ExamplePage {...frontmatter} source={source}>
   <Example />
 </ExamplePage>

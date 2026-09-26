@@ -1,16 +1,15 @@
+---
+id: "extractCssColors"
+label: "extractCssColors"
+group: "API"
+eyebrow: "Public JavaScript API"
+title: "extractCssColors"
+description: "Find resolvable CSS colors in arbitrary source text and return exact UTF-16 ranges."
+---
+
 import Example from "./ExtractCssColors"
 import source from "./ExtractCssColors.tsx?raw"
-export const meta = {
-  id: "extractCssColors",
-  label: "extractCssColors",
-  group: "API",
-}
 
-<ExamplePage
-  eyebrow="Public JavaScript API"
-  title="extractCssColors"
-  description="Find resolvable CSS colors in arbitrary source text and return exact UTF-16 ranges."
-  source={source}
->
+<ExamplePage {...frontmatter} source={source}>
   <Example />
 </ExamplePage>

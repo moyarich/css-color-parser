@@ -1,31 +1,3 @@
-import MonacoPage, { meta as MonacoPageMeta } from "./examples/01-editor/01-monaco-extraction/page.mdx"
-import ParseCssColorPage, { meta as ParseCssColorPageMeta } from "./examples/02-api/01-parse-css-color/page.mdx"
-import ExtractCssColorsPage, { meta as ExtractCssColorsPageMeta } from "./examples/02-api/02-extract-css-colors/page.mdx"
-import ParseHexColorPage, { meta as ParseHexColorPageMeta } from "./examples/02-api/03-parse-hex-color/page.mdx"
-import ParseRgbColorPage, { meta as ParseRgbColorPageMeta } from "./examples/02-api/04-parse-rgb-color/page.mdx"
-import ParseHslColorPage, { meta as ParseHslColorPageMeta } from "./examples/02-api/05-parse-hsl-color/page.mdx"
-import ParseNamedColorPage, { meta as ParseNamedColorPageMeta } from "./examples/02-api/06-parse-named-color/page.mdx"
-import ParseHuePage, { meta as ParseHuePageMeta } from "./examples/02-api/07-parse-hue/page.mdx"
-import ParseRgbChannelPage, { meta as ParseRgbChannelPageMeta } from "./examples/02-api/08-parse-rgb-channel/page.mdx"
-import ParsePercentagePage, { meta as ParsePercentagePageMeta } from "./examples/02-api/09-parse-percentage/page.mdx"
-import ParseAlphaPage, { meta as ParseAlphaPageMeta } from "./examples/02-api/10-parse-alpha/page.mdx"
-import ParseFunctionalComponentsPage, { meta as ParseFunctionalComponentsPageMeta } from "./examples/02-api/11-parse-functional-components/page.mdx"
-import HslToRgbPage, { meta as HslToRgbPageMeta } from "./examples/02-api/12-hsl-to-rgb/page.mdx"
+import { examples } from "./example-pages"
 
-<PlaygroundPage
-  examples={[
-    { ...MonacoPageMeta, Component: MonacoPage },
-    { ...ParseCssColorPageMeta, Component: ParseCssColorPage },
-    { ...ExtractCssColorsPageMeta, Component: ExtractCssColorsPage },
-    { ...ParseHexColorPageMeta, Component: ParseHexColorPage },
-    { ...ParseRgbColorPageMeta, Component: ParseRgbColorPage },
-    { ...ParseHslColorPageMeta, Component: ParseHslColorPage },
-    { ...ParseNamedColorPageMeta, Component: ParseNamedColorPage },
-    { ...ParseHuePageMeta, Component: ParseHuePage },
-    { ...ParseRgbChannelPageMeta, Component: ParseRgbChannelPage },
-    { ...ParsePercentagePageMeta, Component: ParsePercentagePage },
-    { ...ParseAlphaPageMeta, Component: ParseAlphaPage },
-    { ...ParseFunctionalComponentsPageMeta, Component: ParseFunctionalComponentsPage },
-    { ...HslToRgbPageMeta, Component: HslToRgbPage },
-  ]}
-/>
+<PlaygroundPage examples={examples} />

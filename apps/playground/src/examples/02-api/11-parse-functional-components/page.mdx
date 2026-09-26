@@ -1,16 +1,15 @@
+---
+id: "parseFunctionalComponents"
+label: "parseFunctionalComponents"
+group: "API"
+eyebrow: "Public JavaScript API"
+title: "parseFunctionalComponents"
+description: "Split RGB/HSL-style functional color contents into three channels and optional alpha."
+---
+
 import Example from "./ParseFunctionalComponents"
 import source from "./ParseFunctionalComponents.tsx?raw"
-export const meta = {
-  id: "parseFunctionalComponents",
-  label: "parseFunctionalComponents",
-  group: "API",
-}
 
-<ExamplePage
-  eyebrow="Public JavaScript API"
-  title="parseFunctionalComponents"
-  description="Split RGB/HSL-style functional color contents into three channels and optional alpha."
-  source={source}
->
+<ExamplePage {...frontmatter} source={source}>
   <Example />
 </ExamplePage>

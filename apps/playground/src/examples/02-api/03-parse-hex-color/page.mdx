@@ -1,16 +1,15 @@
+---
+id: "parseHexColor"
+label: "parseHexColor"
+group: "API"
+eyebrow: "Public JavaScript API"
+title: "parseHexColor"
+description: "Parse #rgb, #rgba, #rrggbb, or #rrggbbaa into RGBA channels."
+---
+
 import Example from "./ParseHexColor"
 import source from "./ParseHexColor.tsx?raw"
-export const meta = {
-  id: "parseHexColor",
-  label: "parseHexColor",
-  group: "API",
-}
 
-<ExamplePage
-  eyebrow="Public JavaScript API"
-  title="parseHexColor"
-  description="Parse #rgb, #rgba, #rrggbb, or #rrggbbaa into RGBA channels."
-  source={source}
->
+<ExamplePage {...frontmatter} source={source}>
   <Example />
 </ExamplePage>

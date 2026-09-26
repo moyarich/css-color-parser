@@ -1,16 +1,15 @@
+---
+id: "parseHue"
+label: "parseHue"
+group: "API"
+eyebrow: "Public JavaScript API"
+title: "parseHue"
+description: "Parse a CSS hue and normalize degrees, turns, grads, or radians to 0–360 degrees."
+---
+
 import Example from "./ParseHue"
 import source from "./ParseHue.tsx?raw"
-export const meta = {
-  id: "parseHue",
-  label: "parseHue",
-  group: "API",
-}
 
-<ExamplePage
-  eyebrow="Public JavaScript API"
-  title="parseHue"
-  description="Parse a CSS hue and normalize degrees, turns, grads, or radians to 0–360 degrees."
-  source={source}
->
+<ExamplePage {...frontmatter} source={source}>
   <Example />
 </ExamplePage>

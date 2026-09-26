@@ -1,16 +1,15 @@
+---
+id: "parseCssColor"
+label: "parseCssColor"
+group: "API"
+eyebrow: "Public JavaScript API"
+title: "parseCssColor"
+description: "Parse one complete CSS color value and return its detected format and RGBA channels."
+---
+
 import Example from "./ParseCssColor"
 import source from "./ParseCssColor.tsx?raw"
-export const meta = {
-  id: "parseCssColor",
-  label: "parseCssColor",
-  group: "API",
-}
 
-<ExamplePage
-  eyebrow="Public JavaScript API"
-  title="parseCssColor"
-  description="Parse one complete CSS color value and return its detected format and RGBA channels."
-  source={source}
->
+<ExamplePage {...frontmatter} source={source}>
   <Example />
 </ExamplePage>
