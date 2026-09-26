@@ -13,10 +13,6 @@ import MonacoExtraction from "../MonacoExtraction"
 import source from "./source"
 import sourceCode from "./source.ts?raw"
 
-<ExamplePage {...frontmatter} source={sourceCode}>
-  <MonacoExtraction source={source} title={frontmatter.title} />
-</ExamplePage>
-
 ## What this example covers
 
 Weights, alpha, interpolation spaces, and hue modes.
@@ -24,3 +20,7 @@ Weights, alpha, interpolation spaces, and hue modes.
 ## Extraction behavior
 
 The live result is produced from the same editable Monaco model used by `provideDocumentColors()`.
+
+<ExamplePage {...frontmatter} source={sourceCode}>
+  <MonacoExtraction source={source} title={frontmatter.title} />
+</ExamplePage>

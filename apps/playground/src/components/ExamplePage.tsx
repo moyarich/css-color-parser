@@ -20,7 +20,7 @@ export function ExamplePage({
     <>
       <div className="example-heading">
         <p className="eyebrow">{eyebrow}</p>
-        <h2>{title}</h2>
+        <h1>{title}</h1>
         <p className="section-description">{description}</p>
       </div>
 
