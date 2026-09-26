@@ -29,6 +29,7 @@ type Layer = "foreground" | "background";
 export default function BlendModePreview() {
   const [foreground, setForeground] = useState("#dc7182");
   const [background, setBackground] = useState("#42bfd0");
+  const [canvas, setCanvas] = useState("#f7eef8");
   const [mode, setMode] =
     useState<(typeof blendModes)[number]>("multiply");
   const [topLayer, setTopLayer] = useState<Layer>("foreground");
@@ -36,33 +37,41 @@ export default function BlendModePreview() {
   const parsed = useMemo(() => {
     const foregroundResult = parseCssColor(foreground);
     const backgroundResult = parseCssColor(background);
+    const canvasResult = parseCssColor(canvas);
 
-    if (!foregroundResult || !backgroundResult) return null;
+    if (!foregroundResult || !backgroundResult || !canvasResult) return null;
 
     return {
       foreground: formatCssColor(foregroundResult.color),
       background: formatCssColor(backgroundResult.color),
+      canvas: formatCssColor(canvasResult.color),
       foregroundPicker: formatCssColor(foregroundResult.color, {
         format: "hex",
       }).slice(0, 7),
       backgroundPicker: formatCssColor(backgroundResult.color, {
         format: "hex",
       }).slice(0, 7),
+      canvasPicker: formatCssColor(canvasResult.color, {
+        format: "hex",
+      }).slice(0, 7),
       foregroundFormat: foregroundResult.format,
       backgroundFormat: backgroundResult.format,
+      canvasFormat: canvasResult.format,
     };
-  }, [foreground, background]);
+  }, [foreground, background, canvas]);
 
   const generatedCss = parsed
     ? `.blend-demo {
   --blend-foreground: ${parsed.foreground};
   --blend-background: ${parsed.background};
+  --blend-canvas: ${parsed.canvas};
   --blend-mode: ${mode};
   --foreground-z: ${topLayer === "foreground" ? 2 : 1};
   --background-z: ${topLayer === "background" ? 2 : 1};
 
   position: relative;
   isolation: isolate;
+  background: var(--blend-canvas);
 }
 
 .blend-demo__foreground,
@@ -88,6 +97,7 @@ export default function BlendModePreview() {
     ? ({
         "--blend-foreground": parsed.foreground,
         "--blend-background": parsed.background,
+        "--blend-canvas": parsed.canvas,
         "--blend-mode": mode,
       } as CSSProperties)
     : undefined;
@@ -131,6 +141,24 @@ export default function BlendModePreview() {
                   aria-label="Pick background color"
                   value={parsed?.backgroundPicker ?? "#ffffff"}
                   onChange={(event) => setBackground(event.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="blend-control">
+              <label htmlFor="blend-canvas">Canvas</label>
+              <div className="blend-color-input">
+                <input
+                  id="blend-canvas"
+                  value={canvas}
+                  onChange={(event) => setCanvas(event.target.value)}
+                  spellCheck={false}
+                />
+                <input
+                  type="color"
+                  aria-label="Pick canvas color"
+                  value={parsed?.canvasPicker ?? "#ffffff"}
+                  onChange={(event) => setCanvas(event.target.value)}
                 />
               </div>
             </div>
@@ -181,7 +209,7 @@ export default function BlendModePreview() {
             </div>
           ) : (
             <div className="blend-invalid">
-              Both colors must resolve to supported CSS colors.
+              Foreground, background, and canvas must resolve to supported CSS colors.
             </div>
           )}
         </div>
@@ -199,6 +227,11 @@ export default function BlendModePreview() {
               <span>Background</span>
               <code>{parsed.background}</code>
               <small>{parsed.backgroundFormat}</small>
+            </div>
+            <div>
+              <span>Canvas</span>
+              <code>{parsed.canvas}</code>
+              <small>{parsed.canvasFormat}</small>
             </div>
             <div>
               <span>Blend mode</span>

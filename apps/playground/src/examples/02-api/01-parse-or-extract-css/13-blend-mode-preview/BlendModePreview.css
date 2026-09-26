@@ -1,4 +1,18 @@
 .blend-mode-example {
+  --blend-foreground: rgb(220 113 130);
+  --blend-background: rgb(66 191 208);
+  --blend-canvas: rgb(247 238 248);
+  --blend-mode: multiply;
+
+  --blend-ui-surface: #fff;
+  --blend-ui-subtle: #fafbfe;
+  --blend-ui-border: var(--line);
+  --blend-ui-text: #60697a;
+  --blend-ui-muted: #767d8e;
+  --blend-ui-accent: #5140ad;
+  --blend-ui-accent-soft: #ede9fb;
+  --blend-ui-accent-border: #cfc5ef;
+
   max-width: 1080px;
 }
 
@@ -7,9 +21,9 @@
   grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
   min-height: 430px;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 1px solid var(--blend-ui-border);
   border-radius: 14px;
-  background: #fff;
+  background: var(--blend-ui-surface);
 }
 
 .blend-sidebar {
@@ -18,7 +32,7 @@
   gap: 18px;
   padding: 16px;
   border-right: 1px solid var(--line);
-  background: #fafbfe;
+  background: var(--blend-ui-subtle);
 }
 
 .blend-sidebar__section {
@@ -27,7 +41,7 @@
 }
 
 .blend-sidebar__title {
-  color: #767d8e;
+  color: var(--blend-ui-muted);
   font-size: 9px;
   font-weight: 750;
   letter-spacing: 1.25px;
@@ -60,7 +74,7 @@
   padding: 3px;
   border: 1px solid #d9deea;
   border-radius: 7px;
-  background: #fff;
+  background: var(--blend-ui-surface);
   cursor: pointer;
 }
 
@@ -77,8 +91,8 @@
   padding: 6px 7px;
   border: 1px solid #e1e4ec;
   border-radius: 6px;
-  background: #fff;
-  color: #60697a;
+  background: var(--blend-ui-surface);
+  color: var(--blend-ui-text);
   font-size: 9.5px;
   font-weight: 550;
 }
@@ -91,9 +105,9 @@
 
 .blend-mode-grid button[aria-pressed="true"],
 .blend-layer-switch button[aria-pressed="true"] {
-  border-color: #cfc5ef;
-  background: #ede9fb;
-  color: #5140ad;
+  border-color: var(--blend-ui-accent-border);
+  background: var(--blend-ui-accent-soft);
+  color: var(--blend-ui-accent);
   font-weight: 650;
 }
 
@@ -110,10 +124,6 @@
 }
 
 .blend-venn-preview {
-  --blend-foreground: rgb(220 113 130);
-  --blend-background: rgb(66 191 208);
-  --blend-mode: multiply;
-
   position: relative;
   min-height: 430px;
   overflow: hidden;
@@ -121,7 +131,7 @@
   background:
     radial-gradient(circle, rgb(105 78 124 / 5%) 1px, transparent 1.5px) 0 0 /
       8px 8px,
-    linear-gradient(180deg, #faeff8, #f7eef8);
+    var(--blend-canvas);
 }
 
 .blend-circle {
@@ -168,7 +178,7 @@
   padding: 30px;
   color: var(--muted);
   text-align: center;
-  background: #fafbfe;
+  background: var(--blend-ui-subtle);
 }
 
 .blend-values {
@@ -182,9 +192,9 @@
   gap: 5px;
   min-width: 0;
   padding: 11px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--blend-ui-border);
   border-radius: 8px;
-  background: #fff;
+  background: var(--blend-ui-surface);
 }
 
 .blend-values span,
