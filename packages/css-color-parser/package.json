@@ -15,9 +15,11 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "publishConfig": {
+    "access": "public",
     "registry": "https://npm.pkg.github.com"
   },
   "scripts": {
@@ -26,7 +28,9 @@
     "test": "vitest run tests",
     "test:watch": "vitest tests",
     "check": "npm run typecheck && npm test && npm run build",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepack": "node ../../scripts/sync-package-readme.mjs && npm run build",
+    "postpack": "node ../../scripts/sync-package-readme.mjs --clean"
   },
   "devDependencies": {
     "tsup": "^8.5.0",

@@ -16,6 +16,10 @@
     "test:watch": "npm run test:watch --workspace @moyarich/css-color-parser",
     "check": "npm run check --workspaces --if-present",
     "build:packages": "npm run build --workspace @moyarich/css-color-parser && npm run build --workspace @moyarich/css-color-parser-monaco",
-    "typecheck:playground": "npm run build:packages && npm run typecheck --workspace @moyarich/css-color-parser-playground"
+    "typecheck:playground": "npm run build:packages && npm run typecheck --workspace @moyarich/css-color-parser-playground",
+    "build:lib": "npm run build --workspace @moyarich/css-color-parser",
+    "pack:lib": "npm pack --workspace @moyarich/css-color-parser --dry-run",
+    "release:check": "node scripts/publish.mjs --dry-run",
+    "publish:lib": "node scripts/publish.mjs --publish"
   }
 }
