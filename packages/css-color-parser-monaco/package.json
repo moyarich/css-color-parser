@@ -25,13 +25,11 @@
   },
   "peerDependencies": {
     "@monaco-editor/react": ">=4.7.0",
-    "@moyarich/css-color-parser": ">=0.1.0",
     "monaco-editor": ">=0.56.0",
     "react": ">=19.0.0"
   },
   "devDependencies": {
     "@monaco-editor/react": "^4.7.0",
-    "@moyarich/css-color-parser": "file:../css-color-parser",
     "@types/react": "^19.1.16",
     "monaco-editor": "^0.56.0",
     "react": "^19.1.1",
@@ -63,5 +61,8 @@
     "color-decorators",
     "typescript",
     "developer-tools"
-  ]
+  ],
+  "dependencies": {
+    "@moyarich/css-color-parser": "^0.1.0"
+  }
 }
