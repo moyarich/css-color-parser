@@ -1,0 +1,31 @@
+name: Publish package
+
+on:
+  workflow_dispatch:
+    inputs:
+      registry:
+        description: Package registry
+        required: true
+        type: choice
+        options:
+          - github
+          - npm
+          - both
+        default: github
+      tag:
+        description: Distribution tag
+        required: true
+        default: latest
+        type: string
+
+jobs:
+  publish:
+    uses: moyarich/dev-toolkit/.github/workflows/npm-publish.yml@main
+    with:
+      package: css-color-parser
+      registry: ${{ inputs.registry }}
+      tag: ${{ inputs.tag }}
+      node-version: "22"
+    secrets:
+      github-token: ${{ secrets._GIT_TOKEN }}
+      npm-token: ${{ secrets._NPM_TOKEN }}
