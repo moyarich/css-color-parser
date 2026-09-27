@@ -21,18 +21,15 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean --external react --external @monaco-editor/react --external monaco-editor --external @moyarich/css-color-parser",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm run build",
-    "prepare": "npm run build"
+    "check": "npm run typecheck && npm run build"
   },
   "peerDependencies": {
     "@monaco-editor/react": ">=4.7.0",
-    "@moyarich/css-color-parser": ">=0.1.0",
     "monaco-editor": ">=0.56.0",
     "react": ">=19.0.0"
   },
   "devDependencies": {
     "@monaco-editor/react": "^4.7.0",
-    "@moyarich/css-color-parser": "file:../css-color-parser",
     "@types/react": "^19.1.16",
     "monaco-editor": "^0.56.0",
     "react": "^19.1.1",
@@ -64,5 +61,8 @@
     "color-decorators",
     "typescript",
     "developer-tools"
-  ]
+  ],
+  "dependencies": {
+    "@moyarich/css-color-parser": "^0.1.0"
+  }
 }

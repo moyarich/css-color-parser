@@ -9,9 +9,9 @@
   "scripts": {
     "dev": "npm run dev:playground",
     "dev:playground": "npm run build:packages && npm run dev --workspace @moyarich/css-color-parser-playground",
-    "build": "npm run build --workspace @moyarich/css-color-parser",
+    "build": "npm run build:packages",
     "build:playground": "npm run build:packages && npm run build --workspace @moyarich/css-color-parser-playground",
-    "typecheck": "npm run typecheck --workspace @moyarich/css-color-parser",
+    "typecheck": "npm run build --workspace @moyarich/css-color-parser && npm run typecheck --workspace @moyarich/css-color-parser && npm run typecheck --workspace @moyarich/css-color-parser-monaco",
     "test": "npm test --workspace @moyarich/css-color-parser",
     "test:watch": "npm run test:watch --workspace @moyarich/css-color-parser",
     "check": "npm run check --workspaces --if-present",
