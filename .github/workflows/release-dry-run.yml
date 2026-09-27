@@ -8,10 +8,32 @@ on:
         required: true
         default: packages/css-color-parser
         type: string
-      version:
-        description: Release bump or exact SemVer
+      release-mode:
+        description: Release version mode
+        required: true
+        default: bump
+        type: choice
+        options:
+          - bump
+          - exact
+          - current
+      release-bump:
+        description: Release bump
         required: true
         default: patch
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - prepatch
+          - preminor
+          - premajor
+          - prerelease
+      exact-version:
+        description: Exact SemVer (used when mode is exact)
+        required: false
+        default: ""
         type: string
 
 jobs:
@@ -19,5 +41,7 @@ jobs:
     uses: moyarich/dev-toolkit/.github/workflows/npm-release-dry-run.yml@main
     with:
       package-directory: ${{ inputs.package-directory }}
-      version: ${{ inputs.version }}
+      release-mode: ${{ inputs.release-mode }}
+      release-bump: ${{ inputs.release-bump }}
+      exact-version: ${{ inputs.exact-version }}
       node-version: "22"
