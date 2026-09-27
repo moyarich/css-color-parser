@@ -1,0 +1,23 @@
+name: Release dry run
+
+on:
+  workflow_dispatch:
+    inputs:
+      package-directory:
+        description: Package location
+        required: true
+        default: packages/css-color-parser
+        type: string
+      version:
+        description: Release bump or exact SemVer
+        required: true
+        default: patch
+        type: string
+
+jobs:
+  release-dry-run:
+    uses: moyarich/dev-toolkit/.github/workflows/npm-release-dry-run.yml@feat/package-release-changelog
+    with:
+      package-directory: ${{ inputs.package-directory }}
+      version: ${{ inputs.version }}
+      node-version: "22"
