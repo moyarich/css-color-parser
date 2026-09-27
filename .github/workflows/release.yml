@@ -1,4 +1,4 @@
-name: Publish package
+name: Release package
 
 on:
   workflow_dispatch:
@@ -9,10 +9,15 @@ on:
         default: packages/css-color-parser
         type: string
       version:
-        description: Exact version to publish; empty uses package.json
-        required: false
-        default: ""
+        description: Release bump or exact SemVer
+        required: true
+        default: patch
         type: string
+      auto-publish:
+        description: Publish after release
+        required: true
+        default: false
+        type: boolean
       registry:
         description: Package registry
         required: true
@@ -20,6 +25,7 @@ on:
         options:
           - github
           - npm
+          - both
         default: github
       tag:
         description: Distribution tag
@@ -28,11 +34,12 @@ on:
         type: string
 
 jobs:
-  publish:
-    uses: moyarich/dev-toolkit/.github/workflows/npm-publish.yml@main
+  release:
+    uses: moyarich/dev-toolkit/.github/workflows/npm-release.yml@main
     with:
       package-directory: ${{ inputs.package-directory }}
       version: ${{ inputs.version }}
+      auto-publish: ${{ inputs.auto-publish }}
       registry: ${{ inputs.registry }}
       tag: ${{ inputs.tag }}
       node-version: "22"
