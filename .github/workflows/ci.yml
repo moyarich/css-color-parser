@@ -12,7 +12,8 @@ permissions:
 
 jobs:
   check:
-    uses: moyarich/dev-toolkit/.github/workflows/node-ci.yml@main
+    uses: moyarich/dev-toolkit/.github/workflows/node-ci.yml@fix/node-ci-github-packages-auth
     with:
       node-version: "22"
-    secrets: inherit
+    secrets:
+      package-token: ${{ secrets._GIT_TOKEN }}
