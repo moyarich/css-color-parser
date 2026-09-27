@@ -3,6 +3,16 @@ name: Publish package
 on:
   workflow_dispatch:
     inputs:
+      package-directory:
+        description: Package location
+        required: true
+        default: packages/css-color-parser
+        type: string
+      version:
+        description: Exact version to publish; empty uses package.json
+        required: false
+        default: ""
+        type: string
       registry:
         description: Package registry
         required: true
@@ -10,7 +20,6 @@ on:
         options:
           - github
           - npm
-          - both
         default: github
       tag:
         description: Distribution tag
@@ -22,10 +31,11 @@ jobs:
   publish:
     uses: moyarich/dev-toolkit/.github/workflows/npm-publish.yml@main
     with:
-      package: css-color-parser
+      package-directory: ${{ inputs.package-directory }}
+      version: ${{ inputs.version }}
       registry: ${{ inputs.registry }}
       tag: ${{ inputs.tag }}
       node-version: "22"
     secrets:
-      github-token: ${{ secrets._GIT_TOKEN }}
+      github-token: ${{ secrets._GITHUB_TOKEN }}
       npm-token: ${{ secrets._NPM_TOKEN }}
