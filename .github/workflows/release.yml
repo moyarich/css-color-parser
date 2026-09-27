@@ -1,0 +1,48 @@
+name: Release package
+
+on:
+  workflow_dispatch:
+    inputs:
+      package-directory:
+        description: Package location
+        required: true
+        default: packages/css-color-parser
+        type: string
+      version:
+        description: Release bump or exact SemVer
+        required: true
+        default: patch
+        type: string
+      auto-publish:
+        description: Publish after release
+        required: true
+        default: false
+        type: boolean
+      registry:
+        description: Package registry
+        required: true
+        type: choice
+        options:
+          - github
+          - npm
+          - both
+        default: github
+      tag:
+        description: Distribution tag
+        required: true
+        default: latest
+        type: string
+
+jobs:
+  release:
+    uses: moyarich/dev-toolkit/.github/workflows/npm-release.yml@main
+    with:
+      package-directory: ${{ inputs.package-directory }}
+      version: ${{ inputs.version }}
+      auto-publish: ${{ inputs.auto-publish }}
+      registry: ${{ inputs.registry }}
+      tag: ${{ inputs.tag }}
+      node-version: "22"
+    secrets:
+      github-token: ${{ secrets._GITHUB_TOKEN }}
+      npm-token: ${{ secrets._NPM_TOKEN }}
