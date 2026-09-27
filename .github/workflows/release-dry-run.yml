@@ -16,7 +16,7 @@ on:
 
 jobs:
   release-dry-run:
-    uses: moyarich/dev-toolkit/.github/workflows/npm-release-dry-run.yml@feat/package-release-changelog
+    uses: moyarich/dev-toolkit/.github/workflows/npm-release-dry-run.yml@main
     with:
       package-directory: ${{ inputs.package-directory }}
       version: ${{ inputs.version }}
