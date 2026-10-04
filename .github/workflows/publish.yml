@@ -27,15 +27,19 @@ on:
         default: latest
         type: string
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   publish:
-    uses: moyarich/dev-toolkit/.github/workflows/npm-publish.yml@main
+    uses: moyarich/actions/.github/workflows/reusable_npm-publish.yml@c37643656679bec74b2702fc61bf043fe23c0aa7
     with:
+      dry-run: false
       package-directory: ${{ inputs.package-directory }}
       version: ${{ inputs.version }}
       registry: ${{ inputs.registry }}
       tag: ${{ inputs.tag }}
-      node-version: "22"
+      node-version: "24"
     secrets:
-      github-token: ${{ secrets._GITHUB_TOKEN }}
       npm-token: ${{ secrets._NPM_TOKEN }}
