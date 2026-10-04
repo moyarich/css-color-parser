@@ -3,21 +3,21 @@ name: Release package
 on:
   workflow_dispatch:
     inputs:
-      package-directory:
+      package:
         description: Package location
         required: true
         default: packages/css-color-parser
         type: string
-      release-mode:
+      version-mode:
         description: Release version mode
         required: true
         default: bump
         type: choice
         options:
           - bump
+          - package-json
           - exact
-          - current
-      release-bump:
+      version-bump:
         description: Release bump
         required: true
         default: patch
@@ -35,7 +35,7 @@ on:
         required: false
         default: ""
         type: string
-      auto-publish:
+      publish:
         description: Publish after release
         required: true
         default: false
@@ -49,24 +49,28 @@ on:
           - npm
           - both
         default: github
-      tag:
+      dist-tag:
         description: Distribution tag
         required: true
         default: latest
         type: string
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   release:
-    uses: moyarich/dev-toolkit/.github/workflows/npm-release.yml@main
+    uses: moyarich/actions/.github/workflows/reusable_npm-release.yml@c37643656679bec74b2702fc61bf043fe23c0aa7
     with:
-      package-directory: ${{ inputs.package-directory }}
-      release-mode: ${{ inputs.release-mode }}
-      release-bump: ${{ inputs.release-bump }}
+      dry-run: false
+      package: ${{ inputs.package }}
+      version-mode: ${{ inputs.version-mode }}
+      version-bump: ${{ inputs.version-bump }}
       exact-version: ${{ inputs.exact-version }}
-      auto-publish: ${{ inputs.auto-publish }}
+      publish: ${{ inputs.publish }}
       registry: ${{ inputs.registry }}
-      tag: ${{ inputs.tag }}
-      node-version: "22"
+      dist-tag: ${{ inputs.dist-tag }}
+      node-version: "24"
     secrets:
-      github-token: ${{ secrets._GITHUB_TOKEN }}
-      npm-token: ${{ secrets._NPM_TOKEN }}
+      _NPM_TOKEN: ${{ secrets._NPM_TOKEN }}
