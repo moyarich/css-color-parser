@@ -42,7 +42,7 @@ permissions:
 
 jobs:
   release-dry-run:
-    uses: moyarich/actions/.github/workflows/reusable_npm-release.yml@c37643656679bec74b2702fc61bf043fe23c0aa7
+    uses: moyarich/actions/.github/workflows/reusable_npm-release.yml@d28dc4fae24cb84b5e9acea2ac1f8cde5f95297e
     with:
       dry-run: true
       package: ${{ inputs.package }}
