@@ -12,9 +12,9 @@ permissions:
 
 jobs:
   pages:
-    uses: moyarich/dev-toolkit/.github/workflows/github-pages.yml@main
+    uses: moyarich/actions/.github/workflows/reusable_github-pages.yml@c37643656679bec74b2702fc61bf043fe23c0aa7
     with:
-      node-version: "22"
+      node-version: "24"
       build-command: npm run build:playground -- --base=/css-color-parser/
       output-directory: apps/playground/dist
     secrets: inherit
