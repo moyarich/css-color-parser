@@ -3,21 +3,21 @@ name: Release dry run
 on:
   workflow_dispatch:
     inputs:
-      package-directory:
+      package:
         description: Package location
         required: true
         default: packages/css-color-parser
         type: string
-      release-mode:
+      version-mode:
         description: Release version mode
         required: true
         default: bump
         type: choice
         options:
           - bump
+          - package-json
           - exact
-          - current
-      release-bump:
+      version-bump:
         description: Release bump
         required: true
         default: patch
@@ -36,12 +36,18 @@ on:
         default: ""
         type: string
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   release-dry-run:
-    uses: moyarich/dev-toolkit/.github/workflows/npm-release-dry-run.yml@main
+    uses: moyarich/actions/.github/workflows/reusable_npm-release.yml@c37643656679bec74b2702fc61bf043fe23c0aa7
     with:
-      package-directory: ${{ inputs.package-directory }}
-      release-mode: ${{ inputs.release-mode }}
-      release-bump: ${{ inputs.release-bump }}
+      dry-run: true
+      package: ${{ inputs.package }}
+      version-mode: ${{ inputs.version-mode }}
+      version-bump: ${{ inputs.version-bump }}
       exact-version: ${{ inputs.exact-version }}
-      node-version: "22"
+      publish: false
+      node-version: "24"
