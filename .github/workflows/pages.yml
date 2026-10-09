@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   pages:
-    uses: moyarich/actions/.github/workflows/reusable_github-pages.yml@c37643656679bec74b2702fc61bf043fe23c0aa7
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_github-pages.yml@main
     with:
       node-version: "24"
       build-command: npm run build:playground -- --base=/css-color-parser/
