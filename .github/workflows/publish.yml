@@ -4,14 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       package-directory:
-        description: Package location
+        description: Publishable package directory
         required: true
         default: packages/css-color-parser
-        type: string
-      version:
-        description: Exact version to publish; empty uses package.json
-        required: false
-        default: ""
         type: string
       registry:
         description: Package registry
@@ -20,12 +15,18 @@ on:
         options:
           - github
           - npm
+          - all
         default: github
       tag:
         description: Distribution tag
         required: true
         default: latest
         type: string
+      dry-run:
+        description: Validate and preview without publishing
+        required: true
+        default: true
+        type: boolean
 
 permissions:
   contents: write
@@ -33,13 +34,15 @@ permissions:
 
 jobs:
   publish:
-    uses: moyarich/actions/.github/workflows/reusable_npm-publish.yml@d28dc4fae24cb84b5e9acea2ac1f8cde5f95297e
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_npm-publish.yml@v0
     with:
-      dry-run: false
       package-directory: ${{ inputs.package-directory }}
-      version: ${{ inputs.version }}
+      target-branch: main
       registry: ${{ inputs.registry }}
       tag: ${{ inputs.tag }}
+      version-mode: package-json
+      verify-git-tag: true
+      dry-run: ${{ inputs.dry-run }}
       node-version: "24"
     secrets:
       npm-token: ${{ secrets._NPM_TOKEN }}

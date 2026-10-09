@@ -3,51 +3,24 @@ name: Release dry run
 on:
   workflow_dispatch:
     inputs:
-      package:
-        description: Package location
+      version:
+        description: Exact package version from package.json
         required: true
-        default: packages/css-color-parser
-        type: string
-      version-mode:
-        description: Release version mode
-        required: true
-        default: bump
-        type: choice
-        options:
-          - bump
-          - package-json
-          - exact
-      version-bump:
-        description: Release bump
-        required: true
-        default: patch
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
-          - prepatch
-          - preminor
-          - premajor
-          - prerelease
-      exact-version:
-        description: Exact SemVer (used when mode is exact)
-        required: false
-        default: ""
+        default: "0.1.0"
         type: string
 
 permissions:
   contents: read
-  packages: read
 
 jobs:
-  release-dry-run:
-    uses: moyarich/actions/.github/workflows/reusable_npm-release.yml@d28dc4fae24cb84b5e9acea2ac1f8cde5f95297e
+  release:
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_release.yml@v0
     with:
+      version: ${{ inputs.version }}
+      release-tag: packages/css-color-parser@${{ inputs.version }}
+      release-name: "@moyarich/css-color-parser v${{ inputs.version }}"
+      changelog-file: packages/css-color-parser/CHANGELOG.md
+      target-ref: main
       dry-run: true
-      package: ${{ inputs.package }}
-      version-mode: ${{ inputs.version-mode }}
-      version-bump: ${{ inputs.version-bump }}
-      exact-version: ${{ inputs.exact-version }}
-      publish: false
-      node-version: "24"
+      create-tag: true
+      draft: false

@@ -3,74 +3,29 @@ name: Release package
 on:
   workflow_dispatch:
     inputs:
-      package:
-        description: Package location
+      version:
+        description: Exact package version from package.json
         required: true
-        default: packages/css-color-parser
+        default: "0.1.0"
         type: string
-      version-mode:
-        description: Release version mode
+      dry-run:
+        description: Preview without creating a GitHub Release or tag
         required: true
-        default: bump
-        type: choice
-        options:
-          - bump
-          - package-json
-          - exact
-      version-bump:
-        description: Release bump
-        required: true
-        default: patch
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
-          - prepatch
-          - preminor
-          - premajor
-          - prerelease
-      exact-version:
-        description: Exact SemVer (used when mode is exact)
-        required: false
-        default: ""
-        type: string
-      publish:
-        description: Publish after release
-        required: true
-        default: false
+        default: true
         type: boolean
-      registry:
-        description: Package registry
-        required: true
-        type: choice
-        options:
-          - github
-          - npm
-          - both
-        default: github
-      dist-tag:
-        description: Distribution tag
-        required: true
-        default: latest
-        type: string
 
 permissions:
   contents: write
-  packages: write
 
 jobs:
   release:
-    uses: moyarich/actions/.github/workflows/reusable_npm-release.yml@d28dc4fae24cb84b5e9acea2ac1f8cde5f95297e
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_release.yml@v0
     with:
-      dry-run: false
-      package: ${{ inputs.package }}
-      version-mode: ${{ inputs.version-mode }}
-      version-bump: ${{ inputs.version-bump }}
-      exact-version: ${{ inputs.exact-version }}
-      publish: ${{ inputs.publish }}
-      registry: ${{ inputs.registry }}
-      dist-tag: ${{ inputs.dist-tag }}
-      node-version: "24"
-    secrets:
-      _NPM_TOKEN: ${{ secrets._NPM_TOKEN }}
+      version: ${{ inputs.version }}
+      release-tag: packages/css-color-parser@${{ inputs.version }}
+      release-name: "@moyarich/css-color-parser v${{ inputs.version }}"
+      changelog-file: packages/css-color-parser/CHANGELOG.md
+      target-ref: main
+      dry-run: ${{ inputs.dry-run }}
+      create-tag: true
+      draft: false
