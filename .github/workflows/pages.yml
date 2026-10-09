@@ -18,5 +18,3 @@ jobs:
       node-version: "24"
       build-command: npm run build:playground -- --base=/css-color-parser/
       output-directory: apps/playground/dist
-    secrets:
-      package-token: ${{ secrets._GITHUB_TOKEN }}
