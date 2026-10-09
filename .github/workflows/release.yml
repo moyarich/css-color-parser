@@ -3,70 +3,29 @@ name: Release package
 on:
   workflow_dispatch:
     inputs:
-      package-directory:
-        description: Package location
+      version:
+        description: Exact package version from package.json
         required: true
-        default: packages/css-color-parser
+        default: "0.1.0"
         type: string
-      release-mode:
-        description: Release version mode
+      dry-run:
+        description: Preview without creating a GitHub Release or tag
         required: true
-        default: bump
-        type: choice
-        options: [bump, exact, current]
-      release-bump:
-        description: Release bump
-        required: true
-        default: patch
-        type: choice
-        options: [patch, minor, major, prepatch, preminor, premajor, prerelease]
-      exact-version:
-        description: Exact SemVer (used when mode is exact)
-        required: false
-        default: ""
-        type: string
-      auto-publish:
-        description: Publish after release
-        required: true
-        default: false
+        default: true
         type: boolean
-      registry:
-        description: Package registry
-        required: true
-        type: choice
-        options: [github, npm, both]
-        default: github
-      tag:
-        description: Distribution tag
-        required: true
-        default: latest
-        type: string
 
 permissions:
   contents: write
-  packages: write
 
 jobs:
   release:
-    uses: moyarich/reusable-workflows/.github/workflows/reusable_npm-release.yml@main
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_release.yml@v0
     with:
-      package: ${{ inputs.package-directory }}
-      version-mode: ${{ inputs.release-mode == 'current' && 'package-json' || inputs.release-mode }}
-      version-bump: ${{ inputs.release-bump }}
-      exact-version: ${{ inputs.exact-version }}
-      dry-run: false
-      node-version: "24"
-
-  publish:
-    needs: release
-    if: ${{ inputs.auto-publish && needs.release.result == 'success' && needs.release.outputs.can-release == 'true' }}
-    uses: moyarich/reusable-workflows/.github/workflows/reusable_npm-publish.yml@main
-    with:
-      package-directory: ${{ inputs.package-directory }}
-      registry: ${{ inputs.registry == 'both' && 'all' || inputs.registry }}
-      tag: ${{ inputs.tag }}
-      version-mode: package-json
-      dry-run: false
-      node-version: "24"
-    secrets:
-      npm-token: ${{ secrets._NPM_TOKEN }}
+      version: ${{ inputs.version }}
+      release-tag: packages/css-color-parser@${{ inputs.version }}
+      release-name: "@moyarich/css-color-parser v${{ inputs.version }}"
+      changelog-file: packages/css-color-parser/CHANGELOG.md
+      target-ref: main
+      dry-run: ${{ inputs.dry-run }}
+      create-tag: true
+      draft: false
