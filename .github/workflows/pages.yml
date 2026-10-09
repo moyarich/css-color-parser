@@ -7,14 +7,16 @@ on:
 
 permissions:
   contents: read
+  packages: read
   pages: write
   id-token: write
 
 jobs:
   pages:
-    uses: moyarich/reusable-workflows/.github/workflows/reusable_github-pages.yml@v0
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_github-pages.yml@main
     with:
       node-version: "24"
       build-command: npm run build:playground -- --base=/css-color-parser/
       output-directory: apps/playground/dist
-    secrets: inherit
+    secrets:
+      package-token: ${{ secrets._GITHUB_TOKEN }}
