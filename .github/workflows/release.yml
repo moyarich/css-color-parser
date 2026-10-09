@@ -13,23 +13,13 @@ on:
         required: true
         default: bump
         type: choice
-        options:
-          - bump
-          - exact
-          - current
+        options: [bump, exact, current]
       release-bump:
         description: Release bump
         required: true
         default: patch
         type: choice
-        options:
-          - patch
-          - minor
-          - major
-          - prepatch
-          - preminor
-          - premajor
-          - prerelease
+        options: [patch, minor, major, prepatch, preminor, premajor, prerelease]
       exact-version:
         description: Exact SemVer (used when mode is exact)
         required: false
@@ -44,10 +34,7 @@ on:
         description: Package registry
         required: true
         type: choice
-        options:
-          - github
-          - npm
-          - both
+        options: [github, npm, both]
         default: github
       tag:
         description: Distribution tag
@@ -55,18 +42,31 @@ on:
         default: latest
         type: string
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   release:
-    uses: moyarich/dev-toolkit/.github/workflows/npm-release.yml@main
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_npm-release.yml@main
+    with:
+      package: ${{ inputs.package-directory }}
+      version-mode: ${{ inputs.release-mode == 'current' && 'package-json' || inputs.release-mode }}
+      version-bump: ${{ inputs.release-bump }}
+      exact-version: ${{ inputs.exact-version }}
+      dry-run: false
+      node-version: "24"
+
+  publish:
+    needs: release
+    if: ${{ inputs.auto-publish && needs.release.result == 'success' && needs.release.outputs.can-release == 'true' }}
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_npm-publish.yml@main
     with:
       package-directory: ${{ inputs.package-directory }}
-      release-mode: ${{ inputs.release-mode }}
-      release-bump: ${{ inputs.release-bump }}
-      exact-version: ${{ inputs.exact-version }}
-      auto-publish: ${{ inputs.auto-publish }}
-      registry: ${{ inputs.registry }}
+      registry: ${{ inputs.registry == 'both' && 'all' || inputs.registry }}
       tag: ${{ inputs.tag }}
-      node-version: "22"
+      version-mode: package-json
+      dry-run: false
+      node-version: "24"
     secrets:
-      github-token: ${{ secrets._GITHUB_TOKEN }}
       npm-token: ${{ secrets._NPM_TOKEN }}

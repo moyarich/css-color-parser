@@ -17,9 +17,7 @@ on:
         description: Package registry
         required: true
         type: choice
-        options:
-          - github
-          - npm
+        options: [github, npm]
         default: github
       tag:
         description: Distribution tag
@@ -27,15 +25,20 @@ on:
         default: latest
         type: string
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   publish:
-    uses: moyarich/dev-toolkit/.github/workflows/npm-publish.yml@main
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_npm-publish.yml@main
     with:
       package-directory: ${{ inputs.package-directory }}
-      version: ${{ inputs.version }}
+      version-mode: ${{ inputs.version != '' && 'exact' || 'package-json' }}
+      exact-version: ${{ inputs.version }}
       registry: ${{ inputs.registry }}
       tag: ${{ inputs.tag }}
-      node-version: "22"
+      dry-run: false
+      node-version: "24"
     secrets:
-      github-token: ${{ secrets._GITHUB_TOKEN }}
       npm-token: ${{ secrets._NPM_TOKEN }}
