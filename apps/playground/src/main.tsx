@@ -1,10 +1,15 @@
 import { StrictMode } from "react";
-import "./lib/monaco";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
 import "./styles.css";
 
-createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root");
+
+if (!root) {
+  throw new Error("Playground root element #root was not found");
+}
+
+createRoot(root).render(
   <StrictMode>
     <App />
   </StrictMode>,
