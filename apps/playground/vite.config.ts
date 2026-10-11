@@ -5,6 +5,7 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  base: "/css-color-parser/",
   plugins: [
     mdx({
       providerImportSource: "@mdx-js/react",
