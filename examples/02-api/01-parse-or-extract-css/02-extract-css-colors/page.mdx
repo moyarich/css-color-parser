@@ -1,0 +1,19 @@
+---
+id: "extractCssColors"
+label: "extractCssColors"
+group: "API"
+parent: "Parse or extract CSS"
+eyebrow: "Public JavaScript API"
+title: "extractCssColors"
+description: "Find resolvable CSS colors in arbitrary source text and return exact UTF-16 ranges."
+---
+
+import Example from "./ExtractCssColors";
+import source from "./ExtractCssColors.tsx?raw";
+
+<ExamplePage {...frontmatter} source={source} preview={<Example />}>
+  Extract colors when your input is a stylesheet or other text containing
+  multiple values. Each match includes its original text and start/end offsets,
+  so you can highlight or replace it. Repeated colors remain separate matches;
+  unresolved variables are skipped.
+</ExamplePage>

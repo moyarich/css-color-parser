@@ -1,0 +1,75 @@
+.page-outline {
+  position: sticky;
+  top: 24px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding-left: 0;
+}
+.page-outline > p {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 650;
+}
+.page-outline nav {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding-left: 16px;
+}
+.page-outline nav::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--line);
+}
+.outline-marker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(var(--outline-marker-top, 0px));
+  height: var(--outline-marker-height, 0px);
+  opacity: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  pointer-events: none;
+  transition:
+    transform 160ms ease,
+    height 160ms ease,
+    opacity 160ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .outline-marker {
+    transition: none;
+  }
+}
+.page-outline a {
+  padding: 3px 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  text-decoration: none;
+}
+.page-outline a[data-level="3"] {
+  padding-left: 12px;
+}
+.page-outline a:hover,
+.page-outline a[aria-current="location"] {
+  color: var(--accent);
+}
+.page-outline a[aria-current="location"] {
+  font-weight: 650;
+}
+
+@media (max-width: 1150px) {
+  .page-outline {
+    display: none;
+  }
+}
+
+.outline-marker[data-visible="true"] {
+  opacity: 1;
+}

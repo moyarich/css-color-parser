@@ -15,6 +15,7 @@
     "noEmit": true
   },
   "include": [
-    "src"
+    "src",
+    "../../examples"
   ]
 }

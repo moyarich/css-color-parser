@@ -348,3 +348,7 @@ npm run check
 ## License
 
 MIT
+
+The playground automatically discovers `examples/**/page.mdx` from the repository root. Keep each page beside its example source. Frontmatter supplies its label and group; numbered directories determine menu order and nesting. New pages need no registry entry.
+
+MDX supports `:::code-group` containing fenced code blocks. Add `[Tab title]` after the fence language to name each tab. For imported source, use `<CodeGroup files={[{ name: "example.ts", value: source, language: "typescript" }]} />`.

@@ -16,21 +16,26 @@
   },
   "dependencies": {
     "@mdx-js/react": "^3.1.1",
+    "@monaco-editor/react": "^4.7.0",
     "@moyarich/css-color-parser": "file:../../packages/css-color-parser",
+    "@moyarich/css-color-parser-monaco": "file:../../packages/css-color-parser-monaco",
     "monaco-editor": "^0.56.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "@monaco-editor/react": "^4.7.0",
-    "@moyarich/css-color-parser-monaco": "file:../../packages/css-color-parser-monaco"
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@mdx-js/rollup": "^3.1.1",
-    "@types/react": "^19.1.16",
-    "@types/react-dom": "^19.1.9",
+    "@stefanprobst/rehype-extract-toc": "^3.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^5.2.0",
     "rehype-slug": "^6.0.0",
+    "remark-directive": "^4.0.0",
     "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.1",
     "remark-mdx-frontmatter": "^5.2.0",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.7"
+    "typescript": "^5.9.3",
+    "vite": "^7.3.7"
   }
 }

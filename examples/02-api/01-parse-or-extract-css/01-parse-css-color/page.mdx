@@ -1,0 +1,35 @@
+---
+id: "parseCssColor"
+label: "parseCssColor"
+group: "API"
+parent: "Parse or extract CSS"
+eyebrow: "Public JavaScript API"
+title: "parseCssColor"
+description: "Parse one complete CSS color value and return its detected format and RGBA channels."
+---
+
+import Example from "./ParseCssColor";
+import source from "./ParseCssColor.tsx?raw";
+
+<ExamplePage {...frontmatter} source={source} preview={<Example />}>
+  Parse one complete value when you already have a color string. Try the samples
+  above, then edit the input. The result includes the detected format and red,
+  green, blue, and alpha channels. Invalid or unresolved values return `null`.
+</ExamplePage>
+
+## Use in your project
+
+:::code-group
+
+```sh [Install]
+npm install @moyarich/css-color-parser
+```
+
+```ts [Parse a color]
+import { parseCssColor } from "@moyarich/css-color-parser";
+
+const color = parseCssColor("#635bff80");
+console.log(color);
+```
+
+:::

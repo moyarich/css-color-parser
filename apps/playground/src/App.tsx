@@ -1,7 +1,9 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { MDXProvider } from "@mdx-js/react";
+import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { mdxComponents } from "./mdx-components";
-import Page from "./pages.mdx";
+import { examples } from "./pages-config";
+import { PlaygroundPage } from "./components/PlaygroundPage/PlaygroundPage";
 
 class PlaygroundErrorBoundary extends Component<
   { children: ReactNode },
@@ -22,7 +24,9 @@ class PlaygroundErrorBoundary extends Component<
       return (
         <main role="alert" style={{ padding: "2rem" }}>
           <h1>Playground failed to render</h1>
-          <pre style={{ whiteSpace: "pre-wrap" }}>{this.state.error.message}</pre>
+          <pre style={{ whiteSpace: "pre-wrap" }}>
+            {this.state.error.message}
+          </pre>
         </main>
       );
     }
@@ -34,7 +38,28 @@ export function App() {
   return (
     <PlaygroundErrorBoundary>
       <MDXProvider components={mdxComponents}>
-        <Page />
+        <HashRouter>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Navigate to={`/examples/${examples[0]?.id ?? ""}`} replace />
+              }
+            />
+            <Route
+              path="/examples/:exampleId"
+              element={<PlaygroundPage examples={examples} />}
+            />
+            <Route
+              path="*"
+              element={
+                <p>
+                  Page not found. <a href="#/">Browse examples</a>
+                </p>
+              }
+            />
+          </Routes>
+        </HashRouter>
       </MDXProvider>
     </PlaygroundErrorBoundary>
   );

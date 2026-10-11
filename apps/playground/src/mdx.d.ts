@@ -1,17 +1,9 @@
 declare module "*.mdx" {
   import type { ComponentType } from "react";
 
-  export const frontmatter: {
-    id: string;
-    label: string;
-    group: string;
-    parent?: string;
-    toc?: boolean;
-    eyebrow: string;
-    title: string;
-    description: string;
-    hidden?: boolean;
-  };
+  export const frontmatter: import("./pages-config").ExampleFrontmatter;
+
+  export const tableOfContents: import("@stefanprobst/rehype-extract-toc").Toc;
 
   const MDXComponent: ComponentType;
   export default MDXComponent;
