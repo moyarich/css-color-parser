@@ -43,7 +43,7 @@ export function App() {
             <Route
               path="/"
               element={
-                <Navigate to={`/examples/${examples[0]?.id ?? ""}`} replace />
+                <Navigate to={`/examples/${examples.find((entry) => entry.navigation !== "hidden")?.id ?? examples[0]?.id ?? ""}`} replace />
               }
             />
             <Route
