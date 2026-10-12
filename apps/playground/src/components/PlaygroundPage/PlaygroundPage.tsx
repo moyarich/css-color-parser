@@ -110,7 +110,7 @@ export function PlaygroundPage({
   }
 
   const normalizedQuery = query.trim().toLowerCase();
-  const filtered = examples.filter((example) =>
+  const filtered = examples.filter((example) => example.navigation !== "hidden").filter((example) =>
     [example.label, example.group, ...example.navPath]
       .join(" ")
       .toLowerCase()
