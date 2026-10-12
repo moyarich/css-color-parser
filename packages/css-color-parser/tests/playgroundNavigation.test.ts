@@ -3,7 +3,7 @@ import {
   defaultVisiblePage,
   isInNavigation,
   isRoutable,
-} from "../../../apps/playground/src/navigationVisibility";
+} from "../../../apps/playground/src/content/navigationVisibility";
 
 describe("playground navigation visibility", () => {
   it("routes and lists visible/default pages", () => {
