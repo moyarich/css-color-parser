@@ -27,7 +27,7 @@ interface ExampleModule {
   frontmatter: ExampleFrontmatter;
 }
 
-const modules = import.meta.glob<ExampleModule>("./examples/**/page.mdx", {
+const modules = import.meta.glob<ExampleModule>("./*/**/page.mdx", {
   base: "../../../../",
   eager: true,
 });
@@ -60,7 +60,7 @@ function folderLabel(segment: string) {
 
 function getNavPath(path: string, label: string) {
   const segments = path
-    .replace(/^\.\/examples\//, "")
+    .replace(/^\.\/[^/]+\//, "")
     .replace(/\/page\.mdx$/, "")
     .split("/");
 
