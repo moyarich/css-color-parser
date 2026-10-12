@@ -9,7 +9,6 @@ export interface ExampleFrontmatter {
   eyebrow: string;
   title: string;
   description: string;
-  hidden?: boolean;
   /** visible: menu + route, hidden: direct route only, disabled: exclude entirely. */
   navigation?: "visible" | "hidden" | "disabled";
 }
@@ -70,7 +69,7 @@ function getNavPath(path: string, label: string) {
 }
 
 export const examples: readonly PlaygroundEntry[] = Object.entries(modules)
-  .filter(([, module]) => !module.frontmatter.hidden && module.frontmatter.navigation !== "disabled")
+  .filter(([, module]) => module.frontmatter.navigation !== "disabled")
   .sort(([leftPath], [rightPath]) =>
     leftPath.localeCompare(rightPath, undefined, {
       numeric: true,
