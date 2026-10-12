@@ -1,3 +1,4 @@
+import { isInNavigation } from "../../navigationVisibility";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -110,7 +111,7 @@ export function PlaygroundPage({
   }
 
   const normalizedQuery = query.trim().toLowerCase();
-  const filtered = examples.filter((example) => example.navigation !== "hidden" &&
+  const filtered = examples.filter((example) => isInNavigation(example.navigation) &&
     [example.label, example.group, ...example.navPath]
       .join(" ")
       .toLowerCase()
