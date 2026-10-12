@@ -1,3 +1,4 @@
+import { isRoutable, type NavigationVisibility } from "./navigationVisibility";
 import type { ComponentType } from "react";
 import type { Toc } from "@stefanprobst/rehype-extract-toc";
 
@@ -10,7 +11,7 @@ export interface ExampleFrontmatter {
   title: string;
   description: string;
   /** visible: menu + route, hidden: direct route only, disabled: exclude entirely. */
-  navigation?: "visible" | "hidden" | "disabled";
+  navigation?: NavigationVisibility;
 }
 
 export interface PlaygroundEntry extends ExampleFrontmatter {
@@ -69,7 +70,7 @@ function getNavPath(path: string, label: string) {
 }
 
 export const examples: readonly PlaygroundEntry[] = Object.entries(modules)
-  .filter(([, module]) => module.frontmatter.navigation !== "disabled")
+  .filter(([, module]) => isRoutable(module.frontmatter.navigation))
   .sort(([leftPath], [rightPath]) =>
     leftPath.localeCompare(rightPath, undefined, {
       numeric: true,
