@@ -1,3 +1,4 @@
+import { defaultVisiblePage } from "./navigationVisibility";
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { MDXProvider } from "@mdx-js/react";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
@@ -43,7 +44,7 @@ export function App() {
             <Route
               path="/"
               element={
-                <Navigate to={`/examples/${examples.find((entry) => entry.navigation !== "hidden")?.id ?? examples[0]?.id ?? ""}`} replace />
+                <Navigate to={`/examples/${defaultVisiblePage(examples)?.id ?? ""}`} replace />
               }
             />
             <Route
