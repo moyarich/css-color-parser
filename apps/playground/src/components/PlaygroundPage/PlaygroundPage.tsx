@@ -1,8 +1,9 @@
+import { isInNavigation } from "../../content/navigationVisibility";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Outline } from "../Outline/Outline";
-import type { PlaygroundEntry } from "../../pages-config";
+import type { PlaygroundEntry } from "../../content/pages-config";
 
 interface NavNode {
   label: string;
@@ -110,7 +111,7 @@ export function PlaygroundPage({
   }
 
   const normalizedQuery = query.trim().toLowerCase();
-  const filtered = examples.filter((example) =>
+  const filtered = examples.filter((example) => isInNavigation(example.navigation) &&
     [example.label, example.group, ...example.navPath]
       .join(" ")
       .toLowerCase()

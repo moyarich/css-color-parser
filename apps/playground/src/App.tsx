@@ -1,8 +1,9 @@
+import { defaultVisiblePage } from "./content/navigationVisibility";
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { MDXProvider } from "@mdx-js/react";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { mdxComponents } from "./mdx-components";
-import { examples } from "./pages-config";
+import { examples } from "./content/pages-config";
 import { PlaygroundPage } from "./components/PlaygroundPage/PlaygroundPage";
 
 class PlaygroundErrorBoundary extends Component<
@@ -43,7 +44,7 @@ export function App() {
             <Route
               path="/"
               element={
-                <Navigate to={`/examples/${examples[0]?.id ?? ""}`} replace />
+                <Navigate to={`/examples/${defaultVisiblePage(examples)?.id ?? ""}`} replace />
               }
             />
             <Route

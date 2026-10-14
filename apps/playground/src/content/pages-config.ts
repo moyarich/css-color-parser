@@ -1,3 +1,4 @@
+import { isRoutable, type NavigationVisibility } from "./navigationVisibility";
 import type { ComponentType } from "react";
 import type { Toc } from "@stefanprobst/rehype-extract-toc";
 
@@ -9,7 +10,8 @@ export interface ExampleFrontmatter {
   eyebrow: string;
   title: string;
   description: string;
-  hidden?: boolean;
+  /** visible: menu + route, hidden: direct route only, disabled: exclude entirely. */
+  navigation?: NavigationVisibility;
 }
 
 export interface PlaygroundEntry extends ExampleFrontmatter {
@@ -25,8 +27,8 @@ interface ExampleModule {
   frontmatter: ExampleFrontmatter;
 }
 
-const modules = import.meta.glob<ExampleModule>("./examples/**/page.mdx", {
-  base: "../../../",
+const modules = import.meta.glob<ExampleModule>("./*/**/page.mdx", {
+  base: "../../../../",
   eager: true,
 });
 
@@ -58,7 +60,7 @@ function folderLabel(segment: string) {
 
 function getNavPath(path: string, label: string) {
   const segments = path
-    .replace(/^\.\/examples\//, "")
+    .replace(/^\.\/[^/]+\//, "")
     .replace(/\/page\.mdx$/, "")
     .split("/");
 
@@ -68,7 +70,7 @@ function getNavPath(path: string, label: string) {
 }
 
 export const examples: readonly PlaygroundEntry[] = Object.entries(modules)
-  .filter(([, module]) => !module.frontmatter.hidden)
+  .filter(([, module]) => isRoutable(module.frontmatter.navigation))
   .sort(([leftPath], [rightPath]) =>
     leftPath.localeCompare(rightPath, undefined, {
       numeric: true,
