@@ -5,15 +5,32 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
   packages: read
 
 jobs:
-  check:
-    uses: moyarich/reusable-workflows/.github/workflows/reusable_node-ci.yml@v0
+  check-dist:
+    name: Check committed CLI distribution
+    uses: moyarich/reusable-workflows/.github/workflows/reusable_check-dist.yml@main
     with:
+      dist-path: dist/bin/
+      build-command: npm run build
       node-version: "24"
-    secrets:
-      package-token: ${{ secrets._GITHUB_TOKEN }}
+
+  test:
+    name: Test package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - run: npm pack --dry-run
