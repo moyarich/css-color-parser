@@ -1,8 +1,5 @@
 import { CSS_COLOR_FUNCTION_FORMATS } from "./colorFunctions";
-import {
-  parseCssColor,
-  type ParseCssColorOptions,
-} from "./parseCssColor";
+import { parseCssColor, type ParseCssColorOptions } from "./parseCssColor";
 import type { CssColorMatch } from "./types";
 
 function isIdentifierCharacter(value: string | undefined) {

@@ -34,7 +34,10 @@ export default function SvgColorInventory() {
 
       <div className="svg-palette">
         {matches.map((match) => (
-          <article className="svg-palette-item" key={`${match.start}-${match.end}`}>
+          <article
+            className="svg-palette-item"
+            key={`${match.start}-${match.end}`}
+          >
             <span
               className="svg-palette-swatch"
               style={{ background: rgba(match.color) }}

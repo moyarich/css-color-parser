@@ -1,7 +1,4 @@
-import {
-  extractCssColors,
-  formatCssColor,
-} from "@moyarich/css-color-parser";
+import { extractCssColors, formatCssColor } from "@moyarich/css-color-parser";
 import type { Monaco } from "@monaco-editor/react";
 import type { editor, languages } from "monaco-editor";
 

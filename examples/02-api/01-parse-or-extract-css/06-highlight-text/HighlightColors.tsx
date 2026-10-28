@@ -44,7 +44,10 @@ export default function HighlightColors() {
         spellCheck={false}
       />
 
-      <div className="highlight-output" aria-label="Highlighted color occurrences">
+      <div
+        className="highlight-output"
+        aria-label="Highlighted color occurrences"
+      >
         {parts.map((part, index) =>
           part.color ? (
             <mark

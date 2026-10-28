@@ -26,10 +26,7 @@ if (existsSync(envFile)) {
 }
 
 const pkg = JSON.parse(
-  readFileSync(
-    join(root, "packages/css-color-parser/package.json"),
-    "utf8",
-  ),
+  readFileSync(join(root, "packages/css-color-parser/package.json"), "utf8"),
 );
 
 const tag = process.env.NPM_TAG || "latest";
@@ -73,9 +70,7 @@ function run(args, env = process.env) {
   }
 
   if (result.status !== 0) {
-    throw new Error(
-      `npm ${args.join(" ")} failed. Release stopped.`,
-    );
+    throw new Error(`npm ${args.join(" ")} failed. Release stopped.`);
   }
 }
 
@@ -87,9 +82,7 @@ if (!publish) {
   run(["pack", "--workspace", pkg.name, "--dry-run"]);
   console.log("Release checks passed. Nothing was published.");
 } else {
-  const configDir = mkdtempSync(
-    join(tmpdir(), "css-color-parser-npm-"),
-  );
+  const configDir = mkdtempSync(join(tmpdir(), "css-color-parser-npm-"));
   const configFile = join(configDir, "npmrc");
 
   try {
@@ -100,19 +93,10 @@ if (!publish) {
     );
 
     run(
-      [
-        "publish",
-        "--workspace",
-        pkg.name,
-        "--access",
-        access,
-        "--tag",
-        tag,
-      ],
+      ["publish", "--workspace", pkg.name, "--access", access, "--tag", tag],
       {
         ...process.env,
-        NODE_AUTH_TOKEN:
-          process.env.NODE_AUTH_TOKEN || process.env.NPM_TOKEN,
+        NODE_AUTH_TOKEN: process.env.NODE_AUTH_TOKEN || process.env.NPM_TOKEN,
         npm_config_userconfig: configFile,
       },
     );

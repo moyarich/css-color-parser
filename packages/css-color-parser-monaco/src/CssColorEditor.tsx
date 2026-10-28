@@ -1,12 +1,5 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import Editor, {
-  type EditorProps,
-  type Monaco,
-} from "@monaco-editor/react";
+import { useEffect, useMemo, useState } from "react";
+import Editor, { type EditorProps, type Monaco } from "@monaco-editor/react";
 import { ensureCssColorProvider } from "./cssColorProvider";
 
 export interface CssColorEditorFile {
@@ -25,10 +18,7 @@ export type CssColorEditorProps = EditorProps & {
   files?: readonly CssColorEditorFile[];
   activeFile?: string;
   defaultActiveFile?: string;
-  onActiveFileChange?: (
-    name: string,
-    file: CssColorEditorFile,
-  ) => void;
+  onActiveFileChange?: (name: string, file: CssColorEditorFile) => void;
   showFileTabs?: boolean;
 };
 
@@ -84,9 +74,7 @@ export function CssColorEditor({
     controlledActiveFile ?? uncontrolledActiveFile ?? files?.[0]?.name ?? "";
 
   const selectedFile = useMemo(
-    () =>
-      files?.find((file) => file.name === selectedName) ??
-      files?.[0],
+    () => files?.find((file) => file.name === selectedName) ?? files?.[0],
     [files, selectedName],
   );
 
@@ -134,28 +122,26 @@ export function CssColorEditor({
 
   return (
     <div className="css-color-editor">
-      {files &&
-        files.length > 1 &&
-        showFileTabs && (
-          <div
-            className="css-color-editor__tabs"
-            role="tablist"
-            aria-label="Files"
-          >
-            {files.map((file) => (
-              <button
-                key={file.name}
-                className="css-color-editor__tab"
-                type="button"
-                role="tab"
-                aria-selected={file.name === selectedFile?.name}
-                onClick={() => selectFile(file)}
-              >
-                {file.name}
-              </button>
-            ))}
-          </div>
-        )}
+      {files && files.length > 1 && showFileTabs && (
+        <div
+          className="css-color-editor__tabs"
+          role="tablist"
+          aria-label="Files"
+        >
+          {files.map((file) => (
+            <button
+              key={file.name}
+              className="css-color-editor__tab"
+              type="button"
+              role="tab"
+              aria-selected={file.name === selectedFile?.name}
+              onClick={() => selectFile(file)}
+            >
+              {file.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       <Editor
         {...editorProps}

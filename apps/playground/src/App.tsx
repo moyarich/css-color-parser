@@ -44,7 +44,10 @@ export function App() {
             <Route
               path="/"
               element={
-                <Navigate to={`/examples/${defaultVisiblePage(examples)?.id ?? ""}`} replace />
+                <Navigate
+                  to={`/examples/${defaultVisiblePage(examples)?.id ?? ""}`}
+                  replace
+                />
               }
             />
             <Route

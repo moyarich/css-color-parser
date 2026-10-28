@@ -6,7 +6,9 @@ import JsonWorker from "monaco-editor/language/json/json.worker?worker";
 import TypeScriptWorker from "monaco-editor/language/typescript/ts.worker?worker";
 import EditorWorker from "monaco-editor/editor/editor.worker?worker";
 
-(globalThis as typeof globalThis & { MonacoEnvironment: unknown }).MonacoEnvironment = {
+(
+  globalThis as typeof globalThis & { MonacoEnvironment: unknown }
+).MonacoEnvironment = {
   getWorker(_moduleId: string, label: string) {
     switch (label) {
       case "css":

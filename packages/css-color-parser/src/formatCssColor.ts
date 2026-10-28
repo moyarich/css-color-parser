@@ -50,9 +50,7 @@ export function formatCssColor(
   if (format === "hex") {
     const rgb = `#${hexByte(red)}${hexByte(green)}${hexByte(blue)}`;
 
-    return alpha === 1
-      ? rgb
-      : `${rgb}${hexByte(alpha * 255)}`;
+    return alpha === 1 ? rgb : `${rgb}${hexByte(alpha * 255)}`;
   }
 
   return alpha === 1

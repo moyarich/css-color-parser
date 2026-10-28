@@ -1,6 +1,4 @@
-export {
-  ensureCssColorProvider,
-} from "./cssColorProvider";
+export { ensureCssColorProvider } from "./cssColorProvider";
 
 export {
   CssColorEditor,

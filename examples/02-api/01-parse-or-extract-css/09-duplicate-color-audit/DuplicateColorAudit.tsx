@@ -28,10 +28,7 @@ export default function DuplicateColorAudit() {
   const [source, setSource] = useState(initialSource);
 
   const groups = useMemo(() => {
-    const grouped = new Map<
-      string,
-      ReturnType<typeof extractCssColors>
-    >();
+    const grouped = new Map<string, ReturnType<typeof extractCssColors>>();
 
     for (const match of extractCssColors(source)) {
       const key = keyOf(match.color);
