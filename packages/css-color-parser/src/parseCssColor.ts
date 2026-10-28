@@ -113,7 +113,9 @@ export interface FunctionalComponents {
   alpha?: string;
 }
 
-export function parseFunctionalComponents(body: string): FunctionalComponents | null {
+export function parseFunctionalComponents(
+  body: string,
+): FunctionalComponents | null {
   const slashParts = body.split("/");
 
   if (slashParts.length > 2) {

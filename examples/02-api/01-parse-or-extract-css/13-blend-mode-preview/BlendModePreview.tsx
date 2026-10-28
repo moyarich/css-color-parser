@@ -1,8 +1,5 @@
 import { useMemo, useState, type CSSProperties } from "react";
-import {
-  formatCssColor,
-  parseCssColor,
-} from "@moyarich/css-color-parser";
+import { formatCssColor, parseCssColor } from "@moyarich/css-color-parser";
 import "./BlendModePreview.css";
 
 const blendModes = [
@@ -30,8 +27,7 @@ export default function BlendModePreview() {
   const [foreground, setForeground] = useState("#dc7182");
   const [background, setBackground] = useState("#42bfd0");
   const [canvas, setCanvas] = useState("#f7eef8");
-  const [mode, setMode] =
-    useState<(typeof blendModes)[number]>("multiply");
+  const [mode, setMode] = useState<(typeof blendModes)[number]>("multiply");
   const [topLayer, setTopLayer] = useState<Layer>("foreground");
 
   const parsed = useMemo(() => {
@@ -166,7 +162,11 @@ export default function BlendModePreview() {
 
           <div className="blend-sidebar__section">
             <span className="blend-sidebar__title">Blend mode</span>
-            <div className="blend-mode-grid" role="group" aria-label="Blend mode">
+            <div
+              className="blend-mode-grid"
+              role="group"
+              aria-label="Blend mode"
+            >
               {blendModes.map((blendMode) => (
                 <button
                   key={blendMode}
@@ -182,7 +182,11 @@ export default function BlendModePreview() {
 
           <div className="blend-sidebar__section">
             <span className="blend-sidebar__title">Top layer</span>
-            <div className="blend-layer-switch" role="group" aria-label="Top layer">
+            <div
+              className="blend-layer-switch"
+              role="group"
+              aria-label="Top layer"
+            >
               {(["foreground", "background"] as const).map((layer) => (
                 <button
                   key={layer}
@@ -209,7 +213,8 @@ export default function BlendModePreview() {
             </div>
           ) : (
             <div className="blend-invalid">
-              Foreground, background, and canvas must resolve to supported CSS colors.
+              Foreground, background, and canvas must resolve to supported CSS
+              colors.
             </div>
           )}
         </div>

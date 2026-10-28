@@ -66,7 +66,11 @@
 .blend-color-input input {
   height: 38px;
   padding: 8px 10px;
-  font: 11px ui-monospace, SFMono-Regular, Consolas, monospace;
+  font:
+    11px ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    monospace;
 }
 
 .blend-color-input input[type="color"] {

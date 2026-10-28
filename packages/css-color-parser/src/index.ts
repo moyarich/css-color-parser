@@ -27,9 +27,7 @@ export {
 } from "./parseCssColor";
 
 // Public types.
-export {
-  resolveCssVariables,
-} from "./parseCssColor";
+export { resolveCssVariables } from "./parseCssColor";
 export type {
   CssCustomProperties,
   FunctionalComponents,
@@ -37,8 +35,4 @@ export type {
   ParsedCssColor,
 } from "./parseCssColor";
 
-export type {
-  CssColorFormat,
-  CssColorMatch,
-  RgbaColor,
-} from "./types";
+export type { CssColorFormat, CssColorMatch, RgbaColor } from "./types";

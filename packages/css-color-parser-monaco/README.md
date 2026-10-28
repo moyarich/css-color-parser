@@ -118,10 +118,7 @@ interface CssColorEditorProps {
   files?: readonly CssColorEditorFile[];
   activeFile?: string;
   defaultActiveFile?: string;
-  onActiveFileChange?: (
-    name: string,
-    file: CssColorEditorFile,
-  ) => void;
+  onActiveFileChange?: (name: string, file: CssColorEditorFile) => void;
   showFileTabs?: boolean;
 }
 ```
@@ -135,9 +132,7 @@ If you already own the Monaco editor lifecycle, register only the color provider
 
 ```tsx
 import Editor from "@monaco-editor/react";
-import {
-  ensureCssColorProvider,
-} from "@moyarich/css-color-parser-monaco";
+import { ensureCssColorProvider } from "@moyarich/css-color-parser-monaco";
 
 export function ExistingEditor() {
   return (

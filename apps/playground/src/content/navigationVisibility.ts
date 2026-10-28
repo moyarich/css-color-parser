@@ -9,8 +9,8 @@ export function isInNavigation(navigation?: NavigationVisibility): boolean {
   return navigation !== "hidden" && navigation !== "disabled";
 }
 
-export function defaultVisiblePage<T extends { navigation?: NavigationVisibility }>(
-  pages: readonly T[],
-): T | undefined {
+export function defaultVisiblePage<
+  T extends { navigation?: NavigationVisibility },
+>(pages: readonly T[]): T | undefined {
   return pages.find((page) => isInNavigation(page.navigation)) ?? pages[0];
 }

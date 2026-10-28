@@ -4,7 +4,12 @@ import { extractCssColors } from "@moyarich/css-color-parser";
 const initialGradient =
   "linear-gradient(135deg, #635bff, oklch(72% 0.16 210), rgb(255 120 80 / 85%), rebeccapurple)";
 
-const toCssColor = (color: { red: number; green: number; blue: number; alpha: number }) =>
+const toCssColor = (color: {
+  red: number;
+  green: number;
+  blue: number;
+  alpha: number;
+}) =>
   `rgba(${Math.round(color.red)}, ${Math.round(color.green)}, ${Math.round(color.blue)}, ${color.alpha})`;
 
 export default function GradientColors() {
@@ -32,7 +37,9 @@ export default function GradientColors() {
               style={{ background: toCssColor(match.color) }}
             />
             <code>{match.value}</code>
-            <span>[{match.start}, {match.end})</span>
+            <span>
+              [{match.start}, {match.end})
+            </span>
           </div>
         ))}
       </div>

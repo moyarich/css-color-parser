@@ -32,10 +32,7 @@ npm install github:moyarich/css-color-parser
 Then import from the package normally:
 
 ```ts
-import {
-  extractCssColors,
-  parseCssColor,
-} from "@moyarich/css-color-parser";
+import { extractCssColors, parseCssColor } from "@moyarich/css-color-parser";
 ```
 
 ## Parse a color
@@ -83,10 +80,7 @@ CSS. It does not try to reconstruct the original syntax because formats such as
 OKLCH and Display-P3 are resolved to sRGB channels during parsing.
 
 ```ts
-import {
-  formatCssColor,
-  parseCssColor,
-} from "@moyarich/css-color-parser";
+import { formatCssColor, parseCssColor } from "@moyarich/css-color-parser";
 
 const parsed = parseCssColor("oklch(60% 0.15 250)");
 
@@ -138,7 +132,7 @@ Each match contains the original value, parsed format, RGBA color, and absolute 
     },
   },
   // ...
-]
+];
 ```
 
 A complete supported function is returned as one range. Nested colors inside that function are not emitted as overlapping matches.
@@ -215,10 +209,7 @@ parseCssColor("var(--brand)", { customProperties });
 //   color: { red: 39, green: 132, blue: 213, alpha: 1 },
 // }
 
-parseCssColor(
-  "color-mix(in srgb, var(--brand), white)",
-  { customProperties },
-);
+parseCssColor("color-mix(in srgb, var(--brand), white)", { customProperties });
 ```
 
 Aliases and fallbacks are supported:
@@ -231,20 +222,14 @@ parseCssColor("var(--missing, rebeccapurple)", { customProperties });
 You can also resolve variables without parsing the result as a color:
 
 ```ts
-resolveCssVariables(
-  "linear-gradient(var(--brand), white)",
-  customProperties,
-);
+resolveCssVariables("linear-gradient(var(--brand), white)", customProperties);
 // "linear-gradient(oklch(60% 0.15 250), white)"
 ```
 
 `extractCssColors()` accepts the same context:
 
 ```ts
-extractCssColors(
-  ".button { color: var(--brand); }",
-  { customProperties },
-);
+extractCssColors(".button { color: var(--brand); }", { customProperties });
 ```
 
 Cycles and missing variables without a fallback remain unresolved.

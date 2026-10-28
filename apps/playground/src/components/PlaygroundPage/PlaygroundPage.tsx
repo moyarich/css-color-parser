@@ -111,11 +111,13 @@ export function PlaygroundPage({
   }
 
   const normalizedQuery = query.trim().toLowerCase();
-  const filtered = examples.filter((example) => isInNavigation(example.navigation) &&
-    [example.label, example.group, ...example.navPath]
-      .join(" ")
-      .toLowerCase()
-      .includes(normalizedQuery),
+  const filtered = examples.filter(
+    (example) =>
+      isInNavigation(example.navigation) &&
+      [example.label, example.group, ...example.navPath]
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedQuery),
   );
   const groups = [...new Set(filtered.map((example) => example.group))];
   const SelectedPage = selected.Component;

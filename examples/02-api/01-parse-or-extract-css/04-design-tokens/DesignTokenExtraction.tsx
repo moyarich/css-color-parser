@@ -122,9 +122,7 @@ export default function DesignTokenExtraction() {
             />
             <div>
               <strong>
-                {item.names.length
-                  ? item.names.join(", ")
-                  : item.fallbackName}
+                {item.names.length ? item.names.join(", ") : item.fallbackName}
               </strong>
               <code>{item.normalized}</code>
               <span>

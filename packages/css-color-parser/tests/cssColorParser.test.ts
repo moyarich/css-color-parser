@@ -206,12 +206,11 @@ describe("nested color extraction", () => {
   });
 });
 
-
 describe("formatCssColor", () => {
   it("serializes resolved colors to modern rgb syntax", () => {
-    expect(
-      formatCssColor({ red: 39, green: 132, blue: 213, alpha: 1 }),
-    ).toBe("rgb(39 132 213)");
+    expect(formatCssColor({ red: 39, green: 132, blue: 213, alpha: 1 })).toBe(
+      "rgb(39 132 213)",
+    );
 
     expect(
       formatCssColor({ red: 39.4, green: 132.4, blue: 212.6, alpha: 0.45678 }),
@@ -247,7 +246,6 @@ describe("formatCssColor", () => {
   });
 });
 
-
 describe("CSS custom properties", () => {
   const customProperties = {
     "--brand": "oklch(60% 0.15 250)",
@@ -256,9 +254,7 @@ describe("CSS custom properties", () => {
   };
 
   it("resolves var() before parsing a color", () => {
-    expect(
-      parseCssColor("var(--brand)", { customProperties }),
-    ).toEqual({
+    expect(parseCssColor("var(--brand)", { customProperties })).toEqual({
       value: "var(--brand)",
       format: "oklch",
       color: { red: 39, green: 132, blue: 213, alpha: 1 },
@@ -282,10 +278,9 @@ describe("CSS custom properties", () => {
 
   it("resolves variables inside color functions", () => {
     expect(
-      parseCssColor(
-        "color-mix(in srgb, var(--accent), white)",
-        { customProperties },
-      )?.format,
+      parseCssColor("color-mix(in srgb, var(--accent), white)", {
+        customProperties,
+      })?.format,
     ).toBe("color-mix");
   });
 
@@ -295,9 +290,7 @@ describe("CSS custom properties", () => {
       "--b": "var(--a)",
     };
 
-    expect(
-      parseCssColor("var(--a)", { customProperties: cyclic }),
-    ).toBeNull();
+    expect(parseCssColor("var(--a)", { customProperties: cyclic })).toBeNull();
 
     expect(
       parseCssColor("var(--a, blue)", { customProperties: cyclic }),
@@ -313,9 +306,7 @@ describe("CSS custom properties", () => {
         "linear-gradient(var(--brand), var(--accent))",
         customProperties,
       ),
-    ).toBe(
-      "linear-gradient(oklch(60% 0.15 250), rgb(220 38 38))",
-    );
+    ).toBe("linear-gradient(oklch(60% 0.15 250), rgb(220 38 38))");
   });
 
   it("extracts resolvable var() expressions with source offsets", () => {
