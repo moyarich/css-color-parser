@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-No package-specific changes since November 25, 2026.
+### Changed
+
+- Rename `ensureCssColorProvider()` to `registerCssColorProvider()` to describe its registration purpose.
 
 ## 0.1.0
 
