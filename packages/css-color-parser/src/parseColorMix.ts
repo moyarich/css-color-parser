@@ -1,8 +1,15 @@
-import { getAlpha, getBlue, getGreen, getRed, type ColorBits } from "color-bits";
+import {
+  getAlpha,
+  getBlue,
+  getGreen,
+  getRed,
+  type ColorBits,
+} from "color-bits";
 import { colorModel, colorSpaceModel, parseCSS } from "color-bits/css";
 
 const percentage = /^[+-]?(?:\d*\.?\d+)(?:e[+-]?\d+)?%$/i;
-const interpolation = /^in\s+([\w-]+)(?:\s+(shorter|longer|increasing|decreasing)\s+hue)?$/i;
+const interpolation =
+  /^in\s+([\w-]+)(?:\s+(shorter|longer|increasing|decreasing)\s+hue)?$/i;
 
 function invalid(): never {
   throw new Error("Invalid color-mix()");
@@ -111,10 +118,14 @@ export function parseColorMix(value: string, depth = 0): ColorBits {
   // Rectangular coordinates are a weighted sum. Using the original weights
   // avoids accumulated interpolation error at half-byte rounding boundaries.
   if (hue < 0) {
-    const alpha = items.reduce((sum, item, i) => sum + item.alpha * weights[i], 0);
+    const alpha = items.reduce(
+      (sum, item, i) => sum + item.alpha * weights[i],
+      0,
+    );
     const channels = [0, 1, 2].map((channel) => {
       const sum = items.reduce(
-        (value, item, i) => value + item.channels[channel] * item.alpha * weights[i],
+        (value, item, i) =>
+          value + item.channels[channel] * item.alpha * weights[i],
         0,
       );
       return alpha === 0 ? 0 : sum / alpha;
