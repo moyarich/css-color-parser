@@ -1,11 +1,12 @@
 # @moyarich/css-color-parser-monaco
 
-Reusable React/Monaco integration for
+A CSS color provider for Monaco Editor, powered by
 [`@moyarich/css-color-parser`](https://github.com/moyarich/css-color-parser).
 
-It adds CSS color parsing, Monaco color decorations, color presentations, and an
-optional multi-file React editor wrapper without moving editor-specific code into
-the core parser package.
+The primary purpose is to detect supported CSS color expressions, display inline
+color swatches, and provide editable color presentations in Monaco. Parsing and
+serialization remain in the framework-independent core parser. The React editor
+wrapper and multi-file tabs are optional conveniences.
 
 ## Install
 
@@ -28,7 +29,36 @@ npm install @moyarich/css-color-parser-monaco@latest \
   @monaco-editor/react monaco-editor react
 ```
 
-## Quick start
+## Register the color provider
+
+If you already own the Monaco editor lifecycle, register only the color provider:
+
+```tsx
+import Editor from "@monaco-editor/react";
+import { ensureCssColorProvider } from "@moyarich/css-color-parser-monaco";
+
+export function ExistingEditor() {
+  return (
+    <Editor
+      defaultLanguage="css"
+      beforeMount={(monaco) => {
+        ensureCssColorProvider(monaco);
+      }}
+    />
+  );
+}
+```
+
+`ensureCssColorProvider()` is idempotent for each Monaco instance.
+
+The provider:
+
+- reads CSS colors with `extractCssColors()`
+- converts parsed colors to Monaco color decorations
+- serializes Monaco color edits with `formatCssColor()`
+- disables Monaco's built-in CSS color provider before registering the parser-backed provider
+
+## Optional React editor wrapper
 
 ```tsx
 import { CssColorEditor } from "@moyarich/css-color-parser-monaco";
@@ -125,35 +155,6 @@ interface CssColorEditorProps {
 
 These are added on top of the full `EditorProps` surface from
 `@monaco-editor/react`.
-
-## Color provider only
-
-If you already own the Monaco editor lifecycle, register only the color provider:
-
-```tsx
-import Editor from "@monaco-editor/react";
-import { ensureCssColorProvider } from "@moyarich/css-color-parser-monaco";
-
-export function ExistingEditor() {
-  return (
-    <Editor
-      defaultLanguage="css"
-      beforeMount={(monaco) => {
-        ensureCssColorProvider(monaco);
-      }}
-    />
-  );
-}
-```
-
-`ensureCssColorProvider()` is idempotent for each Monaco instance.
-
-The provider:
-
-- reads CSS colors with `extractCssColors()`
-- converts parsed colors to Monaco color decorations
-- serializes Monaco color edits with `formatCssColor()`
-- disables Monaco's built-in CSS color provider before registering the parser-backed provider
 
 ## Monaco setup
 
