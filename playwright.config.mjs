@@ -1,3 +1,4 @@
+// Browser CI uses a Playwright-supported Ubuntu runner.
 import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
