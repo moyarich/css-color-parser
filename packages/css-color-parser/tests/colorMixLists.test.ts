@@ -5,7 +5,9 @@ describe("CSS Color 5 color-mix lists", () => {
   it("defaults to oklab", () => {
     const explicit = parseCssColor("color-mix(in oklab, red, blue)");
     expect(explicit).not.toBeNull();
-    expect(parseCssColor("color-mix(red, blue)")?.color).toEqual(explicit?.color);
+    expect(parseCssColor("color-mix(red, blue)")?.color).toEqual(
+      explicit?.color,
+    );
   });
 
   it.each([
@@ -20,7 +22,10 @@ describe("CSS Color 5 color-mix lists", () => {
     ["color-mix(in srgb, red, lime, blue, white)", [128, 128, 128, 1]],
     ["color-mix(in srgb, white, blue, lime, red)", [128, 128, 128, 1]],
     ["color-mix(in srgb, red 0%, lime 50%, blue 50%)", [0, 128, 128, 1]],
-    ["color-mix(in srgb, color-mix(in srgb, red, red, red), blue)", [128, 0, 128, 1]],
+    [
+      "color-mix(in srgb, color-mix(in srgb, red, red, red), blue)",
+      [128, 0, 128, 1],
+    ],
   ] as const)("resolves %s", (value, [red, green, blue, alpha]) => {
     const parsed = parseCssColor(value);
     expect(parsed).toMatchObject({ value, format: "color-mix" });

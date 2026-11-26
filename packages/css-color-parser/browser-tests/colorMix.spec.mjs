@@ -46,7 +46,11 @@ async function compare(page, value, experimental = false) {
       return Array.from(context.getImageData(0, 0, 1, 1).data);
     });
   }, value);
-  if (experimental) test.skip(actual === null, "Browser does not yet support this Color 5 syntax");
+  if (experimental)
+    test.skip(
+      actual === null,
+      "Browser does not yet support this Color 5 syntax",
+    );
   expect(actual, value).not.toBeNull();
   const parsed = parseCssColor(value);
   expect(parsed, value).not.toBeNull();
@@ -59,8 +63,10 @@ async function compare(page, value, experimental = false) {
   for (let background = 0; background < 2; background++) {
     for (let channel = 0; channel < 3; channel++) {
       // Canvas compositing and the parser independently quantize to 8-bit.
-      expect(Math.abs(actual[background][channel] - expected[background][channel]),
-        value + " background=" + background + " channel=" + channel).toBeLessThanOrEqual(1);
+      expect(
+        Math.abs(actual[background][channel] - expected[background][channel]),
+        value + " background=" + background + " channel=" + channel,
+      ).toBeLessThanOrEqual(1);
     }
     expect(actual[background][3]).toBe(255);
   }
@@ -82,7 +88,9 @@ for (const value of [
   "color-mix(in srgb, red,,blue)",
 ]) {
   test("rejects " + value, async ({ page }) => {
-    expect(await page.evaluate((css) => CSS.supports("color", css), value)).toBe(false);
+    expect(
+      await page.evaluate((css) => CSS.supports("color", css), value),
+    ).toBe(false);
     expect(parseCssColor(value)).toBeNull();
   });
 }
