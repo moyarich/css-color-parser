@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Editor, { type EditorProps, type Monaco } from "@monaco-editor/react";
-import { ensureCssColorProvider } from "./cssColorProvider";
+import { registerCssColorProvider } from "./cssColorProvider";
 
 export interface CssColorEditorFile {
   name: string;
@@ -108,7 +108,7 @@ export function CssColorEditor({
     : path;
 
   const handleBeforeMount = (monaco: Monaco) => {
-    ensureCssColorProvider(monaco);
+    registerCssColorProvider(monaco);
     beforeMount?.(monaco);
   };
 
