@@ -23,6 +23,9 @@
     "publish:lib": "node scripts/publish.mjs --publish",
     "release": "npx --yes @moyarich/workspace-tools workspace-release css-color-parser",
     "publish": "npx --yes @moyarich/workspace-tools workspace-publish css-color-parser",
-    "test:browser": "playwright test packages/css-color-parser/browser-tests --workers=1"
+    "test:browser": "npm run build:lib && playwright test --config playwright.config.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1"
   }
 }
