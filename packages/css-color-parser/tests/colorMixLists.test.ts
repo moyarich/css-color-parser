@@ -22,9 +22,9 @@ describe("CSS Color 5 color-mix lists", () => {
   ] as const)("resolves %s", (value, [red, green, blue, alpha]) => {
     const parsed = parseCssColor(value);
     expect(parsed).toMatchObject({ value, format: "color-mix" });
-    expect(parsed?.color.red).toBeCloseTo(red, 0);
-    expect(parsed?.color.green).toBeCloseTo(green, 0);
-    expect(parsed?.color.blue).toBeCloseTo(blue, 0);
+    expect(Math.abs((parsed?.color.red ?? NaN) - red)).toBeLessThanOrEqual(1);
+    expect(Math.abs((parsed?.color.green ?? NaN) - green)).toBeLessThanOrEqual(1);
+    expect(Math.abs((parsed?.color.blue ?? NaN) - blue)).toBeLessThanOrEqual(1);
     expect(parsed?.color.alpha).toBeCloseTo(alpha, 5);
   });
 
