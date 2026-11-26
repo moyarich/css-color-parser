@@ -175,7 +175,10 @@ lch(60% 50 300)
 oklch(60% 0.15 250)
 color(display-p3 0.9 0.2 0.4)
 
+color-mix(red, blue)
 color-mix(in srgb, red, blue)
+color-mix(in srgb, red)
+color-mix(in srgb, red 20%, lime 30%, blue)
 color-mix(in oklch, red 40%, blue)
 color-mix(in hsl longer hue, red, blue)
 
@@ -183,6 +186,8 @@ oklab(from green l a b / 0.5)
 hsl(from red calc(h + 120) s l)
 rgb(from #123456 r g b / 50%)
 ```
+
+Color mixes accept one or more colors, with optional percentages before or after each color. Omitted interpolation defaults to OKLab. Omitted weights share the remaining percentage; totals below 100% reduce opacity. All-zero weights are rejected, matching MDN's documented rule. List mixing retains intermediate coordinates in the chosen interpolation space, but input colors still use the dependency's 8-bit sRGB representation. Custom interpolation spaces and calculated mix weights are not supported.
 
 Advanced color functions are evaluated with [color-bits](https://github.com/romgrk/color-bits) and converted to 8-bit sRGB values. Wide-gamut values may therefore be clipped to sRGB.
 

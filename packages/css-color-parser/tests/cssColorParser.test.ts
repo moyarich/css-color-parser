@@ -95,7 +95,7 @@ describe("parseCssColor", () => {
     "color-mix(in srgb, red 0%, blue 0%)",
     "color-mix(in srgb, red -10%, blue)",
     "color-mix(in imaginary, red, blue)",
-    "color-mix(in srgb, red)",
+    "color-mix(in srgb,)",
     "color-mix(in srgb, red, blue) trailing",
     "hsl(from red calc(h +) s l)",
     "color-mix(in srgb, var(--brand), blue)",
