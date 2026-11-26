@@ -1,4 +1,4 @@
-export { ensureCssColorProvider } from "./cssColorProvider";
+export { registerCssColorProvider } from "./cssColorProvider";
 
 export {
   CssColorEditor,
