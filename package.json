@@ -22,6 +22,7 @@
     "release:check": "node scripts/publish.mjs --dry-run",
     "publish:lib": "node scripts/publish.mjs --publish",
     "release": "npx --yes @moyarich/workspace-tools workspace-release css-color-parser",
-    "publish": "npx --yes @moyarich/workspace-tools workspace-publish css-color-parser"
+    "publish": "npx --yes @moyarich/workspace-tools workspace-publish css-color-parser",
+    "test:browser": "playwright test packages/css-color-parser/browser-tests --workers=1"
   }
 }
