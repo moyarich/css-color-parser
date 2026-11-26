@@ -24,7 +24,7 @@ color-mix(in hsl longer hue, red, blue, lime)
 
 ### Documentation and testing
 
-- Update the README and playground examples to demonstrate the expanded syntax.
+- Update the README to demonstrate the expanded syntax.
 - Add exact RGBA regression tests for weighted lists, transparency, rounding boundaries, malformed input, and source extraction.
 - Add Playwright comparisons against Chromium-rendered colors, including compositing on black and white backgrounds. Newer syntax is explicitly skipped when the browser does not support it; browser CI verification is pending.
 
@@ -59,8 +59,6 @@ Initial release. Includes changes through November 24, 2026, based on commit [`b
 ### Packaging and documentation
 
 - ESM and CommonJS builds with TypeScript declarations and GitHub Packages publishing configuration.
-- Interactive documentation playground with parsing, extraction, serialization, custom-property resolution, design-token inspection, gradient, contrast, SVG, and blend-mode examples.
-- Separate React/Monaco integration package, keeping editor-specific dependencies outside the core parser.
 - Vitest regression coverage and workspace build/type-check commands.
 
 ### Usage
