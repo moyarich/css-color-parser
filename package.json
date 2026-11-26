@@ -26,6 +26,6 @@
     "test:browser": "npm run build:lib && playwright test --config playwright.config.mjs"
   },
   "devDependencies": {
-    "@playwright/test": "1.58.2"
+    "@playwright/test": "1.65.1"
   }
 }
