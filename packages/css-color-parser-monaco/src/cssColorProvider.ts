@@ -4,7 +4,7 @@ import type { editor, languages } from "monaco-editor";
 
 const providers = new WeakMap<object, { dispose(): void }>();
 
-export function ensureCssColorProvider(monaco: Monaco) {
+export function registerCssColorProvider(monaco: Monaco) {
   const existing = providers.get(monaco);
   if (existing) return existing;
 
