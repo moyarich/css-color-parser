@@ -35,21 +35,21 @@ If you already own the Monaco editor lifecycle, register only the color provider
 
 ```tsx
 import Editor from "@monaco-editor/react";
-import { ensureCssColorProvider } from "@moyarich/css-color-parser-monaco";
+import { registerCssColorProvider } from "@moyarich/css-color-parser-monaco";
 
 export function ExistingEditor() {
   return (
     <Editor
       defaultLanguage="css"
       beforeMount={(monaco) => {
-        ensureCssColorProvider(monaco);
+        registerCssColorProvider(monaco);
       }}
     />
   );
 }
 ```
 
-`ensureCssColorProvider()` is idempotent for each Monaco instance.
+`registerCssColorProvider()` is idempotent for each Monaco instance.
 
 The provider:
 
@@ -189,7 +189,7 @@ other Monaco hosts.
 React wrapper around `@monaco-editor/react` with automatic parser-backed CSS
 color support and optional multi-file state.
 
-### `ensureCssColorProvider(monaco)`
+### `registerCssColorProvider(monaco)`
 
 Registers the parser-backed Monaco CSS color provider once for a Monaco instance.
 
