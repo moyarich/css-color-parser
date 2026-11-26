@@ -1,7 +1,7 @@
 {
   "name": "@moyarich/css-color-parser-monaco",
   "version": "0.1.0",
-  "description": "Reusable React/Monaco CSS color integration powered by @moyarich/css-color-parser.",
+  "description": "CSS color provider for Monaco Editor with modern color detection, inline color decorations, color editing, and optional React integration.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
