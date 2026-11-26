@@ -18,14 +18,13 @@ describe("CSS Color 5 color-mix lists", () => {
     ["color-mix(in srgb, red 100%, lime 100%, blue 100%)", [85, 85, 85, 1]],
     ["color-mix(in srgb, red, transparent, blue)", [128, 0, 128, 170 / 255]],
     ["color-mix(in srgb, red, lime, blue, white)", [128, 128, 128, 1]],
+    ["color-mix(in srgb, white, blue, lime, red)", [128, 128, 128, 1]],
+    ["color-mix(in srgb, red 0%, lime 50%, blue 50%)", [0, 128, 128, 1]],
     ["color-mix(in srgb, color-mix(in srgb, red, red, red), blue)", [128, 0, 128, 1]],
   ] as const)("resolves %s", (value, [red, green, blue, alpha]) => {
     const parsed = parseCssColor(value);
     expect(parsed).toMatchObject({ value, format: "color-mix" });
-    expect(Math.abs((parsed?.color.red ?? NaN) - red)).toBeLessThanOrEqual(1);
-    expect(Math.abs((parsed?.color.green ?? NaN) - green)).toBeLessThanOrEqual(1);
-    expect(Math.abs((parsed?.color.blue ?? NaN) - blue)).toBeLessThanOrEqual(1);
-    expect(parsed?.color.alpha).toBeCloseTo(alpha, 5);
+    expect(parsed?.color).toEqual({ red, green, blue, alpha });
   });
 
   it.each([
