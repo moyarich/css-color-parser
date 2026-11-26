@@ -1,5 +1,6 @@
 import { getAlpha, getBlue, getGreen, getRed } from "color-bits";
 import { parseCSS } from "color-bits/css";
+import { parseColorMix } from "./parseColorMix";
 import { CSS_COLOR_FUNCTION_FORMATS } from "./colorFunctions";
 import { CSS_NAMED_COLORS } from "./namedColors";
 import type { CssColorFormat, RgbaColor } from "./types";
@@ -355,7 +356,8 @@ export function parseCssColor(
     try {
       // Retain the existing floating-point precision for simple RGB/HSL above.
       // Advanced colors use color-bits' 8-bit sRGB representation.
-      const color = parseCSS(trimmed);
+      const color =
+        format === "color-mix" ? parseColorMix(trimmed) : parseCSS(trimmed);
       return {
         value: original,
         format,
