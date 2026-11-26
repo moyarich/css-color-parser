@@ -108,6 +108,25 @@ export function parseColorMix(value: string, depth = 0): ColorBits {
   // Match the MDN two-color zero-sum rule.
   if (total === 0) invalid();
 
+  // Rectangular coordinates are a weighted sum. Using the original weights
+  // avoids accumulated interpolation error at half-byte rounding boundaries.
+  if (hue < 0) {
+    const alpha = items.reduce((sum, item, i) => sum + item.alpha * weights[i], 0);
+    const channels = [0, 1, 2].map((channel) => {
+      const sum = items.reduce(
+        (value, item, i) => value + item.channels[channel] * item.alpha * weights[i],
+        0,
+      );
+      return alpha === 0 ? 0 : sum / alpha;
+    });
+    return model.toColor(
+      channels[0],
+      channels[1],
+      channels[2],
+      Math.round((alpha / Math.max(100, total)) * 255),
+    );
+  }
+
   const mixed = items[0];
   let accumulated = weights[0];
   for (let i = 1; i < items.length; i++) {
